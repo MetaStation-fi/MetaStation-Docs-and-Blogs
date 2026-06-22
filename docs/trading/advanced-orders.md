@@ -1,0 +1,123 @@
+---
+id: advanced-orders
+title: Advanced Orders
+sidebar_label: Advanced Orders (TP / SL / SLX)
+---
+
+# Advanced Orders
+
+MetaStation provides professional-grade order management: up to 10 Take Profits, Trailing Stops, and the **Stop Loss X (SLX)** system.
+
+---
+
+## Multiple Take Profits (TP1–TP10)
+
+Scale out of a position automatically at different price levels. Up to 10 TPs per position.
+
+**Setup:**
+1. In the order panel, expand **Take Profit**
+2. Click **+ Add TP**
+3. Set price and quantity for each level (token amount, USD, or percentage)
+4. Confirm — orders are placed automatically as the position opens
+
+**Example — BTC long from $45,000:**
+
+| TP Level | Price | Quantity |
+|---|---|---|
+| TP1 | $48,000 | 30% |
+| TP2 | $50,000 | 40% |
+| TP3 | $52,000 | 30% (remainder) |
+
+Each TP executes independently. If price hits TP1 and reverses, TP2 and TP3 remain open.
+
+---
+
+## Stop Loss types
+
+| Type | Description |
+|---|---|
+| **Simple Stop Loss** | Market order triggered at stop price |
+| **Limit Stop Loss** | Limit order triggered at stop price — better price, may not fill |
+| **Trailing Stop Loss** | Dynamic stop that follows price upward |
+
+---
+
+## Trailing Stop Loss
+
+A trailing stop rises with price but does not fall. It locks in profits as the trade moves in your favor.
+
+**Parameters:**
+- **Activation price** — Price at which trailing begins
+- **Trail distance** — Fixed amount or percentage below the peak price
+- **Price type** — Mark price or last price
+
+**Example:**
+- BTC long, entry $45,000
+- Activation: $47,000
+- Trail: 2% below peak
+- If BTC rises to $50,000, stop is at $49,000 (2% below peak)
+- If BTC then drops, stop executes at $49,000
+
+---
+
+## Stop Loss X (SLX)
+
+SLX is an advanced trailing system that moves your Stop Loss based on Take Profit events. It has two modes:
+
+### Mode 1 — Callback Rate
+
+Trail the stop loss by a fixed percentage from the peak price, activated at a specific price.
+
+```json
+{
+  "slxMode": "callback_rate",
+  "activationPrice": 46000,
+  "callbackRate": 2.0,
+  "triggerBy": "mark_price"
+}
+```
+
+**Fields:**
+- `activationPrice` — SLX activates when price reaches this level
+- `callbackRate` — Stop trails this % below the highest price seen since activation
+- `triggerBy` — `mark_price` or `last_price`
+
+### Mode 2 — Trailing Profits
+
+Move the Stop Loss automatically after each Take Profit level is hit.
+
+```json
+{
+  "slxMode": "trailing_profits",
+  "activationPoint": "TP1",
+  "trailingType": "breakeven"
+}
+```
+
+**Fields:**
+- `activationPoint` — Which TP triggers SLX (`TP1`, `TP2`, etc.)
+- `trailingType`:
+  - `breakeven` — Move SL to entry price after activation point is hit
+  - `follow_tp` — Move SL to the previous TP level after each new TP is hit
+
+**Example — Trailing Profits with breakeven:**
+- Enter BTC long at $45,000, TP1 at $48,000
+- SLX activates when TP1 hits
+- Stop Loss moves to entry ($45,000) — position is now risk-free
+- Remaining TP2 and TP3 stay open
+
+**Example — Trailing Profits with follow_tp:**
+- TP1 hits → SL moves to entry ($45,000)
+- TP2 hits → SL moves to TP1 price ($48,000)
+- TP3 hits → SL moves to TP2 price ($50,000)
+
+---
+
+## Configuring SLX in the UI
+
+1. Open **Advanced Orders** in the order panel
+2. Toggle **Stop Loss X**
+3. Select mode: Callback Rate or Trailing Profits
+4. Fill in parameters and confirm
+
+SLX can also be configured via [webhook JSON](/docs/developer/json-format#slx-configuration).

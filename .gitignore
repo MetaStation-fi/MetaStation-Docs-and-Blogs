@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Production build
+build/
+
+# Docusaurus generated files
+.docusaurus/
+.cache-loader/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local

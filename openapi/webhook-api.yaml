@@ -1,0 +1,205 @@
+openapi: 3.0.3
+info:
+  title: MetaStation Webhook API
+  description: |
+    Execute trades on your MetaStation account via HTTP POST webhooks.
+    Signals can be sent in JSON or natural language format.
+  version: "1.0"
+  contact:
+    name: MetaStation Support
+    url: https://metastation.fi
+
+servers:
+  - url: https://api.metastation.fi
+    description: Production
+
+security: []
+
+paths:
+  /webhook/{token}:
+    post:
+      summary: Execute a trade signal
+      description: |
+        Send a trading signal to execute on the account slot associated with the token.
+        Accepts JSON or natural language in the request body.
+      operationId: executeWebhook
+      tags:
+        - Webhook
+      parameters:
+        - name: token
+          in: path
+          required: true
+          description: Unique webhook token for the account slot
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSignal'
+            examples:
+              openLong:
+                summary: Open a long position
+                value:
+                  action: open
+                  symbol: BTCUSDC
+                  side: buy
+                  orderType: market
+                  quantity: "2%"
+                  leverage: 10
+                  marginMode: isolated
+                  takeProfit: 50000
+                  stopLoss: 40000
+              closePosition:
+                summary: Close a position
+                value:
+                  action: close
+                  symbol: BTCUSDC
+                  side: sell
+      responses:
+        '200':
+          description: Signal received and processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad request — parse error or trading error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid or revoked webhook token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: IP not whitelisted or automation not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    WebhookSignal:
+      type: object
+      required:
+        - action
+        - symbol
+      properties:
+        action:
+          type: string
+          enum: [open, close, update, reverse]
+          description: Trade action to execute
+        symbol:
+          type: string
+          example: BTCUSDC
+          description: Trading pair symbol
+        side:
+          type: string
+          enum: [buy, sell]
+          description: Required for open and close actions
+        orderType:
+          type: string
+          enum: [market, limit, stop_market, stop_limit]
+          default: market
+        price:
+          type: number
+          description: Required for limit orders
+        quantity:
+          oneOf:
+            - type: string
+              description: "Percentage (\"2%\"), USD (\"$300\"), or token amount (\"0.001 BTC\")"
+            - type: number
+              description: Token amount as a number
+        leverage:
+          type: number
+          minimum: 1
+          maximum: 125
+        marginMode:
+          type: string
+          enum: [isolated, cross]
+          default: isolated
+        takeProfit:
+          type: number
+          description: Single take profit price
+        takeProfits:
+          type: array
+          maxItems: 10
+          items:
+            type: object
+            properties:
+              price:
+                type: number
+              quantity:
+                type: string
+        stopLoss:
+          type: number
+          description: Stop loss price (simple market SL)
+        stopLossX:
+          $ref: '#/components/schemas/SLXConfig'
+
+    SLXConfig:
+      type: object
+      required:
+        - slxMode
+      properties:
+        slxMode:
+          type: string
+          enum: [callback_rate, trailing_profits]
+        activationPrice:
+          type: number
+          description: Required for callback_rate mode
+        callbackRate:
+          type: number
+          description: Trail percentage — required for callback_rate mode
+        triggerBy:
+          type: string
+          enum: [mark_price, last_price, index_price]
+          default: mark_price
+        activationPoint:
+          type: string
+          description: "TP level to activate SLX — required for trailing_profits (e.g., \"TP1\")"
+        trailingType:
+          type: string
+          enum: [breakeven, follow_tp]
+          description: Required for trailing_profits mode
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        result:
+          type: object
+        message:
+          type: string
+          example: Order placed successfully
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        result:
+          type: object
+          nullable: true
+          example: null
+        message:
+          type: string
+          example: Insufficient balance
+        code:
+          type: string
+          example: INSUFFICIENT_BALANCE
