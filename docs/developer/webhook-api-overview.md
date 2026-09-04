@@ -8,6 +8,14 @@ sidebar_label: Webhook API Overview
 
 The MetaStation Webhook API lets external systems execute trades on your account via HTTP POST requests.
 
+:::tip Try it without writing any code
+The **[API Reference](/docs/api/metastation-webhook-api)** is generated from our OpenAPI spec and
+ships an interactive console — fill in the fields, send a real request, and read the real
+response, straight from the page.
+
+Start there: **[Execute a trade signal](/docs/api/execute-webhook)**.
+:::
+
 ---
 
 ## Endpoint

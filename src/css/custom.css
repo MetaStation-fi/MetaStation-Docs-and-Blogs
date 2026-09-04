@@ -775,6 +775,104 @@ td {
   color: var(--ms-accent-hover);
 }
 
+/* ============================================================================
+   API reference — docusaurus-theme-openapi-docs
+   ----------------------------------------------------------------------------
+   The theme does NOT ship the sidebar method badges; it expects the site to
+   supply them. Without this block every endpoint in the API Reference section
+   renders as an unlabelled link and you cannot tell GET from DELETE.
+   Colours come from our tokens so the badges work in both themes.
+   ========================================================================= */
+.api-method > .menu__link {
+  align-items: center;
+  justify-content: start;
+}
+
+.api-method > .menu__link::before {
+  width: 52px;
+  height: 19px;
+  font-size: 10px;
+  line-height: 19px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  align-items: center;
+  text-align: center;
+  flex-shrink: 0;
+  margin-right: 0.6rem;
+  border: 1px solid transparent;
+}
+
+.get > .menu__link::before {
+  content: 'get';
+  background-color: rgba(29, 78, 216, 0.12);
+  color: var(--ms-info);
+  border-color: rgba(29, 78, 216, 0.3);
+}
+
+.post > .menu__link::before {
+  content: 'post';
+  background-color: var(--ms-accent-soft);
+  color: var(--ms-accent);
+  border-color: var(--ms-accent-line);
+}
+
+.put > .menu__link::before {
+  content: 'put';
+  background-color: rgba(180, 83, 9, 0.12);
+  color: var(--ms-warn);
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+.patch > .menu__link::before {
+  content: 'patch';
+  background-color: rgba(180, 83, 9, 0.12);
+  color: var(--ms-warn);
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+.delete > .menu__link::before {
+  content: 'del';
+  background-color: rgba(185, 28, 28, 0.12);
+  color: var(--ms-danger);
+  border-color: rgba(185, 28, 28, 0.3);
+}
+
+/* The Try-It console and schema tables are theme components with their own
+   surfaces. Pull them onto our tokens so they do not read as a bolted-on
+   third-party widget. */
+.openapi-explorer__request-btn,
+.openapi-explorer__playground-container button[type='submit'] {
+  background: var(--ms-gradient);
+  color: var(--ms-gradient-on);
+  border: none;
+  font-weight: 600;
+  border-radius: var(--ms-radius-sm);
+}
+
+.openapi-tabs__code-item--curl,
+.openapi-explorer__code-block-container {
+  border-radius: var(--ms-radius);
+}
+
+.openapi-schema__container,
+.openapi-params__container {
+  border-color: var(--ms-border);
+}
+
+.openapi-schema__property {
+  color: var(--ms-text);
+}
+
+.openapi-schema__name {
+  font-weight: 600;
+}
+
+.openapi-schema__required {
+  color: var(--ms-danger);
+}
+
 /* ── Blog ──────────────────────────────────────────────────────────────────
    DESIGN: blog-hero + blog list/post templates are a Phase 2 swizzle
    (BlogPostItem). This is the interim pass so the blog does not look

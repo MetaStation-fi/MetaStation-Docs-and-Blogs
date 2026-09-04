@@ -1,0 +1,1 @@
+{"parameters":[{"name":"token","in":"path","required":true,"description":"Unique webhook token for the account slot","schema":{"type":"string"}}]}

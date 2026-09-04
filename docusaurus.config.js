@@ -11,12 +11,31 @@ const config = {
   baseUrl: '/',
 
   onBrokenLinks: 'warn',
+  // Docusaurus 3.10 is the last v3 release and exists to stage v4. Adopting the
+  // flags now makes the v4 upgrade a no-op instead of a migration.
   future: {
     v4: {
       removeLegacyPostBuildHeadAttribute: true,
+
+      // Matters more here than on a typical site: the docs are served from
+      // metastation.fi/docs, the SAME ORIGIN as the trading app, so both share
+      // one localStorage bucket. Without namespacing, Docusaurus's unprefixed
+      // `theme` key collides with the app's own theme storage. Namespacing
+      // scopes our keys and stops the docs from fighting the product over
+      // which theme the user picked.
+      siteStorageNamespacing: true,
+
+      // We author modern MDX; nothing here relies on MDX v1 compatibility.
+      mdx1CompatDisabledByDefault: true,
     },
     faster: true,
   },
+
+  // Deliberately NOT enabled yet: `useCssCascadeLayers`. It moves theme CSS
+  // into cascade layers, which changes how every override in custom.css
+  // resolves. That is a visual change that needs to be checked in a browser
+  // across both colour schemes, not assumed — turn it on as its own change
+  // with its own verification pass.
 
   i18n: {
     defaultLocale: 'en',
@@ -54,11 +73,130 @@ const config = {
       tagName: 'link',
       attributes: { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' },
     },
+
+    // ── Structured data ────────────────────────────────────────────────────
+    // The site shipped exactly one JSON-LD block before this (BreadcrumbList,
+    // from the theme). Organization + SoftwareApplication are site-wide facts,
+    // so they belong in headTags rather than in a per-page component.
+    //
+    // This is the cheapest SEO work available to us: it is the vocabulary
+    // search engines and AI answer engines actually parse when deciding what
+    // this site *is* and whether to cite it. Per-page TechArticle and FAQPage
+    // land with the Phase 3 content work.
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'MetaStation',
+        url: 'https://metastation.fi',
+        logo: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand/metastation-logo.png',
+        description:
+          'Unified crypto trading platform with webhook automation, copy trading and Telegram-to-Trade across Binance, ByBit and KuCoin.',
+        sameAs: [
+          'https://x.com/MetaStation_fi',
+          'https://t.me/metastation_global',
+          'https://www.facebook.com/profile.php?id=61586115042698',
+          'https://www.instagram.com/metastation.fi',
+          'https://github.com/MetaStation-fi',
+        ],
+      }),
+    },
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'MetaStation',
+        applicationCategory: 'FinanceApplication',
+        operatingSystem: 'Web, iOS, Android',
+        url: 'https://metastation.fi',
+        description:
+          'Trade spot and perpetual futures from one account. Automate TradingView alerts over webhooks, execute Telegram channel signals, and copy trade providers automatically.',
+        featureList: [
+          'Webhook trading from TradingView or any HTTP signal source',
+          'Telegram-to-Trade signal execution',
+          'Copy trading marketplace',
+          'Up to 10 take-profit levels, trailing stops and SLX',
+          'Bridge deposits from 35+ networks',
+        ],
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+          description:
+            'Free MetaStation Account including every automation tool. Paid slot subscriptions unlock automation on connected exchange accounts.',
+        },
+      }),
+    },
   ],
 
   themes: [
     '@docusaurus/theme-mermaid',
     '@easyops-cn/docusaurus-search-local',
+    'docusaurus-theme-openapi-docs',
+  ],
+
+  plugins: [
+    [
+      // Generates llms.txt (an index for LLMs), llms-full.txt, and a .md
+      // twin of every page at build time.
+      //
+      // Replaces static/llms.txt, which was hand-maintained and therefore
+      // guaranteed to drift the moment anyone added a page. A stale LLM index
+      // is worse than none: it teaches answer engines a site structure that no
+      // longer exists.
+      //
+      // Note this only *produces* the surface. AI crawlers are still blocked
+      // at the Cloudflare edge by deliberate decision until Phase 5, so
+      // nothing consumes these files yet. Building it now means the channel
+      // opens with correct content on day one instead of needing a content
+      // pass at the same moment as an infra change.
+      // Option shape below is v1.2.2's, read from the installed package's own
+      // type definitions. Published examples show a newer `markdown` /
+      // `llmsTxt` split that this version rejects outright.
+      '@signalwire/docusaurus-plugin-llms-txt',
+      {
+        siteTitle: 'MetaStation',
+        siteDescription:
+          'Unified crypto trading platform — spot and perpetual futures, webhook automation from TradingView, Telegram-to-Trade signal execution, and a copy-trading marketplace. Trade a native MetaStation Account or connect Binance, ByBit and KuCoin.',
+        // Group by the second path segment, so /docs/trading/* becomes a
+        // "Trading" section rather than one flat list of 40 links.
+        depth: 2,
+        enableDescriptions: true,
+        content: {
+          enableMarkdownFiles: true,
+          enableLlmsFullTxt: true,
+          relativePaths: false,
+          includeDocs: true,
+          includeBlog: true,
+          includePages: true,
+        },
+      },
+    ],
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'api',
+        docsPluginId: 'classic',
+        config: {
+          webhook: {
+            specPath: 'openapi/webhook-api.yaml',
+            outputDir: 'docs/api',
+            // The webhook token IS the credential and it sits in the URL path,
+            // so a generated snippet would otherwise carry a real token
+            // verbatim once someone tries the console. Mask it.
+            maskCredentials: true,
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+            },
+          },
+        },
+      },
+    ],
   ],
 
   presets: [
@@ -69,6 +207,20 @@ const config = {
         docs: {
           routeBasePath: 'docs',
           sidebarPath: './sidebars.js',
+          // Required by docusaurus-theme-openapi-docs. It wraps the normal doc
+          // item, so hand-written pages render exactly as before; only pages
+          // generated from the OpenAPI spec pick up the API layout and the
+          // Try-It console.
+          docItemComponent: '@theme/ApiItem',
+
+          // Feeds two things at once: the "Last updated" line readers see, and
+          // the <lastmod> the sitemap emits. Without this the sitemap has no
+          // date source and silently omits lastmod for every URL — which is
+          // exactly what it was doing.
+          //
+          // The date comes from git commit time, so it tracks real content
+          // changes. Uncommitted files fall back to filesystem mtime.
+          showLastUpdateTime: true,
         },
         blog: {
           routeBasePath: 'blogs',
@@ -91,6 +243,16 @@ const config = {
         sitemap: {
           changefreq: 'weekly',
           priority: 0.5,
+          // The sitemap shipped 42 URLs and zero <lastmod>. Freshness is a real
+          // crawl-scheduling input, and AI answer engines skew hard toward
+          // recently-updated pages — so publishing no date at all is throwing
+          // away the one signal a 42-page static site can actually send.
+          //
+          // 'date' emits YYYY-MM-DD from the page's git commit time, which
+          // means it reflects when the content genuinely changed rather than
+          // when the build ran. A build-time timestamp would mark all 42 pages
+          // fresh on every deploy, which is noise a crawler learns to ignore.
+          lastmod: 'date',
         },
       }),
     ],
@@ -146,6 +308,11 @@ const config = {
         {
           to: '/docs/developer/webhook-api-overview',
           label: 'Developer',
+          position: 'left',
+        },
+        {
+          to: '/docs/api/metastation-webhook-api',
+          label: 'API',
           position: 'left',
         },
         {
