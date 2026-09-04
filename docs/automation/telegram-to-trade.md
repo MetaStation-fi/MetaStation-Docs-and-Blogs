@@ -36,24 +36,45 @@ You link a Telegram channel to an account slot. When a signal is posted in that 
 
 ### 1. Connect your Telegram account
 
-1. Go to **Settings → Telegram-to-Trade**
-2. Click **Connect Telegram**
-3. You will be prompted to verify via a code sent to your Telegram app
-4. Complete 2FA verification — this is required to protect your session
+{/* SCREENSHOT: tg-connect | Webhook Management -> Telegram Connection tab, phone-number state | 1440x900 | redact: phone number */}
+
+1. Open **Webhook Management** in the sidebar and switch to the **Telegram Connection** tab
+2. Enter your **phone number with country code** (e.g. `+1 234 567 8900`)
+3. Click **Connect Telegram**
+4. Telegram sends a verification code to your Telegram app — enter it under **Enter Verification Code**
+5. If your *Telegram* account has its own two-step verification enabled, you are then asked for that **2FA password**. This is Telegram's password, not your MetaStation one
+
+Once connected, the card shows your linked number, how many channels have been detected, and how
+many are set to copy-trade or broadcast.
 
 :::warning
-Your Telegram session is stored securely and encrypted. Never share your Telegram login code with anyone. MetaStation support will never ask for it.
+Your Telegram session is stored encrypted, and MetaStation does not read your private messages.
+Never share your Telegram login code with anyone — MetaStation support will never ask for it.
 :::
 
-### 2. Map a channel to an account slot
+### 2. Let MetaStation detect the channel
 
-1. Once connected, click **Add Channel**
-2. Enter the channel username or link
-3. Select the account slot where signals from this channel will execute
-4. Configure risk controls (see below)
-5. Save
+{/* SCREENSHOT: tg-channel-binding | connected state showing detected-channel counts + channel selector | 1440x900 | redact: channel names optional */}
 
-You can map multiple channels to different account slots.
+Channels are **detected by forwarding**, not by typing a link:
+
+1. Open the signal channel in Telegram
+2. Forward any message from it to **@MetaStationBot**
+3. It appears in MetaStation as a detected channel
+
+### 3. Map the channel to an account slot
+
+1. Open the account card for the slot you want to trade on
+2. Pick the detected channel in its Telegram section
+3. Choose whether it is a **copy-trade** source or a **broadcast** target
+4. Configure risk controls (see below), then save
+
+:::note Channel limit
+Up to **3 signal channels per account**. Map different channels to different slots if you need
+more than three sources in total.
+:::
+
+{/* SCREENSHOT: tg-parse-preview | signal parse preview showing parsed action/symbol/size | 1440x900 | redact: none */}
 
 ---
 
@@ -96,14 +117,17 @@ If a signal is ambiguous or missing required fields, MetaStation logs a parse er
 
 ## Monitoring
 
-Go to **Settings → Telegram-to-Trade → Logs** to see:
+Open **Webhook Management → Telegram Connection** to see:
 - All received messages per channel
 - Parse result (success / error)
 - Execution status
 - Trade details
 
+Press **Refresh** on the connection card to re-read the current channel counts.
+
 ---
 
-## Managing sessions
+## Managing the connection
 
-Your Telegram session is shown in **Settings → Telegram-to-Trade → Session**. You can disconnect and reconnect at any time. Disconnecting stops all signal parsing immediately.
+The same **Telegram Connection** tab shows your linked session. **Disconnect** ends it — signal
+parsing stops immediately — and you can reconnect any time by repeating the phone-number flow.

@@ -4,7 +4,7 @@ MetaStation is a unified crypto trading platform. This file helps AI language mo
 
 ## Key pages
 
-- Introduction: https://metastation.fi/docs/intro
+- Introduction: https://metastation.fi/docs/
 - Quick Start: https://metastation.fi/docs/getting-started/quick-start
 - MetaStation Account: https://metastation.fi/docs/trading/metastation-account
 - Connect Exchange: https://metastation.fi/docs/trading/connect-exchange

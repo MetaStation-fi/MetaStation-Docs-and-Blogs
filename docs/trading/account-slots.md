@@ -57,9 +57,13 @@ Your first MetaStation Account slot is automatically created and includes all au
 
 ## Managing slots
 
-Go to **Settings → Account Slots** to:
-- View all connected slots
-- Add a new exchange slot
+{/* SCREENSHOT: slots-overview | Trading Slots table with mixed slot types | 1440x900 | redact: account ids */}
+{/* SCREENSHOT: store-slots | Store slot purchase screen | 1440x900 | redact: none */}
+
+Open **Account Management** in the sidebar
+([metastation.fi/social-trade/account-management](https://metastation.fi/social-trade/account-management)) to:
+- View all connected slots under **Trading Slots**
+- Add a new exchange slot with **Add Slots**
 - Configure settings per slot (webhook, social trade, leverage defaults)
 - Manage subscriptions and billing
 

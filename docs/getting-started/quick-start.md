@@ -12,10 +12,10 @@ Get from zero to your first trade in under 5 minutes.
 
 ## Step 1 — Create your account
 
-1. Go to [metastation.fi](https://metastation.fi) and click **Sign Up**
-2. Enter your email and create a password
+1. Go to [metastation.fi/register](https://metastation.fi/register) — or click **Sign Up Now** on the home page
+2. Enter your email, create a password, press **Create Account**
 3. Verify your email address
-4. Your **MetaStation Account** is created automatically — no exchange setup required
+4. Your **MetaStation Account** is created automatically — no exchange setup required. It is a **Web3 account by default**, funded through your Funding Wallet
 
 :::tip
 Enable 2FA immediately after registration. It protects your account and is required for withdrawals. See [Security Setup](/docs/getting-started/security-setup).
@@ -25,20 +25,25 @@ Enable 2FA immediately after registration. It protects your account and is requi
 
 ## Step 2 — Fund your account
 
+{/* SCREENSHOT: deposit-picker | reuse of the fund-account capture | 1440x900 | redact: address */}
+
 Your MetaStation Account accepts deposits from **35+ networks**. Send any supported asset — it is automatically bridged and converted to USDC.
 
-1. Go to **Wallet → Deposit**
+1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
 2. Select your source network and asset
-3. MetaStation shows the best bridge route and estimated received amount
-4. Confirm and send — funds arrive in your account automatically
+3. MetaStation shows the bridge route and estimated received amount
+4. Confirm and send — funds bridge into your **Funding Wallet** and credit your account automatically
 
-Alternatively, buy crypto with a card via **Transak** (Visa/Mastercard, Apple Pay).
+Alternatively, buy crypto with a card via **Transak** (Visa/Mastercard, Apple Pay) under
+**Buy Crypto** in the top navigation.
 
 → Full guide: [Fund Your Account](/docs/getting-started/fund-account)
 
 ---
 
 ## Step 3 — Place your first trade
+
+{/* SCREENSHOT: first-trade | trade terminal, order ticket filled but NOT submitted | 1440x900 | redact: balance */}
 
 1. Open the **Trade** tab
 2. Select your account (MetaStation Account is active by default)

@@ -30,7 +30,7 @@ The webhook token authenticates the request. Treat it as a secret:
 - Rotate it if exposed
 - Use IP whitelisting to restrict which sources can call it
 
-Regenerate your token at **Settings → Account Slots → [Slot] → Webhook → Regenerate Token**. The old token stops working immediately.
+Regenerate your token at **Webhook Management → Your Webhook URLs → [Slot] → Regenerate Secret**. The old token stops working immediately.
 
 ---
 
@@ -96,7 +96,7 @@ All responses follow this structure:
 
 ## Webhook history and logs
 
-Every webhook request is logged. View at **Settings → Webhooks → History**:
+Every webhook request is logged. View it in **Webhook Management**:
 - Timestamp
 - Raw request body
 - Parse result

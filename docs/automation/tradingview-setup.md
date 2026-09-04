@@ -138,7 +138,7 @@ Take Profit: {{strategy.order.price * 1.06}}
 ## Testing
 
 1. Once the alert is live, use TradingView's **Test** button to fire a sample signal
-2. Check MetaStation → **Settings → Webhooks → History** to confirm it was received and parsed
+2. Check MetaStation → **Webhook Management** to confirm it was received and parsed
 3. Verify the order executed in your account
 
 :::tip

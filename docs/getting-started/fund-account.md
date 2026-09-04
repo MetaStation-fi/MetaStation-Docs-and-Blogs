@@ -8,6 +8,25 @@ sidebar_label: Fund Your Account
 
 MetaStation accepts deposits from **35+ blockchain networks**. Whatever asset you send is automatically bridged and converted to USDC and credited to your MetaStation Account.
 
+## Your Funding Wallet
+
+{/* DIAGRAM: funding-flow | source chain -> bridge -> Funding Wallet (Arbitrum smart account) -> USDC margin in MetaStation Account. mermaid, both themes */}
+
+Your **MetaStation Account is a Web3 account by default.** It is funded through a **Funding
+Wallet** — a smart-contract wallet created for you on Arbitrum when you first deposit.
+
+| | |
+|---|---|
+| What it is | A smart account that holds the USDC backing your MetaStation Account |
+| Who creates it | MetaStation, automatically. No seed phrase for you to store |
+| What you do with it | Bridge into it. Everything downstream — trading, settlement — is gasless |
+| Where you see it | The **Deposit** screen shows the Funding Wallet address and its status |
+
+{/* SCREENSHOT: funding-wallet-status | Funding Wallet address + activation state on Deposit | 1440x900 | redact: address */}
+
+You do not need a wallet of your own to *use* the Funding Wallet, but you do need one to bridge
+from an external network into it.
+
 ---
 
 ## Method 1 — Bridge from any network (recommended)
@@ -20,12 +39,15 @@ Ethereum · Arbitrum · Optimism · Base · Polygon · BNB Smart Chain · Avalan
 
 **How it works:**
 
-1. Go to **Wallet → Deposit**
+{/* SCREENSHOT: deposit-picker | Deposit screen, network + asset picker open | 1440x900 | redact: Funding Wallet address */}
+{/* SCREENSHOT: bridge-quote | quote screen with estimated received amount | 1440x900 | redact: address, balance */}
+
+1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
 2. Select your source network and token (e.g., USDT on BSC, ETH on Ethereum, SOL on Solana)
-3. MetaStation fetches quotes from two bridge providers and recommends the cheapest route
-4. Review the estimated received amount and confirm
-5. Send your crypto to the displayed address
-6. Funds are bridged → converted to USDC → deposited to your MetaStation Account automatically
+3. MetaStation quotes the bridge route and shows the estimated amount you will receive
+4. Review the estimate and confirm
+5. Approve and send the transaction from your connected wallet
+6. Funds are bridged into your **Funding Wallet** → converted to USDC → credited to your MetaStation Account automatically
 
 :::tip
 Always send a small test amount first when depositing from a new network or wallet.
@@ -37,7 +59,9 @@ Always send a small test amount first when depositing from a new network or wall
 
 Buy USDC directly with a Visa, Mastercard, Apple Pay, or Google Pay card — no prior crypto needed.
 
-1. Go to **Wallet → Buy Crypto**
+{/* SCREENSHOT: buy-crypto | Buy Crypto / Transak entry screen | 1440x900 | redact: none */}
+
+1. Click **Buy Crypto** in the top navigation ([metastation.fi/buy-crypto](https://metastation.fi/buy-crypto))
 2. Select your currency and amount
 3. Complete the Transak payment flow (basic verification may be required)
 4. USDC is credited to your account within minutes
@@ -48,7 +72,7 @@ Buy USDC directly with a Visa, Mastercard, Apple Pay, or Google Pay card — no 
 
 Already hold crypto but want a different asset? Use SimpleSwap to convert between assets directly.
 
-1. Go to **Wallet → Swap**
+1. Click **Buy Crypto** in the top navigation and switch to the swap tab ([metastation.fi/exchangeswap](https://metastation.fi/exchangeswap))
 2. Select input and output assets
 3. Review the rate and confirm
 4. Swapped funds appear in your wallet

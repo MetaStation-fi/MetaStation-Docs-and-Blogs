@@ -43,8 +43,8 @@ If you suspect your API keys have been compromised:
 
 1. Go to your exchange and **immediately delete the compromised key**
 2. Create a new API key with correct permissions
-3. In MetaStation, go to **Settings → Account Slots**
-4. Select the affected slot → **Edit** → enter the new API key credentials
+3. In MetaStation, open **Account Management** in the sidebar
+4. Under **Trading Slots**, select the affected slot → **Edit** → enter the new API key credentials
 5. Save
 
 ---
@@ -53,8 +53,8 @@ If you suspect your API keys have been compromised:
 
 Deleting an account slot from MetaStation removes the stored keys from the system. It does not affect your exchange account or any open positions on the exchange — you must manage those directly.
 
-1. Go to **Settings → Account Slots**
-2. Click the slot → **Delete Slot**
+1. Open **Account Management** in the sidebar
+2. Under **Trading Slots**, click the slot → **Delete Slot**
 3. Confirm
 
 Any open positions on that exchange remain open and must be closed from the exchange directly.

@@ -10,7 +10,13 @@ sidebar_label: MetaStation Account
 
 Every user gets a native MetaStation Account the moment they register — no API keys, no external exchange to open, no setup. It is the default account that powers your trading on MetaStation, ready the second you sign in.
 
+**The MetaStation Account is a Web3 account by default.** It settles on-chain in USDC and is
+funded through your **Funding Wallet** — a smart-contract wallet created for you, with no seed
+phrase to manage and no gas to pay on your trades.
+
 ---
+
+{/* SCREENSHOT: account-overview | MetaStation Account overview panel | 1440x900 | redact: balance, address */}
 
 ## Why it's different
 
@@ -34,10 +40,10 @@ This is what makes the MetaStation Account effortless to fund: **send almost any
 
 ### How to fund
 
-1. Go to **Wallet → Deposit**
+1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
 2. Select your source network and asset
 3. Confirm the deposit
-4. Funds are bridged, converted to USDC, and deposited automatically
+4. Funds bridge into your **Funding Wallet**, convert to USDC, and credit your account automatically
 
 ---
 
@@ -69,7 +75,7 @@ Your MetaStation Account includes **every automation tool at no cost**. There is
 The MetaStation Account is built so your funds and execution stay transparent and in your control.
 
 - **On-chain transparency** — Orders rest and fill on a public on-chain order book. There is no opaque internal matching you can't see.
-- **Smart-wallet custody** — Your balance lives in a smart wallet tied to your account, not pooled into an exchange's omnibus account.
+- **Smart-wallet custody** — Your balance lives in your **Funding Wallet**, a smart-contract wallet tied to your account, not pooled into an exchange's omnibus account.
 - **No hidden counterparty** — You trade against an open market, not against the house.
 - **Gasless by design** — Gas abstraction means no last-minute fee surprises and no need to hold a separate gas token to trade.
 - **Protected withdrawals** — Withdrawals require 2FA and email confirmation, with optional address whitelisting and daily limits.
@@ -78,6 +84,9 @@ The MetaStation Account is built so your funds and execution stay transparent an
 
 ## Supported markets
 
+{/* SCREENSHOT: orderbook | live on-chain order book | 1440x900 | redact: none */}
+{/* SCREENSHOT: positions-panel | open positions — batch with the other live-position captures so a real position stays open for the shortest time | 1440x900 | redact: size, PnL optional */}
+
 - **Perpetual futures** — BTC, ETH, SOL, and 100+ other pairs with high leverage
 - **Spot** — Swap between supported assets
 
@@ -85,7 +94,7 @@ The MetaStation Account is built so your funds and execution stay transparent an
 
 ## Withdraw any time
 
-1. Go to **Wallet → Withdraw**
+1. Open **Withdraw** in the sidebar ([metastation.fi/withdraw](https://metastation.fi/withdraw))
 2. Enter the destination address and network
 3. Complete 2FA verification and email confirmation
 4. Funds are sent from your USDC balance

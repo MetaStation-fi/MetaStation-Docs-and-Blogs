@@ -12,34 +12,33 @@ Withdraw crypto from your MetaStation wallet to any external address.
 
 ## Withdrawal process
 
-1. Go to **Wallet → Withdraw**
+1. Open **Withdraw** in the sidebar ([metastation.fi/withdraw](https://metastation.fi/withdraw))
 2. Select the asset (USDT, BTC, ETH, SOL, TRX, TON)
 3. Select the network
-4. Enter the destination address — must be whitelisted (see below)
+4. Enter the destination address
 5. Enter the amount
-6. Complete **2FA verification**
-7. Confirm via **email link**
+6. In the **Confirm withdrawal** dialog, request the **email code** and read it from your inbox
+7. Enter your **Google Authenticator** code and the **email code** — both are required
 8. Withdrawal is processed and broadcast to the network
+
+:::warning 2FA is mandatory
+With 2FA disabled the withdrawal is rejected outright — *"2FA is disabled. Please enable 2FA to
+withdraw."* Enable it under **Security → Google Authenticator** before you need to withdraw.
+:::
 
 ---
 
-## Withdrawal address whitelist
+## Verifying the destination address
 
-For security, you can only withdraw to pre-approved (whitelisted) addresses.
+MetaStation does **not** currently offer a withdrawal address whitelist, so nothing catches a
+wrong address on your behalf. Treat the address field as the last checkpoint:
 
-**Adding a new address:**
+- Paste the address; never retype it
+- Check the first and last six characters after pasting — clipboard malware substitutes the middle
+- Send a small test amount the first time you use a new address
+- Make sure the network matches the address format
 
-1. Go to **Settings → Security → Withdrawal Whitelist**
-2. Click **Add Address**
-3. Enter the wallet address and a label
-4. Confirm via email and 2FA
-5. **Wait 24 hours** — new addresses have a mandatory 24-hour delay before they become active
-
-This delay prevents unauthorized withdrawals even if your account is compromised.
-
-:::tip
-Add your withdrawal addresses before you need them. The 24-hour delay is by design.
-:::
+→ Full detail: [Withdrawal Security](/docs/security/withdrawal-whitelist)
 
 ---
 
@@ -63,11 +62,11 @@ Network fees are deducted from your withdrawal amount. The fee estimate is shown
 
 ## Withdrawal status
 
-Track your withdrawal at **Wallet → History → Withdrawals**:
+Track your withdrawal under **History** in the sidebar ([metastation.fi/history](https://metastation.fi/history)), on the withdrawal tab:
 
 | Status | Meaning |
 |---|---|
-| Pending | Awaiting email confirmation |
+| Pending | Awaiting confirmation |
 | Processing | Approved, being broadcast |
 | Completed | Confirmed on-chain |
 | Failed | Rejected or error — contact support |

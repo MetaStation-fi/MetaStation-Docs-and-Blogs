@@ -5,7 +5,7 @@ const { themes } = require('prism-react-renderer');
 const config = {
   title: 'MetaStation Docs',
   tagline: 'Trade Anywhere. Automate Everything.',
-  favicon: 'img/favicon.ico',
+  favicon: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand/metastation-favicon.ico',
 
   url: 'https://metastation.fi',
   baseUrl: '/',
@@ -26,6 +26,35 @@ const config = {
   markdown: {
     mermaid: true,
   },
+
+  // Brand assets are served from MetaStation-fi/brand-assets via jsDelivr,
+  // pinned to a tag. Never use @main here: it is mutable and jsDelivr caches it
+  // hard, so you could not tell which version viewers are actually getting.
+  // Bump the tag to ship new artwork.
+  //
+  // The repo was ChandravadanR/crypto-icons until 2026-09-05, when it moved to
+  // the MetaStation-fi account and was renamed. GitHub redirects the old path
+  // and jsDelivr follows it, but do not rely on that — every reference here is
+  // the new path, verified 200 before the swap.
+  customFields: {
+    cdn: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand',
+  },
+
+  headTags: [
+    // The logo is render-blocking-adjacent (it is in the navbar, above the
+    // fold), and it now lives on a third-party origin. Warm the connection
+    // during HTML parse so the DNS + TLS handshake does not sit in the
+    // critical path. Without this, moving a small asset to a CDN can be
+    // slower than serving it from our own already-connected origin.
+    {
+      tagName: 'link',
+      attributes: { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: 'anonymous' },
+    },
+    {
+      tagName: 'link',
+      attributes: { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' },
+    },
+  ],
 
   themes: [
     '@docusaurus/theme-mermaid',
@@ -69,7 +98,9 @@ const config = {
 
 /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
   themeConfig: {
-    image: 'img/metastation-social-card.png',
+    // Was 'img/metastation-social-card.png', which never existed — every docs
+    // and blog page shipped a broken og:image. Now a real 1200x630 card.
+    image: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand/metastation-social-card.png',
 
     colorMode: {
       defaultMode: 'dark',
@@ -79,9 +110,10 @@ const config = {
 
     announcementBar: {
       id: 'launch_banner',
-      content: '🚀 Welcome to MetaStation — <a href="/docs/intro">explore the docs</a>',
-      backgroundColor: '#0d1a2e',
-      textColor: '#2dd4bf',
+      content: 'Welcome to MetaStation — <a href="/docs/">explore the docs</a>',
+      // No backgroundColor/textColor here on purpose: those are static hex and
+      // would paint the same dark strip in light mode. The bar is themed from
+      // tokens in custom.css instead, so it follows the colour scheme.
       isCloseable: true,
     },
 
@@ -89,8 +121,15 @@ const config = {
       title: '',
       logo: {
         alt: 'MetaStation',
-        src: 'img/metastation-logo.png',
-        srcDark: 'img/metastation-logo.png',
+        // 264x96 WebP, 12 KB — replaces a 4096x1488 / 3.7 MB PNG that was
+        // being downscaled to a ~32px navbar slot on every page load.
+        // The wordmark is a transparent knockout, so the same file works on
+        // both themes: it reads white on light and near-black on dark.
+        // width/height are set to reserve layout space and avoid CLS.
+        src: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand/metastation-logo.webp',
+        srcDark: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand/metastation-logo.webp',
+        width: 132,
+        height: 48,
       },
       items: [
         {
@@ -110,7 +149,10 @@ const config = {
           position: 'left',
         },
         {
-          href: 'https://metastation.fi',
+          // Deep-links to the login screen rather than the marketing root. The
+          // docs are a top-of-funnel surface; sending a reader to the home page
+          // makes them find the CTA again themselves.
+          href: 'https://metastation.fi/login',
           label: 'Launch App',
           position: 'right',
           className: 'navbar-launch-btn',
@@ -141,8 +183,13 @@ const config = {
           title: 'Community',
           items: [
             { label: 'Blog', to: '/blogs' },
-            { label: 'Telegram', href: 'https://t.me/metastation' },
-            { label: 'Twitter / X', href: 'https://twitter.com/metastation' },
+            // Real handles, confirmed against the frontend source:
+            // x.com/MetaStation_fi (Footer/footer.jsx + public/index.html twitter:site),
+            // t.me/metastation_global (community) and t.me/MetaStationBot (Mini App bot).
+            { label: 'Telegram Community', href: 'https://t.me/metastation_global' },
+            { label: 'Telegram Bot', href: 'https://t.me/MetaStationBot' },
+            { label: 'Twitter / X', href: 'https://x.com/MetaStation_fi' },
+            { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61586115042698' },
           ],
         },
         {

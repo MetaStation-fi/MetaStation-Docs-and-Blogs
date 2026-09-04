@@ -1,32 +1,173 @@
-/* MetaStation brand colors and theme overrides */
+/* ============================================================================
+   MetaStation Docs — design tokens & theme
+   ----------------------------------------------------------------------------
+   Structure, in order:
+     1. Font
+     2. Semantic tokens — LIGHT is the base :root, dark overrides it
+     3. Infima variable mapping
+     4. Components — every rule below reads tokens, never raw hex
+   ----------------------------------------------------------------------------
+   Rules for editing this file:
+     - Never hardcode a colour in a component rule. If you need a new one, add a
+       token to BOTH themes first. The previous version of this file hardcoded
+       dark values in .hero-section and .doc-card, which rendered a dark hero and
+       dark cards on a white page in light mode.
+     - Accent-on-background must clear WCAG AA (4.5:1). The old #2dd4bf on
+       #f8fafc measured ~1.9:1. Light mode uses a darker teal for anything that
+       is text; the bright teal survives only as a fill or a border.
+     - No gradient-clipped text. -webkit-text-fill-color: transparent breaks
+       print, confuses screen readers and makes contrast unmeasurable.
+   ========================================================================= */
 
+/* ── 1. Font ──────────────────────────────────────────────────────────────
+   Self-hosted variable Inter. The old file named Inter in the font stack but
+   never loaded it, so every visitor silently got the system fallback. */
+@import '@fontsource-variable/inter/index.css';
+
+/* ── 2. Tokens — light (base) ─────────────────────────────────────────── */
 :root {
+  /* Brand ramp — fixed hues, used as fills and accents in both themes */
   --ms-teal: #2dd4bf;
+  --ms-teal-deep: #0f766e;
   --ms-green: #34d399;
+  --ms-green-deep: #047857;
   --ms-blue: #60a5fa;
-  --ms-bg-dark: #0b0f17;
-  --ms-bg-card: #0f1724;
-  --ms-border: #1e2d3d;
-  --ms-text-muted: #8899aa;
+  --ms-blue-deep: #1d4ed8;
 
-  /* Docusaurus primary color overrides */
-  --ifm-color-primary: #2dd4bf;
-  --ifm-color-primary-dark: #20c4ae;
-  --ifm-color-primary-darker: #1bbaa4;
-  --ifm-color-primary-darkest: #169989;
-  --ifm-color-primary-light: #45d9c6;
-  --ifm-color-primary-lighter: #51dbca;
-  --ifm-color-primary-lightest: #77e3d5;
+  /* Surfaces */
+  --ms-bg: #f8fafc;
+  --ms-surface: #ffffff;
+  --ms-surface-2: #f1f5f9;
+  --ms-surface-hover: #f8fafc;
 
-  --ifm-code-font-size: 95%;
-  --ifm-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --ifm-heading-font-weight: 600;
+  /* Lines */
+  --ms-border: #dbe3ec;
+  --ms-border-strong: #c3cfdd;
+
+  /* Text */
+  --ms-text: #0f172a;
+  --ms-text-secondary: #334155;
+  --ms-text-muted: #55637a;
+
+  /* Accent — the token that must pass contrast on --ms-bg */
+  --ms-accent: #0f766e;          /* ~5.6:1 on #f8fafc — AA for body text */
+  --ms-accent-hover: #0b5f59;
+  --ms-accent-fill: #0d9488;     /* filled surfaces, not text */
+  --ms-accent-on-fill: #ffffff;  /* text sitting on --ms-accent-fill */
+  --ms-accent-soft: rgba(13, 148, 136, 0.09);
+  --ms-accent-line: rgba(13, 148, 136, 0.28);
+
+  /* Status */
+  --ms-warn: #b45309;
+  --ms-danger: #b91c1c;
+  --ms-info: #1d4ed8;
+  --ms-ok: #047857;
+
+  /* Depth */
+  --ms-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --ms-shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --ms-shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.10);
+
+  /* Hero wash — two radials over the page background */
+  --ms-hero-wash:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(13, 148, 136, 0.10), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(29, 78, 216, 0.07), transparent);
+
+  /* Brand gradient. Only ever a FILL — never clipped to text. */
+  --ms-gradient: linear-gradient(120deg, var(--ms-teal-deep) 0%, var(--ms-green-deep) 55%, var(--ms-blue-deep) 100%);
+  --ms-gradient-on: #ffffff;
+
+  /* Announcement bar — opaque in both themes, see the component rule below */
+  --ms-announce-bg: #e6fbf6;
+  --ms-announce-fg: #0b4f49;
+  --ms-announce-border: #bfe9e1;
+  --ms-announce-link: #0b5f59;
+  --ms-announce-link-hover: #083f3b;
+
+  /* Shape & rhythm */
+  --ms-radius-sm: 6px;
+  --ms-radius: 10px;
+  --ms-radius-lg: 14px;
+  --ms-radius-pill: 100px;
+
+  /* ── 3. Infima mapping ── */
+  --ifm-color-primary: var(--ms-accent);
+  --ifm-color-primary-dark: #0d6b64;
+  --ifm-color-primary-darker: #0c645d;
+  --ifm-color-primary-darkest: #0a534d;
+  --ifm-color-primary-light: #118176;
+  --ifm-color-primary-lighter: #12887d;
+  --ifm-color-primary-lightest: #159a8d;
+
+  --ifm-background-color: var(--ms-bg);
+  --ifm-background-surface-color: var(--ms-surface);
+  --ifm-navbar-background-color: var(--ms-surface);
+  --ifm-footer-background-color: #0b0f17;      /* footer is dark in both themes */
+  --ifm-toc-border-color: var(--ms-border);
+  --ifm-hr-border-color: var(--ms-border);
+  --ifm-color-content: var(--ms-text);
+  --ifm-color-content-secondary: var(--ms-text-muted);
+
+  --ifm-code-font-size: 92%;
+  --ifm-font-family-base: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ifm-heading-font-weight: 650;
   --ifm-navbar-height: 64px;
-  --docusaurus-highlighted-code-line-bg: rgba(45, 212, 191, 0.08);
+  --ifm-line-height-base: 1.7;
+  --ifm-h1-font-size: 2.1rem;
+  --ifm-h2-font-size: 1.45rem;
+  --ifm-h3-font-size: 1.12rem;
+
+  --docusaurus-highlighted-code-line-bg: rgba(13, 148, 136, 0.10);
 }
 
+/* ── 2b. Tokens — dark ───────────────────────────────────────────────────
+   Same token names, different values. Nothing below this block is
+   theme-conditional except where a surface genuinely differs. */
 [data-theme='dark'] {
-  --ifm-color-primary: #2dd4bf;
+  --ms-bg: #0b0f17;
+  --ms-surface: #0f1724;
+  --ms-surface-2: #141f30;
+  --ms-surface-hover: #111d2e;
+
+  --ms-border: #1e2d3d;
+  --ms-border-strong: #2b3d52;
+
+  --ms-text: #e2e8f0;
+  --ms-text-secondary: #cbd5e1;
+  --ms-text-muted: #94a3b8;
+
+  --ms-accent: #2dd4bf;          /* ~9:1 on #0b0f17 */
+  --ms-accent-hover: #5ee0d0;
+  --ms-accent-fill: #2dd4bf;
+  --ms-accent-on-fill: #04211c;
+  --ms-accent-soft: rgba(45, 212, 191, 0.08);
+  --ms-accent-line: rgba(45, 212, 191, 0.22);
+
+  --ms-warn: #f59e0b;
+  --ms-danger: #f87171;
+  --ms-info: #60a5fa;
+  --ms-ok: #34d399;
+
+  --ms-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --ms-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --ms-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+
+  --ms-hero-wash:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(45, 212, 191, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(96, 165, 250, 0.08), transparent);
+
+  --ms-gradient: linear-gradient(120deg, var(--ms-teal) 0%, var(--ms-green) 55%, var(--ms-blue) 100%);
+  --ms-gradient-on: #04211c;
+
+  /* Deep navy strip, light teal type — ~10:1. Reads as part of the dark
+     chrome instead of a white band above the navbar. */
+  --ms-announce-bg: #0d1a2e;
+  --ms-announce-fg: #a5f0e5;
+  --ms-announce-border: #1e2d3d;
+  --ms-announce-link: #5ee0d0;
+  --ms-announce-link-hover: #8beee1;
+
+  --ifm-color-primary: var(--ms-accent);
   --ifm-color-primary-dark: #20c4ae;
   --ifm-color-primary-darker: #1bbaa4;
   --ifm-color-primary-darkest: #169989;
@@ -34,42 +175,44 @@
   --ifm-color-primary-lighter: #51dbca;
   --ifm-color-primary-lightest: #77e3d5;
 
-  --ifm-background-color: #0b0f17;
-  --ifm-background-surface-color: #0f1724;
-  --ifm-navbar-background-color: #0b0f17;
+  --ifm-background-color: var(--ms-bg);
+  --ifm-background-surface-color: var(--ms-surface);
+  --ifm-navbar-background-color: var(--ms-bg);
   --ifm-footer-background-color: #080c12;
-  --ifm-toc-border-color: #1e2d3d;
-  --ifm-hr-border-color: #1e2d3d;
-  --ifm-color-content: #e2e8f0;
-  --ifm-color-content-secondary: #94a3b8;
+  --ifm-toc-border-color: var(--ms-border);
+  --ifm-hr-border-color: var(--ms-border);
+  --ifm-color-content: var(--ms-text);
+  --ifm-color-content-secondary: var(--ms-text-muted);
+
   --docusaurus-highlighted-code-line-bg: rgba(45, 212, 191, 0.08);
 }
 
-[data-theme='light'] {
-  --ifm-background-color: #f8fafc;
-  --ifm-background-surface-color: #ffffff;
-  --ifm-navbar-background-color: #ffffff;
-  --ifm-footer-background-color: #0b0f17;
+/* ============================================================================
+   4. Components
+   ========================================================================= */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* ── Navbar ── */
 .navbar {
   border-bottom: 1px solid var(--ms-border);
   backdrop-filter: blur(12px);
+  box-shadow: none;
 }
 
-/* Space out the right-side cluster (Launch App · theme toggle · search) */
 .navbar__items--right {
   gap: 0.85rem;
 }
 
+/* Title is empty (the logo carries the wordmark), but keep it readable if it
+   is ever switched back on. No gradient text. */
 .navbar__title {
-  background: linear-gradient(120deg, var(--ms-teal) 0%, var(--ms-green) 50%, var(--ms-blue) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--ms-text);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   letter-spacing: -0.01em;
 }
 
@@ -88,140 +231,279 @@
   object-fit: contain;
 }
 
+.navbar__link {
+  font-weight: 500;
+}
+
 .navbar-launch-btn {
-  background: linear-gradient(120deg, var(--ms-teal), var(--ms-green) 55%, var(--ms-blue));
-  color: #04211c !important;
+  background: var(--ms-gradient);
+  color: var(--ms-gradient-on) !important;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--ms-radius-sm);
   padding: 8px 18px !important;
-  transition: opacity 0.2s;
   font-size: 0.875rem;
+  transition: opacity 0.2s, transform 0.15s;
 }
 
 .navbar-launch-btn:hover {
-  opacity: 0.85;
-  color: #04211c !important;
+  opacity: 0.9;
+  transform: translateY(-1px);
+  color: var(--ms-gradient-on) !important;
+}
+
+/* ── Announcement bar ──────────────────────────────────────────────────────
+   Themed here rather than in docusaurus.config.js, where the colours can only
+   be static hex and would paint one strip across both colour schemes.
+
+   Target `.theme-announcement-bar` — the stable public class Docusaurus puts on
+   the bar. Do NOT reach for the CSS-module class: it is hashed
+   (`announcementBar_mb4j`) and it is not first in the attribute, so a
+   `[class^='announcementBar_']` selector silently matches nothing and the
+   theme's own `background-color: var(--ifm-color-white)` wins — which is
+   exactly how this shipped as a white strip on the dark theme.
+
+   Background is opaque on purpose. A translucent tint here inherits whatever
+   the theme painted underneath, which is the same bug wearing a hat. */
+.theme-announcement-bar {
+  --site-announcement-bar-stripe-color1: transparent;
+  --site-announcement-bar-stripe-color2: transparent;
+  background-color: var(--ms-announce-bg) !important;
+  color: var(--ms-announce-fg) !important;
+  border-bottom: 1px solid var(--ms-announce-border) !important;
+  font-weight: 500;
+  font-size: 0.86rem;
+}
+
+.theme-announcement-bar a {
+  color: var(--ms-announce-link);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.theme-announcement-bar a:hover {
+  color: var(--ms-announce-link-hover);
+}
+
+/* Close button inherits the bar's foreground instead of the theme's black */
+.theme-announcement-bar .close {
+  color: var(--ms-announce-fg);
+  opacity: 0.65;
+}
+
+.theme-announcement-bar .close:hover {
+  opacity: 1;
 }
 
 /* ── Sidebar ── */
-[data-theme='dark'] .menu {
-  background: #0b0f17;
+.menu {
+  background: var(--ms-bg);
   border-right: 1px solid var(--ms-border);
 }
 
+.menu__link {
+  border-radius: var(--ms-radius-sm);
+  font-weight: 450;
+}
+
 .menu__link--active {
-  color: var(--ms-teal) !important;
-  background: rgba(45, 212, 191, 0.08) !important;
-  border-left: 2px solid var(--ms-teal);
+  color: var(--ms-accent) !important;
+  background: var(--ms-accent-soft) !important;
+  box-shadow: inset 2px 0 0 var(--ms-accent);
+  font-weight: 600;
 }
 
 .menu__link:hover {
-  background: rgba(45, 212, 191, 0.05) !important;
-  color: var(--ms-teal);
+  background: var(--ms-accent-soft) !important;
+  color: var(--ms-accent);
 }
 
 .menu__caret:before {
   border-color: var(--ms-text-muted);
 }
 
-/* ── Doc content ── */
+/* ── Doc content ──────────────────────────────────────────────────────────
+   The h1 gradient clip is deliberately gone. Headings are plain text so they
+   stay measurable, printable and readable by assistive tech. */
 .markdown h1 {
-  font-size: 2rem;
+  font-size: var(--ifm-h1-font-size);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(120deg, var(--ms-teal) 0%, var(--ms-green) 60%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+  color: var(--ms-text);
+  margin-bottom: 0.6rem;
+  line-height: 1.2;
 }
 
 .markdown h2 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: var(--ifm-h2-font-size);
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  color: var(--ms-text);
   border-bottom: 1px solid var(--ms-border);
   padding-bottom: 0.4rem;
-  margin-top: 2.5rem;
+  margin-top: 2.6rem;
+  margin-bottom: 1rem;
 }
 
 .markdown h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--ms-teal);
+  font-size: var(--ifm-h3-font-size);
+  font-weight: 650;
+  color: var(--ms-text);
+  margin-top: 1.9rem;
 }
 
-/* ── Code blocks ── */
+/* The accent lives on a rule, not on the heading colour — it survives both
+   themes and does not put small text on a low-contrast hue. */
+.markdown h3::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 0.95em;
+  margin-right: 0.5rem;
+  vertical-align: -0.1em;
+  border-radius: 2px;
+  background: var(--ms-accent);
+}
+
+.markdown h4 {
+  font-weight: 600;
+  color: var(--ms-text-secondary);
+}
+
+.markdown a {
+  font-weight: 500;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.markdown strong {
+  color: var(--ms-text);
+  font-weight: 650;
+}
+
+.markdown blockquote {
+  border-left: 3px solid var(--ms-accent-line);
+  background: var(--ms-surface-2);
+  border-radius: 0 var(--ms-radius-sm) var(--ms-radius-sm) 0;
+  color: var(--ms-text-secondary);
+}
+
+/* ── Code ── */
 .prism-code {
-  border-radius: 10px !important;
+  border-radius: var(--ms-radius) !important;
   border: 1px solid var(--ms-border);
 }
 
 code {
   border-radius: 4px;
-  font-size: 0.875em;
+  font-size: 0.86em;
   padding: 2px 6px;
+  background: var(--ms-accent-soft);
+  color: var(--ms-accent);
+  border: 1px solid var(--ms-accent-line);
 }
 
-[data-theme='dark'] code {
-  background: rgba(45, 212, 191, 0.08);
-  color: var(--ms-teal);
-  border: 1px solid rgba(45, 212, 191, 0.15);
+a code {
+  color: inherit;
+}
+
+/* Code inside a highlighted block should not get the inline-code treatment */
+.prism-code code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
 }
 
 /* ── Admonitions ── */
+.theme-admonition,
 .admonition {
-  border-radius: 8px;
+  border-radius: var(--ms-radius);
   border-left-width: 3px;
+  box-shadow: var(--ms-shadow-sm);
+  background: var(--ms-surface);
 }
 
-[data-theme='dark'] .admonition {
-  background: #0f1724;
+.admonition-tip,
+.theme-admonition-tip {
+  border-left-color: var(--ms-ok) !important;
 }
 
-.admonition-tip {
-  border-left-color: var(--ms-green) !important;
+.admonition-warning,
+.theme-admonition-warning {
+  border-left-color: var(--ms-warn) !important;
 }
 
-.admonition-warning {
-  border-left-color: #f59e0b !important;
+.admonition-danger,
+.theme-admonition-danger {
+  border-left-color: var(--ms-danger) !important;
 }
 
-.admonition-danger {
-  border-left-color: #f65454 !important;
-}
-
-.admonition-note {
-  border-left-color: var(--ms-blue) !important;
+.admonition-note,
+.theme-admonition-note,
+.admonition-info,
+.theme-admonition-info {
+  border-left-color: var(--ms-info) !important;
 }
 
 /* ── Tables ── */
-[data-theme='dark'] table {
-  background: #0f1724;
+table {
+  background: var(--ms-surface);
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+  box-shadow: var(--ms-shadow-sm);
+  display: table;
+  width: 100%;
 }
 
-[data-theme='dark'] thead tr {
-  background: #141f30;
+thead tr {
+  background: var(--ms-surface-2);
 }
 
-[data-theme='dark'] tbody tr:nth-child(even) {
-  background: #0d1827;
+thead th {
+  font-weight: 650;
+  color: var(--ms-text);
 }
 
-[data-theme='dark'] th,
-[data-theme='dark'] td {
+tbody tr:nth-child(even) {
+  background: var(--ms-surface-2);
+}
+
+th,
+td {
   border: 1px solid var(--ms-border);
 }
 
-/* ── Tabs ── */
-.tabs__item--active {
-  border-bottom-color: var(--ms-teal) !important;
-  color: var(--ms-teal) !important;
+/* Wide tables scroll inside themselves rather than pushing the page sideways */
+.markdown > table,
+.theme-doc-markdown table {
+  display: block;
+  overflow-x: auto;
+  white-space: normal;
 }
 
-/* ── TOC (right sidebar) ── */
+/* ── Tabs ── */
+.tabs__item {
+  font-weight: 500;
+}
+
+.tabs__item--active {
+  border-bottom-color: var(--ms-accent) !important;
+  color: var(--ms-accent) !important;
+}
+
+/* ── TOC ── */
+.table-of-contents {
+  font-size: 0.82rem;
+}
+
+.table-of-contents__link:hover {
+  color: var(--ms-accent);
+}
+
 .table-of-contents__link--active {
-  color: var(--ms-teal) !important;
+  color: var(--ms-accent) !important;
   font-weight: 600;
 }
 
@@ -232,84 +514,120 @@ code {
 
 .footer__title {
   color: var(--ms-teal);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
+  letter-spacing: 0.07em;
+  font-weight: 650;
 }
 
 /* ── Breadcrumbs ── */
 .breadcrumbs__link {
   color: var(--ms-text-muted);
+  font-size: 0.82rem;
+}
+
+.breadcrumbs__item--active .breadcrumbs__link {
+  color: var(--ms-text);
+  background: var(--ms-surface-2);
 }
 
 /* ── Pagination ── */
 .pagination-nav__link {
   border: 1px solid var(--ms-border);
-  border-radius: 8px;
-  transition: border-color 0.2s;
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .pagination-nav__link:hover {
-  border-color: var(--ms-teal);
+  border-color: var(--ms-accent);
+  transform: translateY(-1px);
+  box-shadow: var(--ms-shadow-md);
+}
+
+.pagination-nav__sublabel {
+  color: var(--ms-text-muted);
 }
 
 /* ── Search ── */
-[data-theme='dark'] .DocSearch-Modal {
-  background: #0f1724;
+.DocSearch-Modal,
+.dsla-search-wrapper .DocSearch-Modal {
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  box-shadow: var(--ms-shadow-lg);
 }
 
-/* ── Homepage hero ── */
+.DocSearch-Hit-source {
+  color: var(--ms-accent);
+}
+
+/* ============================================================================
+   Homepage
+   DESIGN: hero-canvas — the Canvas UI WebGL effect mounts on .hero-section in
+   Phase 2. Lazy-mount behind an IntersectionObserver, honour
+   prefers-reduced-motion with the static wash below as the fallback, and it
+   must clear the Lighthouse budget gate before it ships. Marketing surfaces
+   only: never on a doc content page.
+   ========================================================================= */
 .hero-section {
-  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(45, 212, 191, 0.12), transparent),
-              radial-gradient(ellipse 60% 40% at 80% 80%, rgba(96, 165, 250, 0.08), transparent),
-              var(--ms-bg-dark);
-  min-height: 100vh;
+  background: var(--ms-hero-wash), var(--ms-bg);
+  min-height: min(100vh, 780px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 80px 24px 60px;
   text-align: center;
+  position: relative;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(45, 212, 191, 0.1);
-  border: 1px solid rgba(45, 212, 191, 0.25);
-  border-radius: 100px;
+  background: var(--ms-accent-soft);
+  border: 1px solid var(--ms-accent-line);
+  border-radius: var(--ms-radius-pill);
   padding: 6px 16px;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--ms-teal);
+  color: var(--ms-accent);
   margin-bottom: 28px;
   letter-spacing: 0.02em;
 }
 
-.hero-title {
-  font-size: clamp(2.4rem, 5vw, 3.8rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  color: #f0f4f8;
-  margin-bottom: 20px;
+.hero-badge .hero-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ms-accent);
+  box-shadow: 0 0 0 3px var(--ms-accent-soft);
 }
 
-.hero-title span {
-  background: linear-gradient(120deg, var(--ms-teal) 0%, var(--ms-green) 45%, var(--ms-blue) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.hero-title {
+  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.032em;
+  color: var(--ms-text);
+  margin-bottom: 20px;
+  max-width: 18ch;
+}
+
+/* The emphasis word gets the accent colour, not a clipped gradient. Both
+   themes clear AA against the page background. */
+.hero-title em {
+  font-style: normal;
+  color: var(--ms-accent);
 }
 
 .hero-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.06rem;
   color: var(--ms-text-muted);
-  max-width: 560px;
-  line-height: 1.6;
-  margin-bottom: 44px;
+  max-width: 58ch;
+  line-height: 1.65;
+  margin-bottom: 40px;
 }
 
 .hero-actions {
@@ -317,27 +635,28 @@ code {
   gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 72px;
+  margin-bottom: 64px;
 }
 
 .btn-primary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(120deg, var(--ms-teal), var(--ms-green) 55%, var(--ms-blue));
-  color: #04211c;
+  background: var(--ms-gradient);
+  color: var(--ms-gradient-on);
   font-weight: 600;
   font-size: 0.95rem;
-  padding: 12px 28px;
-  border-radius: 10px;
+  padding: 12px 26px;
+  border-radius: var(--ms-radius);
   text-decoration: none;
-  transition: opacity 0.2s, transform 0.15s;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .btn-primary:hover {
-  opacity: 0.88;
+  opacity: 0.92;
   transform: translateY(-1px);
-  color: #04211c;
+  box-shadow: var(--ms-shadow-md);
+  color: var(--ms-gradient-on);
   text-decoration: none;
 }
 
@@ -345,92 +664,145 @@ code {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
+  background: var(--ms-surface);
+  color: var(--ms-text);
   font-weight: 500;
   font-size: 0.95rem;
-  padding: 12px 28px;
-  border-radius: 10px;
+  padding: 12px 26px;
+  border-radius: var(--ms-radius);
   border: 1px solid var(--ms-border);
   text-decoration: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
 }
 
 .btn-secondary:hover {
-  border-color: var(--ms-teal);
-  background: rgba(45, 212, 191, 0.05);
-  color: var(--ms-teal);
+  border-color: var(--ms-accent);
+  background: var(--ms-accent-soft);
+  color: var(--ms-accent);
+  transform: translateY(-1px);
   text-decoration: none;
 }
 
-/* ── Homepage cards grid ── */
+/* ── Cards grid ── */
 .cards-section {
   width: 100%;
   max-width: 1100px;
-  padding: 0 24px 80px;
+  margin: 0 auto;
+  padding: 0 24px 84px;
 }
 
 .cards-heading {
-  font-size: 1.1rem;
-  font-weight: 500;
   color: var(--ms-text-muted);
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.75rem;
+  letter-spacing: 0.09em;
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
   gap: 16px;
 }
 
 .doc-card {
-  background: #0f1724;
+  background: var(--ms-surface);
   border: 1px solid var(--ms-border);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: var(--ms-radius-lg);
+  padding: 22px;
   text-decoration: none;
-  transition: border-color 0.2s, transform 0.15s, background 0.2s;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s, background 0.2s;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: var(--ms-shadow-sm);
 }
 
 .doc-card:hover {
-  border-color: var(--ms-teal);
-  background: #111d2e;
+  border-color: var(--ms-accent);
+  background: var(--ms-surface-hover);
   transform: translateY(-2px);
+  box-shadow: var(--ms-shadow-md);
   text-decoration: none;
 }
 
+/* Icons are inline SVG (lucide geometry), stroked with currentColor. The
+   previous emoji set rendered differently on every OS and read as unfinished. */
 .doc-card-icon {
-  font-size: 1.8rem;
-  line-height: 1;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--ms-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ms-accent-soft);
+  border: 1px solid var(--ms-accent-line);
+  color: var(--ms-accent);
+}
+
+.doc-card-icon svg {
+  width: 19px;
+  height: 19px;
 }
 
 .doc-card-title {
   font-size: 1rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  margin: 0;
+  font-weight: 650;
+  color: var(--ms-text);
+  margin: 0 0 6px;
 }
 
 .doc-card-desc {
   font-size: 0.875rem;
   color: var(--ms-text-muted);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
   flex: 1;
 }
 
 .doc-card-link {
   font-size: 0.8rem;
-  color: var(--ms-teal);
-  font-weight: 500;
-  display: flex;
+  color: var(--ms-accent);
+  font-weight: 600;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+}
+
+.doc-card:hover .doc-card-link {
+  color: var(--ms-accent-hover);
+}
+
+/* ── Blog ──────────────────────────────────────────────────────────────────
+   DESIGN: blog-hero + blog list/post templates are a Phase 2 swizzle
+   (BlogPostItem). This is the interim pass so the blog does not look
+   abandoned next to the styled docs. */
+[class^='blogPostTitle'],
+.blog-list-page article h2 {
+  letter-spacing: -0.02em;
+}
+
+/* ── Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Focus ──
+   Infima's default focus ring disappears against the dark surface. */
+a:focus-visible,
+button:focus-visible,
+.menu__link:focus-visible,
+.doc-card:focus-visible {
+  outline: 2px solid var(--ms-accent);
+  outline-offset: 2px;
+  border-radius: var(--ms-radius-sm);
 }

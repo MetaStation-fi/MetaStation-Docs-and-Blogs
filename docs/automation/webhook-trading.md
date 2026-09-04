@@ -26,26 +26,32 @@ When your signal source fires an alert, it sends a POST request to your unique w
 
 ## Setup
 
-### 1. Enable webhook for an account slot
+### 1. Open Webhook Management
 
-1. Go to **Settings → Account Slots**
-2. Select the slot you want to automate
-3. Toggle **Webhook** → **Enable**
+Click **Webhook Management** in the sidebar —
+[metastation.fi/social-trade/webhook-management](https://metastation.fi/social-trade/webhook-management).
+The page has two tabs — **Webhook URLs** and **Telegram Connection**. Stay on **Webhook URLs**;
+its **Your Webhook URLs** section lists one webhook URL per account slot you can automate.
+
+{/* SCREENSHOT: webhook-urls | Webhook Management -> Your Webhook URLs | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
+{/* SCREENSHOT: regenerate-secret | Regenerate Secret confirm state | 1440x900 | redact: webhook token */}
+{/* COMPONENT: payload-builder | Webhook Payload Builder — pick action/symbol/TP/SL, emits JSON + curl + TradingView alert template. Phase 4, highest-value linkable asset on the site */}
 
 :::note
 Webhook automation is **included free** on your MetaStation Account slot. For Binance, ByBit, or KuCoin slots, a paid slot subscription is required.
 :::
 
-### 2. Generate your webhook URL
+### 2. Copy your webhook URL
 
-1. Click **Generate Webhook URL**
-2. Copy the URL — it looks like:
+1. Find the account slot you want to automate under **Your Webhook URLs**
+2. Copy its **Webhook URL** — it looks like:
 
 ```
 https://api.metastation.fi/webhook/{your-unique-token}
 ```
 
 3. Store it securely. Treat it like a password — anyone with this URL can execute trades on your account.
+4. If it ever leaks, press **Regenerate Secret** on that slot. The old URL stops working immediately.
 
 ### 3. Configure security (optional but recommended)
 
@@ -71,7 +77,9 @@ Send POST requests to your webhook URL in [JSON format](/docs/developer/json-for
 
 ## Viewing webhook history
 
-Go to **Settings → Webhooks → History** to see all received signals, their parsed content, execution status, and any errors.
+Open **Webhook Management** to see all received signals, their parsed content, execution status, and any errors.
+
+{/* SCREENSHOT: webhook-history | received-signal log with parse results | 1440x900 | redact: account ids */}
 
 ---
 

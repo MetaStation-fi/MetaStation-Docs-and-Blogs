@@ -2,4 +2,9 @@ metastation:
   name: MetaStation Team
   title: MetaStation
   url: https://metastation.fi
-  image_url: /img/logo.png
+  # Was /img/logo.png, which did not exist — the avatar rendered broken on the
+  # blog index, each post, the authors page and every tag page.
+  # Uses the plated square mark rather than the horizontal wordmark: this slot
+  # is a small circle, so a 2.75:1 banner would be cropped to nothing, and the
+  # plate keeps the knockout letterforms readable in both light and dark theme.
+  image_url: https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand/metastation-avatar-192.webp
