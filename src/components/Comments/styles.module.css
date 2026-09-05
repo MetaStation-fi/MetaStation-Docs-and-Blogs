@@ -32,3 +32,23 @@
 .intro a:hover {
   color: var(--ms-accent);
 }
+
+/* Reserve the giscus box before the iframe exists.
+
+   The widget mounts async, measures itself, then resizes - and everything below
+   it (the whole site footer) moves. That single shift measured 0.0455 CLS on
+   every docs page.
+
+   The height is the empty-thread case: heading, reaction row, and the sign-in
+   prompt. A thread with comments grows past this, but growth below the fold is
+   not a shift a reader sees, whereas the collapse-then-expand at load is. */
+.mount {
+  min-height: 320px;
+}
+
+@media (max-width: 700px) {
+  /* The sign-in prompt wraps to more lines in a narrow column. */
+  .mount {
+    min-height: 380px;
+  }
+}

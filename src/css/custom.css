@@ -24,6 +24,28 @@
    never loaded it, so every visitor silently got the system fallback. */
 @import '@fontsource-variable/inter/index.css';
 
+/* Metrics-matched fallback.
+
+   fontsource ships font-display:swap, so the page first paints in the system
+   fallback and then reflows when Inter arrives. Arial and Inter have different
+   metrics, so every line of text changes width and height at the swap: measured
+   0.065-0.100 CLS on docs pages, the single largest shift on the site.
+
+   These overrides make the fallback occupy the same space Inter will, so the
+   swap is invisible and costs nothing. Values are the standard Inter-on-Arial
+   adjustment (the set fontaine and next/font generate).
+
+   Chosen over font-display:optional, which fixes CLS by often never applying
+   Inter at all — that trades a layout bug for a typography one. */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  ascent-override: 90.2%;
+  descent-override: 22.48%;
+  line-gap-override: 0%;
+  size-adjust: 107.12%;
+}
+
 /* ── 2. Tokens — light (base) ─────────────────────────────────────────── */
 :root {
   /* Brand ramp — fixed hues, used as fills and accents in both themes */
@@ -116,7 +138,11 @@
   --ifm-color-content-secondary: var(--ms-text-muted);
 
   --ifm-code-font-size: 92%;
-  --ifm-font-family-base: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* 'Inter Fallback' sits immediately after the real face: it is the
+     metrics-matched Arial defined above, so the pre-swap paint reserves exactly
+     the space Inter will occupy. The generic stack stays behind it for
+     platforms with no Arial. */
+  --ifm-font-family-base: 'Inter Variable', 'Inter', 'Inter Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --ifm-heading-font-weight: 650;
   --ifm-navbar-height: 64px;
   --ifm-line-height-base: 1.7;
