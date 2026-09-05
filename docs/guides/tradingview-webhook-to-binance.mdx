@@ -23,7 +23,7 @@ Binance account — sized, leveraged and protected — with nobody watching the 
 **Time:** about 15 minutes. **You need:** a TradingView plan that includes webhooks (any paid
 tier), a Binance account, and a MetaStation account.
 
-:::info Binance needs a paid slot; the native account does not
+:::info[Binance needs a paid slot; the native account does not]
 Webhook automation on a connected Binance, ByBit or KuCoin slot requires a slot subscription from
 the Store. It is **free on your MetaStation Account slot**. If you are here to test whether
 webhook automation suits you, run this guide against the MetaStation Account first — every step is
@@ -64,8 +64,11 @@ https://metastation.fi/metastationapi/socialTrade/webhook/{your-webhook-secret}
 ```
 
 {/* SCREENSHOT: guide-tv-webhook-url | Webhook Management, Your Webhook URLs, Binance slot row | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
+<Screenshot id="webhook-urls" />
+<Screenshot id="webhook-urls" />
+<Screenshot id="webhook-urls" />
 
-:::danger This URL is a password
+:::danger[This URL is a password]
 Anyone holding it can trade this slot. There is no second credential. Do not paste it into a
 public TradingView script, a screenshot, or a shared chat. If it leaks, press **Regenerate
 Secret** — the old URL stops working immediately.

@@ -23,6 +23,9 @@ Wallet** — a smart-contract wallet created for you on Arbitrum when you first 
 | Where you see it | The **Deposit** screen shows the Funding Wallet address and its status |
 
 {/* SCREENSHOT: funding-wallet-status | Funding Wallet address + activation state on Deposit | 1440x900 | redact: address */}
+<Screenshot id="funding-wallet-status" />
+<Screenshot id="funding-wallet-status" />
+<Screenshot id="funding-wallet-status" />
 
 You do not need a wallet of your own to *use* the Funding Wallet, but you do need one to bridge
 from an external network into it.
@@ -40,6 +43,9 @@ Ethereum · Arbitrum · Optimism · Base · Polygon · BNB Smart Chain · Avalan
 **How it works:**
 
 {/* SCREENSHOT: deposit-picker | Deposit screen, network + asset picker open | 1440x900 | redact: Funding Wallet address */}
+<Screenshot id="deposit-picker" />
+<Screenshot id="deposit-picker" />
+<Screenshot id="deposit-picker" />
 {/* SCREENSHOT: bridge-quote | quote screen with estimated received amount | 1440x900 | redact: address, balance */}
 
 1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
@@ -60,6 +66,9 @@ Always send a small test amount first when depositing from a new network or wall
 Buy USDC directly with a Visa, Mastercard, Apple Pay, or Google Pay card — no prior crypto needed.
 
 {/* SCREENSHOT: buy-crypto | Buy Crypto / Transak entry screen | 1440x900 | redact: none */}
+<Screenshot id="buy-crypto" />
+<Screenshot id="buy-crypto" />
+<Screenshot id="buy-crypto" />
 
 1. Click **Buy Crypto** in the top navigation ([metastation.fi/buy-crypto](https://metastation.fi/buy-crypto))
 2. Select your currency and amount

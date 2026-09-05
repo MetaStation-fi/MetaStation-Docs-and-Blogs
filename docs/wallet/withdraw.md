@@ -21,7 +21,7 @@ Withdraw crypto from your MetaStation wallet to any external address.
 7. Enter your **Google Authenticator** code and the **email code** — both are required
 8. Withdrawal is processed and broadcast to the network
 
-:::warning 2FA is mandatory
+:::warning[2FA is mandatory]
 With 2FA disabled the withdrawal is rejected outright — *"2FA is disabled. Please enable 2FA to
 withdraw."* Enable it under **Security → Google Authenticator** before you need to withdraw.
 :::

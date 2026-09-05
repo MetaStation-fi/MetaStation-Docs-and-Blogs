@@ -17,6 +17,9 @@ phrase to manage and no gas to pay on your trades.
 ---
 
 {/* SCREENSHOT: account-overview | MetaStation Account overview panel | 1440x900 | redact: balance, address */}
+<Screenshot id="account-overview" />
+<Screenshot id="account-overview" />
+<Screenshot id="account-overview" />
 
 ## Why it's different
 
@@ -85,6 +88,9 @@ The MetaStation Account is built so your funds and execution stay transparent an
 ## Supported markets
 
 {/* SCREENSHOT: orderbook | live on-chain order book | 1440x900 | redact: none */}
+<Screenshot id="orderbook" />
+<Screenshot id="orderbook" />
+<Screenshot id="orderbook" />
 {/* SCREENSHOT: positions-panel | open positions — batch with the other live-position captures so a real position stays open for the shortest time | 1440x900 | redact: size, PnL optional */}
 
 - **Perpetual futures** — BTC, ETH, SOL, and 100+ other pairs with high leverage

@@ -25,7 +25,7 @@ sidebar_label: Two-Factor Auth (2FA)
 
 The card now reads **Disable**, which is how you know 2FA is active.
 
-:::tip Save the secret key, not just the QR
+:::tip[Save the secret key, not just the QR]
 MetaStation does **not** issue printed backup codes. Your recovery material is the **secret key**
 shown during setup. Copy it into a password manager, or store it offline, *before* you finish
 setup. It is the only thing that lets you re-add the account to a new authenticator app yourself.

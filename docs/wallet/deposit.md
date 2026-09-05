@@ -21,6 +21,9 @@ Ethereum · Arbitrum · Optimism · Base · Polygon · BNB Smart Chain · Avalan
 **Steps:**
 
 {/* SCREENSHOT: deposit-flow | Deposit screen with MetaStation Account as destination | 1440x900 | redact: address */}
+<Screenshot id="deposit-flow" />
+<Screenshot id="deposit-flow" />
+<Screenshot id="deposit-flow" />
 
 1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
 2. Select **MetaStation Account** as the destination

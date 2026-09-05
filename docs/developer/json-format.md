@@ -9,7 +9,7 @@ description: The exact JSON a MetaStation webhook accepts — every field, the v
 
 Full reference for the JSON webhook message format.
 
-:::tip Build it instead of typing it
+:::tip[Build it instead of typing it]
 The **[Payload Builder](/docs/developer/payload-builder)** generates a valid payload from a form,
 including the TradingView alert message and a `curl` command. It emits the same shape the
 platform's own Webhook Management builder does.
@@ -71,7 +71,7 @@ platform's own Webhook Management builder does.
 { "quantity": "300 USD" }    // $300 worth
 ```
 
-:::warning `"$300"` is not accepted
+:::warning[`"$300"` is not accepted]
 The parser recognises a trailing `%`, the literal substring `USD`, or a
 `<number> <TICKER>` pair. A bare `"$300"` matches none of them and falls through to a numeric
 parse, which fails. Write `"300 USD"`.
@@ -99,7 +99,7 @@ Up to 10 levels. **Each level takes `price` and `amount`, both numbers.**
 }
 ```
 
-:::danger `amount` is a token quantity, not a percentage
+:::danger[`amount` is a token quantity, not a percentage]
 This is the single most common reason a multi-TP signal is rejected.
 
 - `amount` must be a **positive number in base tokens**. Percentage strings (`"30%"`) and
@@ -187,7 +187,7 @@ The scalar `stopLoss` field is used with the [`update`](#update-tp-and-sl) actio
 
 `trailingType` options: `breakeven` or `follow_tp`.
 
-:::note Two accepted forms
+:::note[Two accepted forms]
 The nested `stopLossX` object above is accepted by the API. The platform's own Webhook Management
 builder emits an equivalent **flattened** form instead — `slxChecked` with either
 `trailingStatus` / `activationPoint` / `trailingType`, or `callBackStatus` /

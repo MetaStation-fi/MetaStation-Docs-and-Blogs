@@ -8,7 +8,7 @@ sidebar_label: Webhook API Overview
 
 The MetaStation Webhook API lets external systems execute trades on your account via HTTP POST requests.
 
-:::tip Try it without writing any code
+:::tip[Try it without writing any code]
 The **[API Reference](/docs/api/metastation-webhook-api)** is generated from our OpenAPI spec and
 ships an interactive console — fill in the fields, send a real request, and read the real
 response, straight from the page.
@@ -79,7 +79,7 @@ that the order filled:
 }
 ```
 
-:::warning 200 means queued, not filled
+:::warning[200 means queued, not filled]
 The signal is validated and queued, then executed asynchronously. A bot that treats a 200 as
 "the position exists" will be wrong whenever execution fails downstream — insufficient margin, a
 symbol the venue rejects, a risk control on the slot.

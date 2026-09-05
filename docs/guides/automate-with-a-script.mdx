@@ -86,7 +86,7 @@ if not result.get("success"):
     print("rejected:", result.get("code"), result.get("message"))
 ```
 
-:::danger Never hardcode the webhook URL
+:::danger[Never hardcode the webhook URL]
 It is a bearer credential — holding it is sufficient to trade the slot. Read it from an
 environment variable or a secret store. A URL committed to a repository is a URL that will
 eventually be found, and public code search finds them faster than you would expect.
@@ -156,7 +156,7 @@ if not result.get("success"):
 | `close` | Close fully, or partially with `quantity` |
 | `update` | Change TP/SL on an open position |
 
-:::note There is no `reverse` action
+:::note[There is no `reverse` action]
 The API rejects it: `Invalid action: reverse. Must be one of: open, close, update, cancel`. A
 strategy that flips on signal sends a `close` followed by an `open`.
 :::

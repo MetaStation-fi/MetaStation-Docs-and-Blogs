@@ -17,6 +17,9 @@ MetaStation uses **Google Authenticator** (TOTP). Without it enabled, **withdraw
 entirely** — the withdrawal screen refuses the request.
 
 {/* SCREENSHOT: 2fa-enable | Security page, Google Authenticator card, Enable state | 1440x900 | redact: none */}
+<Screenshot id="2fa-enable" />
+<Screenshot id="2fa-enable" />
+<Screenshot id="2fa-enable" />
 
 **Setup:**
 
@@ -28,7 +31,7 @@ entirely** — the withdrawal screen refuses the request.
 
 {/* SCREENSHOT: 2fa-qr | QR + manual secret screen | 1440x900 | redact: QR CODE AND SECRET, both mandatory */}
 
-:::danger Save the secret key
+:::danger[Save the secret key]
 MetaStation does **not** issue backup codes. The **secret key** shown during setup is your only
 self-service recovery path — copy it into a password manager before you finish. Without it, a
 lost phone means a manual support recovery that takes days.

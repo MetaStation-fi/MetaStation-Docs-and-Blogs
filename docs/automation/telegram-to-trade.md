@@ -69,7 +69,7 @@ Channels are **detected by forwarding**, not by typing a link:
 3. Choose whether it is a **copy-trade** source or a **broadcast** target
 4. Configure risk controls (see below), then save
 
-:::note Channel limit
+:::note[Channel limit]
 Up to **3 signal channels per account**. Map different channels to different slots if you need
 more than three sources in total.
 :::

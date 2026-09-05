@@ -81,7 +81,7 @@ SL: 41000
 From either form, the parser extracts action, symbol, direction, size, entry, take-profit levels,
 stop loss and leverage.
 
-:::note It never guesses
+:::note[It never guesses]
 If a signal is ambiguous or missing a required field, MetaStation logs a parse error and executes
 nothing. This is deliberate: a wrong trade is far more expensive than a missed one, and a parser
 that fills in blanks would eventually fill one in wrongly with real money.
@@ -138,6 +138,9 @@ answer:
 | Did it execute at the wrong size? | Check which size form the signal used, and the per-channel position-size setting |
 
 {/* SCREENSHOT: signal-trace | Webhook Management log showing one signal with its parse result and execution status | 1440x900 | redact: account ids, webhook token */}
+<Screenshot id="webhook-history" />
+<Screenshot id="webhook-history" />
+<Screenshot id="webhook-history" />
 
 <FAQ
   items={[

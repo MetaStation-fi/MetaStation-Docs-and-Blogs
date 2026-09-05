@@ -15,7 +15,7 @@ All actions available via webhook.
 | `close` | Close a position, fully or partially |
 | `update` | Modify TP / SL on an open position |
 
-:::warning `reverse` is not accepted
+:::warning[`reverse` is not accepted]
 An earlier version of this page documented a `reverse` action. It is **rejected** by the API with
 `Invalid action: reverse. Must be one of: open, close, update, cancel`.
 
@@ -106,7 +106,7 @@ array.
 | `market` | Immediate execution at best price |
 | `limit` | Execute at `price` or better |
 
-:::warning Only `market` and `limit` are accepted
+:::warning[Only `market` and `limit` are accepted]
 Any other value — including `stop_market` and `stop_limit`, which this page previously listed —
 is rejected with `Invalid order type: <value>. Supported types: market, limit`.
 

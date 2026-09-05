@@ -53,7 +53,7 @@ Track it under **History** in the sidebar.
 
 ## Address whitelisting
 
-:::note Not available today
+:::note[Not available today]
 MetaStation does **not** currently support a withdrawal address whitelist. Any valid address on
 the selected network can be used as a destination, provided both verification codes are correct.
 

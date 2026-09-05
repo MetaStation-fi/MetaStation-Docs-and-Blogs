@@ -23,7 +23,7 @@ keeps you logged in between page loads.
 | Expiry | Automatic. Once it lapses you are returned to the login screen |
 | Ending it early | **Logout** — in the account menu on desktop, in the drawer on mobile |
 
-:::note No session dashboard yet
+:::note[No session dashboard yet]
 MetaStation does **not** currently provide a list of active sessions, per-device revocation, or a
 configurable timeout. The 72-hour expiry is fixed and applies to every session.
 
