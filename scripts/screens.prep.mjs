@@ -49,6 +49,26 @@ async function fillFirst(page, candidates, value, what) {
   throw new Error(`prep: could not fill ${what}`);
 }
 
+/**
+ * The advanced order controls (SL / TP / SLX) do not exist in the DOM until
+ * Pro Mode is on — which is why every one of these preps used to fail looking
+ * for a Take Profit control on a page that had never rendered one.
+ *
+ * The switch hides a zero-size checkbox behind a styled slider, so the click
+ * has to land on the slider, exactly where a user would put it. Idempotent:
+ * if Pro Mode is already on, this leaves it on.
+ */
+async function enableProMode(page) {
+  const input = page.locator('.ms-switch input').first();
+  if (await input.count()) {
+    if (await input.isChecked()) return;
+    await page.locator('.ms-switch__slider').first().click({ timeout: CLICK_TIMEOUT });
+    await page.waitForTimeout(1200);
+    if (await input.isChecked()) return;
+  }
+  throw new Error('prep: could not enable Pro Mode (no .ms-switch on the page)');
+}
+
 export const preps = {
   async bridgeQuote(page) {
     await clickFirst(page, [
@@ -68,31 +88,52 @@ export const preps = {
   },
 
   async apiKeyForm(page) {
+    // The API-key form is behind "Add Slots" — there is no "connect exchange"
+    // control on this page, which is what the old locators were hunting for.
     await clickFirst(page, [
-      (p) => p.getByRole('button', { name: /connect|add (account|exchange)|api key/i }),
-      (p) => p.getByText(/connect exchange|add api key/i),
-    ], 'the connect-exchange control');
+      (p) => p.getByRole('button', { name: /add slots?/i }),
+      (p) => p.getByText(/add slots?/i),
+    ], 'the Add Slots control');
+    // Then the exchange picker inside the dialog.
+    await clickFirst(page, [
+      (p) => p.getByRole('button', { name: /binance|bybit|kucoin/i }),
+      (p) => p.getByText(/binance|bybit|kucoin/i),
+    ], 'an exchange in the Add Slots dialog');
+  },
+
+  async copySettings(page) {
+    // /social-trade/copy-settings renders "Loading providers" forever without
+    // ?id=<providerId>&type=<providerType>. Rather than hardcode a provider id
+    // that may be deleted, start on the marketplace and take the same route a
+    // user does — the card's own Subscribe/Allocate button carries the params.
+    await clickFirst(page, [
+      (p) => p.getByRole('button', { name: /^subscribe$|^allocate$/i }),
+      (p) => p.getByText(/^subscribe$|^allocate$/i),
+    ], 'a provider Subscribe/Allocate button');
+    await page.waitForTimeout(2500);
   },
 
   async tpLadder(page) {
+    await enableProMode(page);
     await clickFirst(page, [
-      (p) => p.getByText(/take profit|^tp$/i),
-      (p) => p.getByRole('tab', { name: /tp|take profit/i }),
-      (p) => p.getByRole('checkbox', { name: /tp|take profit/i }),
+      (p) => p.getByText(/^tp$/i),
+      (p) => p.getByText(/take profit/i),
+      (p) => p.getByRole('tab', { name: /^tp$|take profit/i }),
     ], 'the Take Profit control');
   },
 
   async trailingStop(page) {
-    await clickFirst(page, [
-      (p) => p.getByText(/trailing/i),
-      (p) => p.getByRole('tab', { name: /trailing/i }),
-    ], 'the trailing stop control');
+    // Pro Mode *is* the trailing/advanced order mode — the toggle sets
+    // `trailingChecked` in the place-order component. Turning it on is the
+    // state this shot documents.
+    await enableProMode(page);
   },
 
   async slxSetup(page) {
+    await enableProMode(page);
     await clickFirst(page, [
-      (p) => p.getByText(/slx/i),
-      (p) => p.getByRole('tab', { name: /slx/i }),
+      (p) => p.getByText(/^slx$/i),
+      (p) => p.getByRole('tab', { name: /^slx$/i }),
     ], 'the SLX control');
   },
 

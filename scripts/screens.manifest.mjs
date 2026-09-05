@@ -246,9 +246,9 @@ export const shots = [
     note: 'Provider detail card and performance chart, reached by clicking the first grid card — provider ids are not stable.',
   },
   {
-    id: 'copy-settings', section: 'social-trading', doc: 'copy-settings.md',
-    url: '/social-trade/copy-settings', mode: 'auto',
-    note: 'Copy settings form. NOTE: renders only a heading — see the run report.',
+    id: 'copy-settings', section: 'social-trading', doc: 'copy-settings.mdx',
+    url: '/social-trade/marketplace', mode: 'prep', prep: 'copySettings',
+    note: 'Copy settings form. Reached via a provider card Subscribe/Allocate — the bare /social-trade/copy-settings route needs ?id=&type= and otherwise hangs on "Loading providers".',
   },
   {
     id: 'provider-onboarding', section: 'social-trading', doc: 'become-provider.md',
