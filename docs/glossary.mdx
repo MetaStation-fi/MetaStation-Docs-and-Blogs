@@ -201,21 +201,41 @@ for lack of one.
 ## Social trading
 
 #### Provider
-A trader publishing to the marketplace whose trades followers copy, earning subscription revenue.
+A trader listed in the marketplace whose trades followers copy. MetaStation has two kinds — signal
+providers and fund managers.
+
+#### Signal provider
+A provider who trades an account they already own and publishes signals from it, by webhook,
+Telegram or API. Paid through a subscription fee they set, or nothing.
+
+#### Fund manager
+A provider who trades a **dedicated account the platform provisions** for them at signup, and is
+paid a declared **share of profits** (10%–30%) instead of a subscription fee. Copied through exactly
+the same path as a signal provider. → [Fund Managers](/docs/social-trading/fund-managers)
 
 #### Follower
 A subscriber whose account replicates a provider's trades.
 
-#### Multiplier
-Scales each copied trade relative to the provider's size. Start from
-`your_balance / provider_balance` — that reproduces their *risk*, not their notional.
+#### Copy mode
+How your copied position is sized — the one sizing control, chosen at subscription and **fixed
+afterwards**. Three exist: **Copy Trader** (mirror their size), **Fixed Ratio** (a percentage of
+their size, 0.01%–100%) and **Fixed Amount** (the same flat size every trade).
+→ [Copy Settings](/docs/social-trading/copy-settings)
 
-#### Maximum position cap
-A hard per-trade limit that applies regardless of the multiplier.
+#### Fixed Ratio
+The copy mode most followers want. Start from `(your balance / provider balance) × 100` — that
+reproduces their *risk*, not their notional — then halve it while you learn how they trade. Capped
+at 100%: you cannot copy larger than the provider.
 
-#### Loss threshold **(MetaStation)**
-A circuit breaker that pauses copying once realised losses from a provider pass a set percentage.
-Resuming is a manual decision. → [Copy Settings](/docs/social-trading/copy-settings)
+#### Profit share
+A fund manager's stated percentage of the profits they generate for followers, set between 10% and
+30% at registration and shown on their marketplace profile. Shows on the provider card as **Profit
+Share**, where a signal provider shows **Fee**.
+
+#### Leverage band
+The range of leverage a fund manager says their strategy runs at, defaulting to 10×–20×. It
+describes the strategy's volatility; it does **not** cap the leverage on your copied position, which
+you set yourself.
 
 #### Drawdown
 The peak-to-trough fall in an account or track record. The number a follower has to sit through,

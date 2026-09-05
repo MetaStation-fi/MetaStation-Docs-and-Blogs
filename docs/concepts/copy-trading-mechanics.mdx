@@ -2,8 +2,8 @@
 id: copy-trading-mechanics
 title: How Copy Trading Executes
 sidebar_label: Copy Trading Mechanics
-description: What actually happens when a provider you follow opens a trade — how size is translated to your balance, what your limits override, and why your result never matches theirs exactly.
-keywords: [copy trading explained, how copy trading works, position size multiplier, mirror trading crypto, follow signal provider]
+description: What actually happens when a provider you follow opens a trade — how size is translated to your balance, which controls really sit in the path, and why your result never matches theirs exactly.
+keywords: [copy trading explained, how copy trading works, copy mode, mirror trading crypto, follow signal provider, fund manager copy trading]
 ---
 
 import ArticleSchema from '@site/src/components/ArticleSchema';
@@ -11,67 +11,115 @@ import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
   headline="How Copy Trading Executes on MetaStation"
-  description="How a provider's trade is translated to your balance, what your limits override, and why results never match exactly."
+  description="How a provider's trade is translated to your balance, which controls sit in the path, and why results never match exactly."
   section="Concepts"
 />
 
 # How Copy Trading Executes
 
 Copy trading looks like duplication. It is closer to **translation**: the provider's trade is
-restated in the terms of your account, and several things you control can change it on the way.
+restated in the terms of your account, and a small number of settings you control change it on the
+way.
 
 ```mermaid
 graph LR
-  A["Provider opens a position"] --> B["Scale by your multiplier"]
-  B --> C["Apply your maximum position cap"]
-  C --> D["Check symbol whitelist / blacklist"]
-  D --> E["Check loss threshold — still copying?"]
-  E --> F["Execute on your slot"]
+  A["Provider opens a position"] --> B["Size it by your copy mode"]
+  B --> C["Apply your leverage and margin mode"]
+  C --> D["Execute on your slot"]
 ```
+
+That is the whole path. It is shorter than most people expect, and the things it does **not**
+contain matter as much as the things it does.
 
 ---
 
-## Sizing is proportional, not identical
+## Both provider types execute the same way
 
-The **position size multiplier** scales every copied trade relative to the provider's.
+MetaStation has two kinds of provider, and this is the one place the distinction does not apply.
 
-| Multiplier | Effect |
-|---|---|
-| `1.0x` | The same size the provider took |
-| `0.5x` | Half |
-| `2.0x` | Double |
+- A **signal provider** trades an account they own and publishes signals from it.
+- A **fund manager** trades a dedicated account the platform provisioned for them.
 
-`1.0x` is rarely what you want, because it takes no account of the difference in balances. A
-provider trading a $100,000 account at $5,000 a position is risking 5%. Copied at `1.0x` into a
-$5,000 account, that same $5,000 position is your entire balance.
+Downstream of the signal, nothing differs. The same copy modes, the same leverage and margin
+controls, the same execution path onto your slot. What differs is how the provider is funded and
+how they are paid.
 
-The multiplier that reproduces the provider's *risk* rather than their notional is:
-
-```
-multiplier = your_balance / provider_balance
-```
-
-That is the number to start from, and then scale down if you want less exposure than they take.
+→ [Fund Managers](/docs/social-trading/fund-managers)
 
 ---
 
-## Your limits override the provider
+## Sizing is set by your copy mode
 
-Four controls sit between the provider's trade and yours. Each can change or block it.
+There is no multiplier. Size is decided by which of **three copy modes** you chose when you
+subscribed:
 
-| Control | What it does when it binds |
+| Mode | What it does |
 |---|---|
-| **Maximum position size** | Caps the position in absolute terms. A $5,000 copied trade against a $2,000 cap opens at $2,000 |
-| **Symbol whitelist** | Only listed symbols are copied. Everything else is skipped entirely |
-| **Symbol blacklist** | Listed symbols are skipped; the rest are copied |
-| **Stop copying at loss threshold** | Copying pauses once your realised loss from this provider passes your limit |
+| **Copy Trader** | Mirrors the provider's position size exactly |
+| **Fixed Ratio** | Takes a percentage of the provider's size — **0.01% to 100%** |
+| **Fixed Amount** | Uses the same flat position size on every copied trade |
 
-The loss threshold is the one worth setting before you need it. It is a circuit breaker: it stops
-new trades being copied after a defined drawdown and waits for you to decide, rather than
-following a provider all the way down a bad run. It **pauses** copying — resuming is a manual
-decision, deliberately.
+**Fixed Ratio cannot exceed 100%.** You cannot take a larger position than the provider did; a
+value above 100 fails validation before the subscription is saved.
+
+This is why `1.0x`-style thinking misleads. A provider trading a $100,000 account at $5,000 a
+position is risking 5%. Mirrored into a $5,000 account with **Copy Trader**, that same $5,000
+position is your entire balance. The ratio that reproduces their *risk* rather than their notional
+is:
+
+```
+ratio % = (your balance / provider balance) × 100
+```
+
+A $2,000 account following a $20,000 provider is `10%`.
+
+:::warning[Copy mode is fixed once you subscribe]
+The mode is chosen at subscription and cannot be changed afterwards — the settings form ignores the
+change on an existing subscription. Moving between modes means cancelling and subscribing again.
+:::
 
 → [Copy Settings](/docs/social-trading/copy-settings)
+
+---
+
+## What sits between the provider and you
+
+Two things, and they are both yours:
+
+| Control | Effect |
+|---|---|
+| **Leverage** | 1× – 125×, applied to your copied position independently of the provider's |
+| **Margin mode** | Isolated or Cross. Isolated confines a loss to that position's margin |
+
+Leverage multiplies the position, not the edge. At 10× a copied trade needs a tenth of the margin
+and moves ten times as fast against you.
+
+If the provider trades on **ByBit**, you can also override their take profit and stop loss with
+your own percentages. That override is not offered for providers trading a MetaStation Account.
+
+---
+
+## What is *not* in the path
+
+This is the part worth reading twice, because the absent controls are exactly the ones people
+assume are protecting them.
+
+- **There is no automatic loss circuit breaker.** Nothing pauses copying after a drawdown. If a
+  provider is losing, you pause or cancel the subscription yourself, from
+  **My Subscriptions → Pause**.
+- **There is no per-symbol filter.** Every symbol the provider trades is copied. If you do not want
+  their altcoin trades, you do not want the provider.
+- **There is no absolute per-trade cap.** Position size comes from your copy mode and nothing
+  trims it afterwards.
+
+The practical consequence: **your risk control is the copy mode, the leverage, and the size of the
+allocation you gave the provider in the first place.** Those decisions are made before you
+subscribe, and after that the only lever left is pausing.
+
+:::note[Pausing does not close anything]
+Existing copied positions stay open and remain yours to manage. Pausing stops new trades being
+copied; it does not exit the ones you have.
+:::
 
 ---
 
@@ -81,54 +129,63 @@ Published provider performance is the provider's own result. Yours differs, stru
 reasons that have nothing to do with the provider's skill:
 
 - **Entry price.** Your order is placed after theirs. In a fast market that difference is real.
-- **Your caps.** Every trade the cap trimmed, and every symbol the whitelist skipped, is a
-  different portfolio from theirs.
-- **When you joined.** Positions already open when you subscribed are not retroactively copied,
-  so you inherit the strategy mid-stream.
+- **Your sizing.** A different copy mode is a different portfolio, not a scaled copy of theirs.
+- **When you joined.** Positions already open when you subscribed are not retroactively copied, so
+  you inherit the strategy mid-stream.
 - **Fees and funding** accrue against your balance at your size.
 - **Available margin.** A copied trade that would exceed what your slot can support does not open
   at full size.
 
-A provider up 40% does not mean a follower is up 40%. It means the strategy was up 40% under
-their sizing, their entries and their full trade sequence.
+A provider up 40% does not mean a follower is up 40%. It means the strategy was up 40% under their
+sizing, their entries and their full trade sequence.
 
 :::note[What is not copied]
-Manual trades you place yourself are yours alone — they are not managed by the provider and are
-not closed when the provider closes theirs. Keeping copied and manual trading on separate slots
-is the cleanest way to keep the two accountings from blurring together.
+Manual trades you place yourself are yours alone — they are not managed by the provider and are not
+closed when the provider closes theirs. Keeping copied and manual trading on separate slots is the
+cleanest way to keep the two accountings from blurring together.
 :::
 
 ---
 
 ## Concentration is the risk that actually shows up
 
-The failure mode in copy trading is rarely one bad trade. It is following several providers who
-all take the same directional bet, so a single market move hits every position at once while the
+The failure mode in copy trading is rarely one bad trade. It is following several providers who all
+take the same directional bet, so a single market move hits every position at once while the
 portfolio looked diversified.
 
 Practical guards, in descending order of usefulness:
 
 1. Cap any single provider at a fraction of total capital — a common starting point is 30%.
-2. Set the loss threshold *before* subscribing, not after a drawdown.
-3. Cap individual positions at 5–10% of balance.
-4. Check whether providers overlap in symbols and direction, not just in headline returns.
+2. Choose the copy mode and ratio deliberately, because it is the only sizing control you get.
+3. Check whether providers overlap in symbols and direction, not just in headline returns.
+4. Look at the subscription weekly, because nothing is going to do it for you.
 
 <FAQ
   items={[
     {
-      question: 'What multiplier should I use for copy trading?',
+      question: 'How is my copied position size decided?',
       answer:
-        'Start from your balance divided by the provider’s balance. That reproduces their risk as a percentage of your account rather than their absolute position size. Copying at 1.0x from a much larger account can put your entire balance into a single trade that represented a small percentage for them.',
+        'By the copy mode you chose when subscribing. Copy Trader mirrors the provider’s size exactly, Fixed Ratio takes a percentage of their size between 0.01% and 100%, and Fixed Amount uses the same flat size on every trade. There is no multiplier and no setting that can take a larger position than the provider did.',
     },
     {
-      question: 'Why is my copy trading result different from the provider’s published performance?',
+      question: 'What ratio should I use when copying a trader?',
       answer:
-        'Several structural reasons: your entry price differs because your order follows theirs, your position caps and symbol filters change which trades you take and at what size, positions already open when you subscribed are not copied retroactively, and fees and funding accrue at your own size. Published performance is the provider’s own result, not a forecast of yours.',
+        'Start from your balance divided by the provider’s balance, expressed as a percentage. That reproduces their risk as a share of your account rather than their absolute position size. Mirroring a much larger account exactly can put your entire balance into a single trade that represented only a few percent for them.',
     },
     {
-      question: 'What happens if a copied provider starts losing money?',
+      question: 'Does copy trading stop automatically if a provider starts losing money?',
       answer:
-        'If you set a stop-copying loss threshold, copying pauses automatically once your realised loss from that provider passes it, and no further trades are copied until you resume manually. Without a threshold set, copying continues regardless of drawdown, so it is worth configuring before you subscribe rather than during a losing run.',
+        'No. There is no automatic loss threshold or circuit breaker. Copying continues until you pause or cancel the subscription yourself from My Subscriptions. Because of that, the allocation you give a provider and the copy mode you choose are the risk decisions, and they are made before you subscribe.',
+    },
+    {
+      question: 'Can I stop a provider copying particular symbols to my account?',
+      answer:
+        'No. There is no per-symbol whitelist or blacklist. Every symbol the provider trades is copied to your account. If a provider trades markets you do not want exposure to, the decision is whether to follow that provider at all.',
+    },
+    {
+      question: 'Is copying a fund manager different from copying a signal provider?',
+      answer:
+        'Not in execution. Both types reach your account through the same path, with the same three copy modes and the same leverage and margin controls. The differences are commercial and structural: a fund manager trades a dedicated account the platform provisioned and is paid a share of profits, while a signal provider trades their own account and charges a subscription fee or nothing.',
     },
     {
       question: 'Are my own manual trades affected by copy trading?',

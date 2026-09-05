@@ -1,0 +1,179 @@
+---
+id: become-provider
+title: Become a Provider
+sidebar_label: Become a Provider
+description: The two kinds of provider you can register as, what each one gets at signup, and the settings that decide who can follow you and on what terms.
+keywords: [become a signal provider, become a crypto fund manager, copy trading provider, sell trading signals, provider marketplace]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Become a Provider on MetaStation"
+  description="The two provider types, what each is given at signup, and the settings that govern who can follow you."
+  section="Social Trading"
+/>
+
+# Become a Provider
+
+Providers are listed in the marketplace and earn from followers who copy their trades. Your trades
+execute normally on your own account; followers' accounts replicate them, sized by rules the
+follower sets.
+
+---
+
+## First decide which kind of provider you are
+
+The signup flow asks this before anything else, because the two branches diverge immediately.
+
+| | **Signal Provider** | **Fund Manager** |
+|---|---|---|
+| **You trade** | An account you already have and connect | A **dedicated ByBit sub-account the platform provisions for you** |
+| **You are paid by** | A subscription fee you set, or nothing | A **profit share**, 10%–30% |
+| **Marketplace badge** | — | **Profit-Sharing** |
+| **Best when** | You already have a track record on an account you control | You want the record to start clean, on an account created for the purpose |
+
+→ [Fund Managers](/docs/social-trading/fund-managers) covers the second branch in detail.
+
+The choice is made at registration and shapes what you are issued, so it is worth being deliberate
+about rather than clicking past.
+
+---
+
+## What you need before you start
+
+- A MetaStation account in good standing
+- A **master account** to nominate — the account your trades will be read from
+- A strategy you can describe in a paragraph, because the description is what followers actually
+  read
+
+Your provider profile trades on either a **ByBit** account or a **MetaStation Account**. That
+choice is made at registration alongside the provider type.
+
+---
+
+## Registering
+
+1. Go to **Social Trade → Become a Provider**.
+2. **Choose your provider type** — Signal Provider or Fund Manager.
+3. Fill in the profile: display name, avatar, description, strategy name, trading style, timeframe
+   and risk level, plus any social links you want shown.
+4. Configure the terms — the section below covers what each setting does.
+5. Accept the provider terms and submit.
+
+:::note[Your profile goes live immediately]
+There is no review queue and no waiting period. On submission your provider profile is created
+**active** and appears in the marketplace straight away. Get the description and the terms right
+before you submit rather than planning to fix them during a review that is not going to happen.
+:::
+
+### What each type is issued at signup
+
+**Signal providers** are issued a **webhook URL and secret**, which is how your trades reach the
+platform. You can also drive signals from a bound Telegram channel or the API.
+
+→ [Webhook Trading](/docs/automation/webhook-trading)
+
+**Fund managers** are additionally provisioned a **dedicated ByBit sub-account**, with API keys
+scoped to it, IP-restricted to MetaStation's infrastructure, and stored encrypted. You do not
+create or connect this account — it is created for you as part of registration.
+
+---
+
+## The settings that govern who follows you
+
+| Setting | Default | What it does |
+|---|---|---|
+| **Maximum followers** | 100 | Stops new subscriptions once reached |
+| **Accepting followers** | On | Closes your book without delisting your profile |
+| **Minimum copy amount** | 100 | The smallest allocation you want a follower to bring |
+| **Fee type** | Free | `free`, a `fixed` fee, or a `percentage` |
+| **Subscription fee** | 0 | The amount, when fee type is not free |
+| **Leverage band** | 10× – 20× | The range you are telling followers you trade in |
+
+**The leverage band is descriptive, not enforced.** It tells a follower how leveraged your strategy
+runs. It does not clamp the leverage on their copied position — that is set in their own copy
+settings.
+
+**A fee of zero is a legitimate starting position.** A track record on a free profile is worth more
+than a subscription nobody buys, and the fee is editable later.
+
+---
+
+## Writing a description followers can act on
+
+The description is the only part of your profile you control that is not a number. Say what you
+trade, on what timeframe, and how you size and exit.
+
+Worth writing:
+
+> "I trade BTC and ETH perpetuals on the 4-hour timeframe using support and resistance with volume
+> confirmation. I risk 1–2% per trade with a fixed stop loss, and average 15–25 trades a month."
+
+Not worth writing:
+
+> "I trade crypto and make consistent profits."
+
+The first tells a follower whether the strategy fits their account and their tolerance. The second
+tells them nothing and reads like every profile that has ever been abandoned after a bad month.
+
+---
+
+## How you are ranked
+
+Your **rank** is your position among all active providers when they are sorted by **all-time ROI**.
+It is recalculated on a schedule, not live, so a good day shows up in the ranking later than it
+shows up in your metrics.
+
+The marketplace's leaderboards additionally require a **minimum of 10 trades** before a provider is
+eligible, so a new profile does not appear on them on the strength of a single winning trade.
+
+Everything else on your profile — return, win rate, maximum drawdown, trade count, follower count —
+is computed from your actual trading. None of it is editable.
+
+---
+
+## Your responsibilities
+
+:::warning[You are not a registered financial adviser]
+Publishing a strategy is not advice, and your profile should say so. Past performance does not
+predict future results, and followers can and will lose money copying you.
+
+Inflated screenshots, guaranteed-return claims, and coordinated pump-and-dump activity are grounds
+for suspension. A provider's status can be set to inactive or suspended, which removes the profile
+from the marketplace.
+:::
+
+A subscription is a recurring cost to your followers whether the month goes well or badly. That is
+the thing to keep in mind when deciding what to charge and when to close your book.
+
+<FAQ
+  items={[
+    {
+      question: 'How do I become a copy trading provider on MetaStation?',
+      answer:
+        'Go to Social Trade → Become a Provider, choose whether you are registering as a signal provider or a fund manager, complete your profile and terms, and submit. There is no review queue — the profile is created active and appears in the marketplace immediately, so the description and the terms should be right before you submit.',
+    },
+    {
+      question: 'Is there an approval process for becoming a provider?',
+      answer:
+        'No. A provider profile is created active on submission and is listed in the marketplace straight away. There is no waiting period and no manual review step. A provider profile can later be set to inactive or suspended, which removes it from the marketplace.',
+    },
+    {
+      question: 'How much can I charge my followers?',
+      answer:
+        'You set a fee type of free, a fixed amount, or a percentage, together with the amount. The default is free with a fee of zero, which is a reasonable starting position while you build a track record — the fee can be changed later. Fund managers are paid differently, through a declared profit share of 10% to 30% instead of a subscription fee.',
+    },
+    {
+      question: 'How are providers ranked in the marketplace?',
+      answer:
+        'Rank is your position among all active providers sorted by all-time ROI, recalculated on a schedule rather than live. The marketplace leaderboards additionally require at least 10 trades before a provider is eligible, so a new profile cannot reach them on a single winning trade.',
+    },
+    {
+      question: 'Can I limit how many people copy my trades?',
+      answer:
+        'Yes. Maximum followers caps the number of active subscriptions, defaulting to 100, and an accepting-followers switch closes your book to new subscribers without removing your profile from the marketplace. You can also set a minimum copy amount for the allocation you want followers to bring.',
+    },
+  ]}
+/>

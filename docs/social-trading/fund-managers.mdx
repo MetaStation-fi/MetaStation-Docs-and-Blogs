@@ -1,0 +1,182 @@
+---
+id: fund-managers
+title: Fund Managers
+sidebar_label: Fund Managers
+description: The second kind of provider on MetaStation — a manager who trades a dedicated account the platform provisions for them, on profit-sharing terms rather than a subscription fee.
+keywords: [crypto fund manager, profit sharing crypto, managed crypto account, fund manager vs signal provider, copy trading fund manager]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Fund Managers on MetaStation"
+  description="How fund managers differ from signal providers, the account the platform provisions for them, and the profit-sharing terms they publish."
+  section="Social Trading"
+/>
+
+# Fund Managers
+
+MetaStation has **two kinds of provider**, and the marketplace lists them side by side. Most of the
+documentation describes signal providers, because that is the older and more common shape. This
+page describes the other one.
+
+| | Signal Provider | Fund Manager |
+|---|---|---|
+| **Trades on** | An account they already had | A **dedicated account the platform provisions** at signup |
+| **Signals reach you via** | Webhook, Telegram or API | The same execution path |
+| **Charges** | A subscription fee, or nothing | A **share of profits**, declared as a percentage |
+| **Marketplace badge** | — | **Profit-Sharing** |
+
+Everything downstream of the signal is **identical**. Your copy mode, your leverage, your margin
+mode and your position sizing behave exactly as they do for a signal provider — the difference is
+who is on the other side and how they are paid, not how the trade reaches you.
+
+→ [Copy Settings](/docs/social-trading/copy-settings) covers the follower side in full, and applies
+unchanged to both provider types.
+
+---
+
+## The account a fund manager trades
+
+This is the part with no equivalent on the signal-provider side.
+
+When someone registers as a fund manager, MetaStation provisions a **dedicated ByBit sub-account**
+for them and issues API keys scoped to it. The manager does not connect an account they already
+own; they are given one.
+
+The keys the platform issues are:
+
+- **Scoped to that sub-account only** — they carry no authority over any other account
+- **IP-restricted**, so they are unusable from anywhere but MetaStation's own infrastructure
+- **Stored encrypted**, like every other exchange credential on the platform
+
+The permissions cover contract and spot trading, options, transfers within the account structure,
+and exchange history.
+
+:::note[Why it is provisioned rather than connected]
+A signal provider's own account is theirs, and its history predates the platform. A fund manager's
+account is created by MetaStation at signup, so the track record that appears in the marketplace
+begins on day one and belongs entirely to trading you can see.
+:::
+
+:::tip[The managed account is kept out of your normal account list]
+A Fund Manager Account is **filtered out of the standard account picker** so it cannot be confused
+with your own trading slots, and does not appear alongside them by default. It is reached through
+the fund-manager view rather than the ordinary slot list. If you have just registered and cannot
+find the account you were issued, this is why — it is not missing.
+:::
+
+---
+
+## The terms a fund manager publishes
+
+Set when they register, and shown on their marketplace profile:
+
+| Term | Range | Default |
+|---|---|---|
+| **Profit share** | 10% – 30% | 20% |
+| **Leverage band** | Manager's choice | 10× – 20× |
+| **Maximum followers** | Manager's choice | 100 |
+
+**The profit share is the manager's stated share of profits generated for followers.** It is
+declared at signup and displayed as part of the terms you are accepting when you follow them.
+
+**The leverage band is the range the manager says they trade in.** Treat it as a description of the
+strategy rather than a limit enforced on your position — the leverage *your* copied trade uses is
+the one you set in your own copy settings, and it is not clamped to the manager's band.
+
+:::warning[Read the band as risk, not as a promise]
+A manager publishing a 10×–20× band is telling you the strategy is leveraged throughout. That is
+a statement about the volatility of the returns you are signing up for. It is not a cap, and
+nothing in your copy settings inherits it.
+:::
+
+---
+
+## Following a fund manager
+
+The flow is the marketplace flow, unchanged:
+
+1. **Switch to the Fund Managers tab.** The marketplace has three: **All Providers**,
+   **Signal Providers** and **Fund Managers**. They are copied on the same mechanics but charged on
+   different terms, so it is worth knowing which you are looking at.
+2. **Read the profile as you would any provider.** Return, maximum drawdown, win rate, trade count
+   and track record length all mean the same thing here.
+3. **Press Allocate.** The card's action button reads **Subscribe** on a signal provider and
+   **Allocate** on a fund manager. It leads to the same copy settings either way.
+4. **Set your copy mode.** Your sizing is yours. A fund manager's profit share does not change how
+   big your copied position is.
+
+On the marketplace card, the stat a signal provider shows as **Fee** a fund manager shows as
+**Profit Share**, expressed as a percentage. That single field is the quickest way to tell the two
+apart at a glance.
+
+→ [Browse the Marketplace](/docs/social-trading/browse-marketplace)
+→ [Subscribe to a Provider](/docs/social-trading/subscribe-provider)
+
+---
+
+## What is the same, and what is not
+
+Worth being precise about, because the differences are narrower than the two names suggest.
+
+**The same:**
+
+- The three copy modes, and the 100% cap on Fixed Ratio
+- Leverage and margin mode, set by you, per subscription
+- The absence of a symbol filter and of an automatic loss circuit breaker — pausing is manual for
+  both provider types
+- The reasons your result diverges from the published one
+
+**Different:**
+
+- Where the manager's account came from, and who holds its keys
+- How the manager is paid, and therefore what their incentive is
+- The **Profit-Sharing** badge and the type filter in the marketplace
+
+:::tip[The incentive is the thing to actually think about]
+A subscription fee is earned whether you make money or not. A profit share is only earned when the
+follower's side shows a profit — which aligns the manager with you on direction, and *misaligns*
+them on risk, because the upside of a leveraged bet is shared and the downside is yours. Neither
+model is safer than the other. They fail differently.
+:::
+
+---
+
+## Becoming a fund manager
+
+The provider signup flow asks which of the two you are registering as before it asks anything else,
+and the fund-manager branch is where the sub-account gets provisioned.
+
+→ [Become a Provider](/docs/social-trading/become-provider)
+
+<FAQ
+  items={[
+    {
+      question: 'What is the difference between a signal provider and a fund manager on MetaStation?',
+      answer:
+        'A signal provider trades an account they already own and typically charges a subscription fee. A fund manager trades a dedicated sub-account that MetaStation provisions for them at signup, and is paid through a declared share of profits — between 10% and 30% — rather than a flat fee. For a follower the copying mechanics are identical: the same three copy modes, the same leverage and margin controls, and the same position sizing.',
+    },
+    {
+      question: 'Does a fund manager hold my funds?',
+      answer:
+        'No. A fund manager trades their own provisioned sub-account, and your copied trades execute on your own slot with your own balance. Following a fund manager replicates their trades onto your account under your sizing rules; it does not transfer your funds to them or give them access to your account.',
+    },
+    {
+      question: 'How much do fund managers charge?',
+      answer:
+        'A fund manager sets a profit share between 10% and 30% when they register, with 20% as the default, and it is displayed on their marketplace profile as part of their published terms. This is a share of profits rather than a recurring subscription fee, which is the main commercial difference from a signal provider.',
+    },
+    {
+      question: 'Does a fund manager’s leverage band limit my copied position?',
+      answer:
+        'No. The leverage band a fund manager publishes — 10× to 20× by default — describes the range their strategy trades in. The leverage applied to your copied position is the one you set in your own copy settings, and it does not inherit or get clamped to the manager’s band. Read the band as a description of how volatile the strategy is.',
+    },
+    {
+      question: 'Can I filter the marketplace for fund managers only?',
+      answer:
+        'Yes. The marketplace has a provider type filter that separates signal providers from fund managers. Both types are ranked and sorted on the same performance metrics, so the filter is about the commercial terms and the account structure rather than about how the trades are copied.',
+    },
+  ]}
+/>

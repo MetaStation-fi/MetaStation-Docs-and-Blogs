@@ -1,0 +1,142 @@
+---
+id: browse-marketplace
+title: Browse the Marketplace
+sidebar_label: Browse Marketplace
+description: The two kinds of provider listed side by side, the filters that actually narrow the list, and how to read a profile past the headline return.
+keywords: [copy trading marketplace, find a signal provider, crypto fund manager list, provider performance metrics, choose a copy trading provider]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Browse the Copy Trading Marketplace"
+  description="How the marketplace lists signal providers and fund managers, what the filters do, and how to read a provider profile."
+  section="Social Trading"
+/>
+
+# Browse the Marketplace
+
+The marketplace lists every **active** provider on MetaStation. Two kinds share the same grid, and
+telling them apart is the first thing to do.
+
+---
+
+## The two provider types
+
+Three tabs sit above the grid:
+
+| Tab | Shows |
+|---|---|
+| **All Providers** | Both types together |
+| **Signal Providers** | Traders publishing signals from an account they own, charging a subscription fee or nothing |
+| **Fund Managers** | Managers trading a dedicated account the platform provisioned, paid a share of profits |
+
+The quickest tell on a card is the fee stat: a signal provider shows **Fee**, a fund manager shows
+**Profit Share** as a percentage. The action button differs too — **Subscribe** on a signal
+provider, **Allocate** on a fund manager.
+
+→ [Fund Managers](/docs/social-trading/fund-managers) explains the second type in full.
+
+---
+
+## Narrowing the list
+
+| Control | What it does |
+|---|---|
+| **Search** | Matches the provider's display name |
+| **Market** | All Markets, **ByBit**, or **MetaStation Web3** — the venue the provider trades |
+| **Provider type tabs** | All Providers, Signal Providers, Fund Managers |
+
+That is the full set. There is no filter for asset focus, subscription price, or follower count, and
+no ROI or win-rate range filter — those numbers are shown on each card to compare by eye, not to
+filter on.
+
+**The Leaderboard is the other way in.** It ranks providers by performance and is worth opening
+before the grid, because it applies a minimum trade count that the raw grid does not.
+
+---
+
+## Reading a provider card
+
+Each card carries:
+
+- **Market badge** — the venue the provider trades
+- **Subscribers** — how many followers are currently copying
+- **Fee** or **Profit Share** — the commercial terms, depending on type
+- **ROI** over 7, 30 and 90 days
+
+A card can also read **Full**, meaning the provider has hit their maximum-followers setting and is
+not accepting new subscriptions, or **Subscribed**, if you already follow them.
+
+---
+
+## Reading the profile past the return
+
+Open a provider and the headline percentage is the least useful number on the page. Four others
+predict your experience better:
+
+| Metric | Why it matters more |
+|---|---|
+| **Maximum drawdown** | The worst peak-to-trough fall — the stretch you would have had to sit through. A 200% return with a 60% drawdown is unfollowable for most people |
+| **Total trades** | Sample size. Twelve trades is a story; three hundred is a distribution |
+| **Track record length** | Three profitable months cannot separate skill from a rising market |
+| **Win rate, read with average win and loss** | A 40% win rate with large winners beats a 90% win rate with one catastrophic loser |
+
+**Strategy description** — written by the provider, and the only part of the profile that is not
+computed. Look for a specific claim about what they trade, on what timeframe, and how they exit.
+
+**Rank** is the provider's position among all active providers sorted by all-time ROI. It is
+recalculated on a schedule rather than live.
+
+:::warning[Signs worth walking away from]
+- A return built on a handful of trades
+- Triple-digit monthly ROI with a drawdown near zero — the combination is the tell, not either number alone
+- No strategy description, or one that describes a feeling rather than a method
+- A sharp climb followed by silence, which usually means the strategy stopped working and the
+  provider stopped trading rather than closing the profile
+:::
+
+**What good tends to look like:** a record spanning several months rather than weeks, a win rate in
+a plausible band, a maximum drawdown you could actually sit through, and a description specific
+enough to be wrong.
+
+---
+
+## Before you subscribe
+
+Published performance is the **provider's** result on **their** account. Yours will differ
+structurally — later entries, your own sizing, and the fact that you join mid-strategy.
+
+→ [Subscribe to a Provider](/docs/social-trading/subscribe-provider)
+→ [How Copy Trading Executes](/docs/concepts/copy-trading-mechanics)
+
+<FAQ
+  items={[
+    {
+      question: 'How do I find a copy trading provider on MetaStation?',
+      answer:
+        'Open the marketplace, which lists every active provider. Three tabs separate all providers, signal providers, and fund managers. You can search by provider name and filter by the venue they trade — ByBit or MetaStation Web3 — and the Leaderboard ranks providers by performance with a minimum trade count applied.',
+    },
+    {
+      question: 'What is the difference between the Subscribe and Allocate buttons?',
+      answer:
+        'Subscribe appears on signal providers and Allocate on fund managers. Both lead to the same copy settings, where you choose your copy mode, leverage and margin. The different wording reflects the commercial arrangement — a subscription fee versus a share of profits — not a difference in how trades are copied.',
+    },
+    {
+      question: 'Which provider metrics matter most when choosing who to copy?',
+      answer:
+        'Maximum drawdown, total trades, and track record length predict your experience better than headline return does. Drawdown is the fall you would have had to sit through, trade count tells you whether the record is a sample or a story, and a record spanning months rather than weeks is the minimum needed to separate skill from a favourable market.',
+    },
+    {
+      question: 'Can I filter the marketplace by ROI or win rate?',
+      answer:
+        'No. The marketplace filters are search by name, the venue the provider trades, and the provider type tabs. ROI and win rate are displayed on every provider card for comparison by eye rather than offered as range filters. The Leaderboard is the tool for ranking by performance.',
+    },
+    {
+      question: 'What does it mean when a provider shows as Full?',
+      answer:
+        'Every provider sets a maximum number of followers, defaulting to 100. Once that many people are copying them the card reads Full and no new subscriptions are accepted until a follower leaves or the provider raises the limit.',
+    },
+  ]}
+/>
