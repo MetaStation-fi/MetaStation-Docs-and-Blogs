@@ -1,0 +1,121 @@
+---
+slug: signal-providers-vs-fund-managers
+title: "Signal Providers vs Fund Managers: which one are you actually copying?"
+description: MetaStation has two kinds of provider and they are copied through the same machinery. The differences that matter are who funds the account, how the provider gets paid, and which incentive that creates.
+authors: [metastation]
+tags: [copy-trading]
+keywords:
+  - signal provider vs fund manager
+  - crypto copy trading types
+  - profit sharing copy trading
+  - managed crypto account
+---
+
+The MetaStation marketplace lists two kinds of provider side by side, and most people subscribe
+without noticing which one they picked. The tabs say **Signal Providers** and **Fund Managers**.
+The difference is not cosmetic, but it is also not where most people assume it is.
+
+{/* truncate */}
+
+## The part that is identical
+
+Start here, because it removes most of the confusion.
+
+Once a provider opens a trade, **both types reach your account through exactly the same path**. The
+same three copy modes size the position. The same leverage and margin controls apply. The same
+execution runs onto the slot you nominated.
+
+There is no separate "fund manager engine". A fund manager's trade is copied to you the same way a
+signal provider's is.
+
+So if you are comparing the two on *how faithfully they replicate*, there is nothing to compare.
+
+## The part that differs: whose account is it?
+
+A **signal provider** trades an account they already own and connect. Its history predates the
+platform, and the account is theirs in every sense.
+
+A **fund manager** does not connect an account. At registration, MetaStation **provisions a
+dedicated ByBit sub-account for them**, and issues API keys scoped to it — IP-restricted to the
+platform's own infrastructure, stored encrypted, and carrying no authority over anything else.
+
+That has a consequence worth understanding: a fund manager's published track record **starts on day
+one**, on an account created for the purpose. There is no pre-platform history to take on trust,
+because there is no pre-platform account.
+
+It also means the managed account is deliberately kept out of the manager's ordinary slot list, so
+it cannot be confused with their personal trading. If you have just registered as a fund manager and
+cannot find the account you were issued, that is why — it is filtered out of the normal picker, not
+missing.
+
+## The part that differs most: how they get paid
+
+This is the one to think about.
+
+| | Signal Provider | Fund Manager |
+|---|---|---|
+| Card shows | **Fee** | **Profit Share** |
+| Typical terms | A subscription fee they set — often zero while building a record | A declared share of profits, **10%–30%**, defaulting to 20% |
+| Button reads | Subscribe | Allocate |
+
+A **subscription fee is earned whether you make money or not**. That is not a criticism — it is a
+predictable cost, and a provider on a flat fee has no incentive to chase volatility to get paid.
+But it does mean a provider having a terrible quarter is still being paid by everyone who has not
+got round to cancelling.
+
+A **profit share is only earned when there is a profit**. That sounds strictly better, and for
+direction it is: the manager makes money when you do. But look at the shape of it. The upside is
+shared; the downside is entirely yours. An arrangement that pays a percentage of gains and nothing
+of losses rewards taking more risk, not less — and a manager publishing a **10×–20× leverage band**
+is telling you exactly how that incentive is being expressed.
+
+Neither model is safer. They fail differently, and knowing which failure you are exposed to is most
+of the value of reading the label.
+
+:::tip[One thing the leverage band is not]
+A fund manager's leverage band describes the range **their** strategy runs at. It does not cap the
+leverage on **your** copied position — that is the number you set in your own copy settings, and it
+does not inherit from theirs. Read the band as a statement about volatility, not as a limit that
+protects you.
+:::
+
+## What neither type gives you
+
+Worth being blunt, because this is the part people assume is handled.
+
+Copy trading on MetaStation has **no automatic circuit breaker**. Nothing pauses copying after a
+drawdown. There is **no per-symbol filter** — every symbol the provider trades is copied. There is
+**no absolute per-trade cap** trimming a position after your copy mode has sized it.
+
+Your risk controls are three decisions, all made *before* you subscribe:
+
+1. **The copy mode.** Fixed Ratio takes a percentage of the provider's size, capped at 100%. Start
+   from `(your balance / provider balance) × 100`, then halve it while you learn how they behave.
+   It cannot be changed later — changing modes means cancelling and subscribing again.
+2. **The leverage.** Yours, not theirs. No higher than the provider's own is a reasonable rule.
+3. **The allocation.** With no automatic stop, the amount you allocate *is* the maximum you have
+   decided to risk on this provider. Keeping any single provider under roughly 30% of total capital
+   is the guard that survives a bad month.
+
+After that, the only lever is pausing the subscription yourself — and pausing stops new copies
+without closing the positions you already hold.
+
+## So which should you follow?
+
+The honest answer is that the provider matters far more than the category.
+
+Read the drawdown before the return. Check the trade count, because twelve trades is a story and
+three hundred is a distribution. Check how long the record runs — three profitable months cannot
+separate skill from a rising market. Then read the fee or the profit share and ask what incentive it
+creates for the person on the other side.
+
+The label tells you how they are funded and how they are paid. It does not tell you whether they are
+any good.
+
+---
+
+**Read next:**
+
+- [Fund Managers](/docs/social-trading/fund-managers) — the provisioned account, the terms, and what carries over
+- [How Copy Trading Executes](/docs/concepts/copy-trading-mechanics) — the full path a trade takes to your account
+- [Set Up Copy Trading Safely](/docs/guides/copy-trading-setup) — the three decisions, in order
