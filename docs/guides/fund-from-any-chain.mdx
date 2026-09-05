@@ -1,0 +1,144 @@
+---
+id: fund-from-any-chain
+title: Fund Your Account from Any Chain
+sidebar_label: Fund from Any Chain
+description: Deposit whatever asset you already hold, on whichever of 56 blockchain networks it sits on, and have it arrive as USDC trading margin — without bridging it yourself first.
+keywords: [cross chain deposit, cross-chain exchange, multi-chain crypto exchange, deposit usdc arbitrum, fund trading account any network]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Fund Your MetaStation Account from Any Chain"
+  description="Deposit any asset from 56 blockchain networks and have it arrive as USDC trading margin without bridging manually."
+  section="Guides"
+/>
+
+# Fund Your Account from Any Chain
+
+**The job:** you hold something, somewhere — ETH on Base, USDT on TRON, SOL on Solana — and you
+want it to become trading margin without doing the bridging yourself.
+
+**Time:** minutes, mostly waiting on the source chain.
+
+---
+
+## What you do not have to do
+
+Worth stating, because it is the usual friction elsewhere: you do not need to acquire a specific
+token on a specific chain first. No manual bridge, no separate swap, no holding a gas token on
+the destination network.
+
+Send what you have. It arrives as USDC.
+
+---
+
+## Step 1 — Open Deposit
+
+**Deposit** in the sidebar — [metastation.fi/deposit](https://metastation.fi/deposit).
+
+Make sure the **MetaStation Account slot** is selected. A connected Binance, ByBit or KuCoin slot
+has no Funding Wallet and no deposit address here; you fund those at the exchange itself.
+
+## Step 2 — Pick your source network and asset
+
+Choose the network your funds are on now, and the asset you are sending.
+
+{/* SCREENSHOT: guide-deposit-picker | Deposit screen with network and asset picker open | 1440x900 | redact: Funding Wallet address */}
+
+**56 blockchain networks** are supported, EVM and non-EVM — Ethereum, Arbitrum, Optimism, Base,
+Polygon, BNB Chain, Avalanche, Solana, Bitcoin, Tron, TON, XRP Ledger and more.
+
+→ [Full list: Cross-Chain Exchange](/docs/wallet/cross-chain-exchange)
+
+:::danger Match both, not just one
+The most common failed deposit is the right asset on the wrong network — USDT sent over BNB Smart
+Chain when Ethereum was selected, or the reverse. The asset and the network must both match what
+you chose on screen. Getting this wrong is not recoverable by support in the way an ordinary
+mistake would be.
+:::
+
+## Step 3 — Send
+
+Send from your wallet or exchange to the address shown.
+
+Whatever you send is bridged into your **Funding Wallet** — a smart-contract wallet on Arbitrum
+created with your account — and converted to USDC.
+
+**Send a small test amount first** if this is your first deposit from a given wallet, or if the
+amount is large. The cost of a test transfer is trivial against the cost of discovering a mistake
+with the whole balance.
+
+## Step 4 — Wait for the source chain
+
+The waiting step is confirmation on the network you sent *from*, not anything on MetaStation's
+side. Ethereum takes longer than Arbitrum; that is the chain, not the platform.
+
+Your USDC balance updates once bridging completes, and it is immediately available as margin.
+
+{/* SCREENSHOT: guide-deposit-confirm | deposit confirmation / pending state | 1440x900 | redact: address, amount */}
+
+---
+
+## If it has not arrived
+
+Work through these in order:
+
+1. **Is the transaction finalised on the source chain?** Check the explorer for that network. If
+   it is still pending there, the wait is there.
+2. **Did the asset and network both match?** Compare what you sent against what the deposit screen
+   asked for.
+3. **Is the right slot selected?** A MetaStation Account slot has a Funding Wallet; a connected
+   exchange slot does not.
+4. **Check the deposit screen for status** before contacting support — it will usually tell you
+   which stage the deposit is at.
+
+---
+
+## After funding
+
+Your USDC balance is your margin. Profit and loss settle in USDC, so there is no second asset
+whose price movement quietly changes your margin health while a position is open.
+
+You never need a gas token: gas on your trades is abstracted away.
+
+→ [Funding and Settlement](/docs/concepts/funding-and-settlement) · [Deposit](/docs/wallet/deposit)
+
+:::note Set up 2FA before you need to withdraw
+Withdrawals require your Google Authenticator code **and** an emailed code. Two-factor
+authentication is a hard requirement, not a recommendation — and the worst time to set it up is
+when you are already trying to withdraw.
+
+→ [Two-Factor Authentication](/docs/security/two-factor-auth)
+:::
+
+<FAQ
+  items={[
+    {
+      question: 'Can I deposit any cryptocurrency to MetaStation?',
+      answer:
+        'You can deposit from 56 blockchain networks, EVM and non-EVM, holding whatever asset you already have — it is bridged and converted to USDC and credited to your Funding Wallet automatically. Select the network and asset on the deposit screen, and send exactly that pairing.',
+    },
+    {
+      question: 'Do I need to bridge my crypto before depositing?',
+      answer:
+        'No. Bridging happens as part of the deposit, so you send from the chain your funds are already on. You also do not need to hold a gas token on the destination network, because gas is abstracted away.',
+    },
+    {
+      question: 'What happens if I send the wrong asset or use the wrong network?',
+      answer:
+        'The deposit will not arrive as expected, and sending the right asset over the wrong network is the most common cause of a missing deposit. Match both the asset and the network shown on the deposit screen, and send a small test amount first when depositing from a new wallet or sending a large sum.',
+    },
+    {
+      question: 'How long does a MetaStation deposit take?',
+      answer:
+        'It depends on the network you send from, since the waiting step is confirmation on the source chain. Ethereum takes longer than Arbitrum or Base. Once bridging completes, the USDC is credited and immediately available as trading margin.',
+    },
+    {
+      question: 'Can I deposit into a connected Binance or KuCoin account through MetaStation?',
+      answer:
+        'No. Connected exchange slots have no Funding Wallet — their balance is your balance at that exchange, so deposits and withdrawals for them happen at the exchange itself. The deposit flow in MetaStation funds a MetaStation Account slot.',
+    },
+  ]}
+/>

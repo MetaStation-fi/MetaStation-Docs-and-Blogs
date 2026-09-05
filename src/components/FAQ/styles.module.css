@@ -1,0 +1,76 @@
+/* Tokens only — no literal colours. Both schemes are defined in custom.css,
+   so anything hardcoded here would break one of them. That is exactly the
+   class of bug the Phase 1 token rewrite existed to remove. */
+
+.faq {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ms-border);
+}
+
+.item {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+  transition: border-color 150ms ease;
+}
+
+.item:hover {
+  border-color: var(--ms-border-strong);
+}
+
+.item[open] {
+  border-color: var(--ms-accent-line);
+}
+
+.question {
+  cursor: pointer;
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  color: var(--ms-text);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Replace the default disclosure triangle with a marker that rotates, so the
+   open/closed state is legible at a glance in both schemes. */
+.question::-webkit-details-marker {
+  display: none;
+}
+
+.question::before {
+  content: '';
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid var(--ms-accent);
+  border-bottom: 2px solid var(--ms-accent);
+  transform: rotate(-45deg);
+  transition: transform 150ms ease;
+}
+
+.item[open] .question::before {
+  transform: rotate(45deg);
+}
+
+.question:focus-visible {
+  outline: 2px solid var(--ms-accent);
+  outline-offset: -2px;
+}
+
+.answer {
+  padding: 0 1rem 1rem 2.05rem;
+  color: var(--ms-text-secondary);
+  line-height: 1.65;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .question::before {
+    transition: none;
+  }
+}

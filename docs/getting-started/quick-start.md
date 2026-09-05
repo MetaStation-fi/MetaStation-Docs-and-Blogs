@@ -27,7 +27,7 @@ Enable 2FA immediately after registration. It protects your account and is requi
 
 {/* SCREENSHOT: deposit-picker | reuse of the fund-account capture | 1440x900 | redact: address */}
 
-Your MetaStation Account accepts deposits from **35+ networks**. Send any supported asset — it is automatically bridged and converted to USDC.
+Your MetaStation Account accepts deposits from **56 blockchain networks**. Send any supported asset — it is automatically bridged and converted to USDC.
 
 1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
 2. Select your source network and asset

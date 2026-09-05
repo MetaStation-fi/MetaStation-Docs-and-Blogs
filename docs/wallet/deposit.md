@@ -6,7 +6,7 @@ sidebar_label: Deposit
 
 # Deposit
 
-MetaStation supports crypto deposits from 35+ networks, fiat purchases via card, and cross-asset swaps.
+MetaStation supports crypto deposits from 56 blockchain networks, fiat purchases via card, and cross-asset swaps.
 
 ---
 

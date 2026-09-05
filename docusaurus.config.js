@@ -120,7 +120,7 @@ const config = {
           'Telegram-to-Trade signal execution',
           'Copy trading marketplace',
           'Up to 10 take-profit levels, trailing stops and SLX',
-          'Bridge deposits from 35+ networks',
+          'Cross-chain deposits from 56 blockchain networks',
         ],
         offers: {
           '@type': 'Offer',
@@ -301,6 +301,20 @@ const config = {
           label: 'Docs',
         },
         {
+          // Guides and Concepts are the Phase 3 growth surfaces: guides target
+          // problem-shaped queries, concepts are what answer engines quote.
+          // Both sit in the navbar rather than only in the sidebar so they are
+          // reachable from the blog and from any generated API page.
+          to: '/docs/guides',
+          label: 'Guides',
+          position: 'left',
+        },
+        {
+          to: '/docs/concepts',
+          label: 'Concepts',
+          position: 'left',
+        },
+        {
           to: '/blogs',
           label: 'Blog',
           position: 'left',
@@ -334,7 +348,9 @@ const config = {
           title: 'Documentation',
           items: [
             { label: 'Quick Start', to: '/docs/getting-started/quick-start' },
-            { label: 'Trading Guide', to: '/docs/trading/metastation-account' },
+            { label: 'Guides', to: '/docs/guides' },
+            { label: 'Concepts', to: '/docs/concepts' },
+            { label: 'Glossary', to: '/docs/glossary' },
             { label: 'Webhook API', to: '/docs/developer/webhook-api-overview' },
           ],
         },

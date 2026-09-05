@@ -1,0 +1,173 @@
+---
+id: scale-out-with-take-profits
+title: Scale Out of a Trade with Multiple Take Profits
+sidebar_label: Scale Out with Multiple TPs
+description: Build a take-profit ladder that banks part of a move without closing the whole position — how to place the levels, how to split the size, and what a ladder actually changes.
+keywords: [multiple take profit levels, take profit ladder, scale out of position, partial take profit crypto, tp1 tp2 tp3]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Scale Out of a Trade with Multiple Take Profits"
+  description="Build a take-profit ladder that banks part of a move without closing the whole position."
+  section="Guides"
+/>
+
+# Scale Out of a Trade with Multiple Take Profits
+
+**The job:** stop choosing between taking profit too early and watching a winner round-trip. A
+ladder closes slices of the position at rising levels while the rest keeps running.
+
+**You need:** any MetaStation slot. Up to **10** levels per position.
+
+---
+
+## What a ladder actually changes
+
+Worth being clear before building one, because it is commonly oversold.
+
+A ladder **does not improve your edge**. It changes the *shape* of the outcome: you give up part
+of the best case in exchange for banking some of the move earlier and reducing the chance of a
+winner becoming a loser. That is a preference about how you want to be wrong, not a better
+strategy.
+
+If your strategy's returns come from a few very large moves, laddering out early will reduce
+total return. If it grinds small moves and gives them back, laddering will help. Know which one
+you have.
+
+---
+
+## Step 1 — Place the levels where price actually goes
+
+Levels should sit at prices the market plausibly reaches, not at round numbers or equal
+increments. Structure — prior highs, range boundaries, measured moves — beats arithmetic.
+
+A ladder whose top rung is never touched is a ladder with fewer rungs than you designed.
+
+## Step 2 — Split the size deliberately
+
+Three common shapes, and what each says:
+
+| Shape | Split | Says |
+|---|---|---|
+| **Front-loaded** | 50 / 30 / 20 | Bank early, protect the win. Best when reversals are common |
+| **Even** | 33 / 33 / 34 | No opinion about where the move ends |
+| **Back-loaded** | 20 / 30 / 50 | The thesis is the big move; early exits are just insurance |
+
+Front-loaded is the conservative default because the first level is the one most likely to fill.
+
+**Always make the last level `remainder`.** Percentages that round can otherwise leave a fragment
+of the position with no exit attached to it.
+
+## Step 3 — Build it in the terminal
+
+1. In the order panel, expand **Take Profit**.
+2. Click **+ Add TP**.
+3. Set price and quantity per level — token amount, USD, or percentage.
+4. Confirm. The orders are placed as the position opens.
+
+{/* SCREENSHOT: guide-tp-ladder | order panel with a three-level TP ladder configured | 1440x900 | redact: balance */}
+
+Worked example — long from $45,000:
+
+| Level | Price | Slice |
+|---|---|---|
+| TP1 | $48,000 | 30% |
+| TP2 | $50,000 | 40% |
+| TP3 | $52,000 | remainder |
+
+Price reaching $48,000 closes 30%. If it then reverses, **TP2 and TP3 stay open** — they are not
+cancelled and have not been missed. They simply have not triggered.
+
+## Step 4 — Or send it in the payload
+
+For automated entries, the ladder travels with the signal:
+
+```json
+{
+  "action": "open",
+  "symbol": "BTCUSDC",
+  "side": "buy",
+  "orderType": "market",
+  "quantity": "3%",
+  "leverage": 5,
+  "marginMode": "isolated",
+  "takeProfits": [
+    { "price": 48000, "quantity": "30%" },
+    { "price": 50000, "quantity": "40%" },
+    { "price": 52000, "quantity": "remainder" }
+  ],
+  "stopLoss": 41000
+}
+```
+
+The `stopLoss` belongs in the same payload. A ladder manages the upside; without a stop, the
+downside is unbounded.
+
+→ [JSON Format](/docs/developer/json-format)
+
+## Step 5 — Pair it with SLX
+
+A ladder plus a static stop still lets a trade that hit TP1 come all the way back to a loss on
+the remainder. SLX fixes exactly that: after TP1 fills, move the stop to entry.
+
+```json
+{
+  "stopLossX": {
+    "slxMode": "trailing_profits",
+    "activationPoint": "TP1",
+    "trailingType": "breakeven"
+  }
+}
+```
+
+This is the combination most people actually want.
+
+→ [Make a Trade Risk-Free with SLX](/docs/guides/risk-free-trade-with-slx)
+
+---
+
+## Adjusting a live ladder
+
+Send an `update` to change protection on an open position:
+
+```json
+{
+  "action": "update",
+  "symbol": "BTCUSDC",
+  "takeProfit": 51000,
+  "stopLoss": 44000
+}
+```
+
+<FAQ
+  items={[
+    {
+      question: 'How many take profit levels can I set on one position?',
+      answer:
+        'Up to 10. Each level is an independent order against a slice of the position, and levels that have not triggered remain open after earlier ones fill.',
+    },
+    {
+      question: 'What happens to my other take profit levels after the first one fills?',
+      answer:
+        'They stay open. Filling TP1 closes only its slice of the position; TP2 and TP3 are not cancelled and continue waiting for their prices. If price reverses instead, the remaining levels simply never trigger.',
+    },
+    {
+      question: 'Why should the last take profit level use "remainder"?',
+      answer:
+        'Because percentage slices can round. If the earlier levels do not sum to exactly the whole position, a fragment could be left with no exit order attached. Setting the final level to "remainder" closes whatever is left regardless of rounding.',
+    },
+    {
+      question: 'Does scaling out of a position increase profits?',
+      answer:
+        'Not by itself. A ladder changes the shape of the outcome rather than the edge — you give up part of the best case in exchange for banking some of the move early and reducing the chance a winner becomes a loser. It helps strategies that grind small moves and give them back, and reduces returns for strategies whose profit comes from a few very large moves.',
+    },
+    {
+      question: 'How do I stop a winning trade from turning into a loss after the first take profit?',
+      answer:
+        'Combine the ladder with SLX in trailing_profits mode set to breakeven and activated at TP1. Once the first level fills, the stop loss moves to your entry price, so the remainder of the position can no longer lose money.',
+    },
+  ]}
+/>

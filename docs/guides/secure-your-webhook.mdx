@@ -1,0 +1,146 @@
+---
+id: secure-your-webhook
+title: Secure Your Webhook URL
+sidebar_label: Secure Your Webhook
+description: The webhook URL is a bearer credential — holding it is enough to trade your account. How to restrict it, how to limit the damage, and what to do the moment one leaks.
+keywords: [webhook security, trading webhook leaked, ip whitelist webhook, rotate webhook secret, secure tradingview webhook]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Secure Your MetaStation Webhook URL"
+  description="How to restrict a webhook URL, limit the damage from a leak, and respond when one is exposed."
+  section="Guides"
+/>
+
+# Secure Your Webhook URL
+
+**The thing to understand first:** your webhook URL is a **bearer credential**. There is no second
+factor, no signature, no API secret. Anyone who has the URL can open and close positions on that
+slot.
+
+```
+https://api.metastation.fi/webhook/{your-unique-token}
+```
+
+Treat it exactly as you would treat a password, because functionally that is what it is.
+
+---
+
+## Where these leak from
+
+Ranked by how often it actually happens:
+
+1. **A screenshot.** Someone shares their Webhook Management screen for support and the URL is
+   readable in it. This is the single most common route.
+2. **A public TradingView script.** Pine scripts published with the URL in a comment or default.
+3. **A committed config file.** `.env` files pushed to a repository; public code search finds
+   these very quickly.
+4. **A shared chat.** Pasted into a Telegram or Discord group while asking for help.
+5. **A support request to anyone but MetaStation.** No legitimate support process needs it.
+
+---
+
+## Restrict it before anything happens
+
+### IP whitelist
+
+The highest-value control available. Accept signals only from the addresses your source actually
+sends from — this turns a leaked URL from a working key into a useless string for anyone else.
+
+- **TradingView** publishes the IP addresses its alerts originate from. Whitelist those.
+- **Your own server or VPS** — whitelist its address.
+- **A dynamic home IP** — whitelisting is impractical; rely on the other controls instead.
+
+### Rate limit
+
+Cap signals per minute. It bounds both an attacker with a working URL and, more likely, your own
+loop bug or a strategy firing repeatedly.
+
+### Position and leverage caps
+
+Set on the slot, these bound what *any* signal can do, whoever sent it. A leaked URL against a
+slot capped at 5x leverage and 2% position size is a much smaller problem than one against an
+unconfigured slot.
+
+→ [Risk Controls](/docs/concepts/risk-controls)
+
+---
+
+## Regenerate the moment there is doubt
+
+**Webhook Management → Webhook URLs → Regenerate Secret** on the affected slot.
+
+The old URL stops working immediately. Then update every legitimate sender — TradingView alerts,
+scripts, anything else pointed at it — because they are now sending to a dead endpoint.
+
+Do this if the URL has been in a screenshot, in a repository, in a chat, on a machine you no
+longer control, or if you simply cannot account for everywhere it has been. Regeneration costs a
+few minutes of reconfiguration. Not regenerating costs whatever the slot holds.
+
+---
+
+## If you think it has been used
+
+1. **Regenerate the secret** — stop the bleeding first.
+2. **Check open positions** on that slot and close anything you did not open.
+3. **Read the webhook log** in Webhook Management. Every received signal is recorded, so you can
+   see exactly what was sent and when.
+4. **Check the other slots.** Each slot has its own URL, so one leak does not compromise the
+   others — but confirm rather than assume.
+5. **Check your account itself.** A leaked webhook URL does not expose your login, but if you are
+   unsure how it leaked, treat your account credentials as suspect too: change the password and
+   confirm 2FA is still bound to your device.
+
+:::note What a leaked webhook URL cannot do
+It cannot withdraw funds. Withdrawals need your Google Authenticator code **and** a code emailed
+to your registered address — neither of which is reachable through the webhook endpoint. The
+damage from a leaked URL is trading damage, which is bounded by your slot's leverage and position
+limits.
+:::
+
+→ [Withdrawal Security](/docs/security/withdrawal-whitelist)
+
+---
+
+## Habits worth having
+
+| Do | Instead of |
+|---|---|
+| Read the URL from an environment variable | Hardcoding it in a script |
+| Redact it before any screenshot | Trusting that nobody will read it |
+| Use a separate slot for experiments | Testing against the slot holding your capital |
+| Regenerate on staff or device changes | Waiting for evidence of misuse |
+| Whitelist your sender's IPs | Relying on the URL staying secret |
+
+<FAQ
+  items={[
+    {
+      question: 'Is a MetaStation webhook URL a password?',
+      answer:
+        'Functionally yes. The token in the URL is a bearer credential and the entire credential — there is no separate API secret or signature — so anyone holding the URL can open and close positions on that trading slot. It should be stored and shared with the same care as a password.',
+    },
+    {
+      question: 'What should I do if my webhook URL leaked?',
+      answer:
+        'Regenerate the secret immediately in Webhook Management, which invalidates the old URL at once, then update every legitimate sender to the new URL. Check the slot for positions you did not open, review the webhook log to see what was actually sent, and close anything unexpected.',
+    },
+    {
+      question: 'Can someone withdraw my funds with my webhook URL?',
+      answer:
+        'No. Withdrawals require your Google Authenticator code and a code emailed to your registered address, and neither is reachable through the webhook endpoint. A leaked URL allows trading on that slot, which is why leverage caps and position size limits matter — they bound the damage.',
+    },
+    {
+      question: 'How do I restrict which servers can send to my trading webhook?',
+      answer:
+        'Set an IP whitelist on the webhook so it accepts signals only from the addresses your source sends from — TradingView publishes its alert IP ranges, and your own server has a fixed address. A whitelisted URL is useless to anyone sending from anywhere else, which is the strongest single control available.',
+    },
+    {
+      question: 'Does one leaked webhook URL compromise my other trading accounts?',
+      answer:
+        'No. Each trading slot has its own webhook URL and a signal executes only on the slot whose URL received it, so a leak is contained to that one slot. It is still worth checking the others and reviewing your account security if you cannot account for how the URL was exposed.',
+    },
+  ]}
+/>

@@ -1,0 +1,198 @@
+---
+id: risk-free-trade-with-slx
+title: Make a Trade Risk-Free with SLX
+sidebar_label: Risk-Free Trade with SLX
+description: Move your stop loss to breakeven automatically once the first take profit fills, then walk it up behind each level — configured once, in the UI or in the payload.
+keywords: [stop loss to breakeven, automatic breakeven stop, trailing stop loss crypto, slx stop loss, lock in profits automatically]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Make a Trade Risk-Free with SLX"
+  description="Move the stop loss to breakeven automatically once the first take profit fills, then walk it up behind each level."
+  section="Guides"
+/>
+
+# Make a Trade Risk-Free with SLX
+
+**The job:** a trade goes your way, hits the first target — and can no longer lose money. No
+watching, no manual stop adjustment.
+
+**You need:** any MetaStation slot, and a position with at least one take-profit level.
+
+---
+
+## The problem it solves
+
+A position with a fixed stop and a take-profit ladder can still hit TP1, reverse, and stop out at
+a loss on everything remaining. You were right about direction, got paid on 30% of the position,
+and lost anyway.
+
+The manual fix is to move the stop to entry after TP1 fills. That works if you are watching. It
+does not work at 4am, which is when it matters.
+
+**SLX (Stop Loss X)** does it automatically, and it is what distinguishes it from a plain trailing
+stop: a trailing stop follows *price*, SLX follows *your take-profit events*.
+
+---
+
+## Mode 1 — Breakeven at TP1
+
+The simplest and the most useful. Once your chosen level fills, the stop moves to entry.
+
+```json
+{
+  "stopLossX": {
+    "slxMode": "trailing_profits",
+    "activationPoint": "TP1",
+    "trailingType": "breakeven"
+  }
+}
+```
+
+Long from $45,000 with TP1 at $48,000:
+
+1. Price reaches $48,000 → TP1 fills, closing its slice.
+2. SLX moves the stop from $41,000 to **$45,000**.
+3. The remaining position cannot lose money. TP2 and TP3 stay open.
+
+The trade is now free to run.
+
+## Mode 2 — Walk the stop up the ladder
+
+`follow_tp` moves the stop to the *previous* level each time a new one fills, locking in each
+completed rung.
+
+```json
+{
+  "stopLossX": {
+    "slxMode": "trailing_profits",
+    "activationPoint": "TP1",
+    "trailingType": "follow_tp"
+  }
+}
+```
+
+With TPs at $48,000 / $50,000 / $52,000:
+
+| Event | Stop moves to |
+|---|---|
+| TP1 fills | $45,000 (entry) |
+| TP2 fills | $48,000 (TP1) |
+| TP3 fills | $50,000 (TP2) |
+
+Each completed step is banked. The cost is that a normal pullback after TP2 now closes you at
+TP1's price rather than letting the position breathe — this mode suits trends, not chop.
+
+## Mode 3 — Callback rate
+
+Percentage trailing from the peak, activated at a price rather than at a TP event. Use it when
+the position has no ladder to key off.
+
+```json
+{
+  "stopLossX": {
+    "slxMode": "callback_rate",
+    "activationPrice": 46000,
+    "callbackRate": 2.0,
+    "triggerBy": "mark_price"
+  }
+}
+```
+
+Trailing starts at $46,000 and the stop sits 2% below the highest price seen since. Peak $50,000
+→ stop $49,000. The stop ratchets up and never moves down.
+
+Keep `triggerBy` on `mark_price` unless you have a specific reason not to — `last_price` reacts to
+every print, including the single-wick outliers a smoothed price exists to ignore.
+
+---
+
+## Configuring it in the UI
+
+1. Open **Advanced Orders** in the order panel.
+2. Toggle **Stop Loss X**.
+3. Choose **Callback Rate** or **Trailing Profits**.
+4. Fill in the parameters and confirm.
+
+{/* SCREENSHOT: guide-slx-config | Advanced Orders panel with SLX trailing_profits configured | 1440x900 | redact: balance */}
+
+## The complete automated entry
+
+Everything together — entry, ladder, stop, and SLX — in one payload:
+
+```json
+{
+  "action": "open",
+  "symbol": "BTCUSDC",
+  "side": "buy",
+  "orderType": "market",
+  "quantity": "3%",
+  "leverage": 5,
+  "marginMode": "isolated",
+  "takeProfits": [
+    { "price": 48000, "quantity": "30%" },
+    { "price": 50000, "quantity": "40%" },
+    { "price": 52000, "quantity": "remainder" }
+  ],
+  "stopLoss": 41000,
+  "stopLossX": {
+    "slxMode": "trailing_profits",
+    "activationPoint": "TP1",
+    "trailingType": "breakeven"
+  }
+}
+```
+
+This is the payload most automated strategies should be sending. It defines the entry, the exits,
+the worst case, and the point at which the worst case becomes zero — all before the position
+exists.
+
+---
+
+## Choosing a mode
+
+| Situation | Mode |
+|---|---|
+| You want the trade safe as soon as possible | `trailing_profits` + `breakeven` |
+| Strong trend, you want to ride and bank each step | `trailing_profits` + `follow_tp` |
+| No take-profit ladder on the position | `callback_rate` |
+| Choppy market | `breakeven` — `follow_tp` will stop you out on noise |
+
+:::caution Breakeven is not free
+Moving the stop to entry means an ordinary pullback can close the position for zero on a trade
+that would have worked. You are trading some win rate for a much shorter tail of losses. That is
+usually the right trade, but it is a trade.
+:::
+
+<FAQ
+  items={[
+    {
+      question: 'How do I automatically move my stop loss to breakeven?',
+      answer:
+        'Use SLX in trailing_profits mode with trailingType set to breakeven and activationPoint set to the take-profit level that should trigger it, usually TP1. When that level fills, the stop loss moves to your entry price automatically and the remaining position can no longer lose money.',
+    },
+    {
+      question: 'What is the difference between SLX and a trailing stop?',
+      answer:
+        'A trailing stop follows price, ratcheting up behind the peak. SLX follows your take-profit events: it moves the stop to entry or to the previous take-profit level as each level fills. SLX also offers a callback_rate mode that trails by a percentage from the peak, which behaves like a conventional trailing stop.',
+    },
+    {
+      question: 'What does follow_tp mode do in SLX?',
+      answer:
+        'Each time a take-profit level fills, the stop loss moves up to the previous level — TP1 filling moves the stop to entry, TP2 filling moves it to TP1’s price, and so on. It banks each completed step of the ladder, which suits trending markets but will stop you out on ordinary pullbacks in choppy ones.',
+    },
+    {
+      question: 'Should SLX trigger on mark price or last price?',
+      answer:
+        'Mark price, unless you have a specific reason otherwise. It is a smoothed reference that resists brief wicks and thin-book spikes, whereas last price reacts to every individual trade and will fire the stop on single-print outliers the wider market never followed.',
+    },
+    {
+      question: 'What is the downside of moving a stop to breakeven?',
+      answer:
+        'An ordinary pullback can close the position for zero on a trade that would eventually have worked. You are exchanging some win rate for a much shorter tail of losing trades — usually a good trade, but a real one rather than a free improvement.',
+    },
+  ]}
+/>

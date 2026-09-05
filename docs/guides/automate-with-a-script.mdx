@@ -1,0 +1,219 @@
+---
+id: automate-with-a-script
+title: Trade from Your Own Script or Bot
+sidebar_label: Automate from a Script
+description: Send trades from Python, Node or any language that can make an HTTP request — a single POST, with working code, error handling and the mistakes that cost money.
+keywords: [python trading bot, crypto trading api, automate trading script, http trading api, node trading bot]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Trade from Your Own Script or Bot"
+  description="Send trades from Python, Node or any language that can make an HTTP request, with working code and error handling."
+  section="Guides"
+/>
+
+# Trade from Your Own Script or Bot
+
+**The job:** your own code decides when to trade, and MetaStation executes it. No exchange SDK,
+no key management per venue, no separate integration for each exchange you use.
+
+**You need:** a slot with automation (free on the MetaStation Account) and anything that can make
+an HTTP request.
+
+---
+
+## The whole interface is one POST
+
+There is no SDK to install and no session to establish. One endpoint, one method:
+
+```
+POST https://api.metastation.fi/webhook/{your-unique-token}
+Content-Type: application/json
+```
+
+The token identifies the slot, so it is both the credential and the routing. Get it from
+**Webhook Management → Webhook URLs**.
+
+→ [Try it interactively in the API Reference](/docs/api/metastation-webhook-api)
+
+## Python
+
+```python
+import os
+import requests
+
+WEBHOOK_URL = os.environ["METASTATION_WEBHOOK_URL"]
+
+def open_position(symbol, side, quantity, stop_loss, take_profits=None):
+    payload = {
+        "action": "open",
+        "symbol": symbol,
+        "side": side,
+        "orderType": "market",
+        "quantity": quantity,
+        "leverage": 5,
+        "marginMode": "isolated",
+        "stopLoss": stop_loss,
+    }
+    if take_profits:
+        payload["takeProfits"] = take_profits
+
+    response = requests.post(WEBHOOK_URL, json=payload, timeout=10)
+    response.raise_for_status()
+    return response.json()
+
+
+result = open_position(
+    symbol="BTCUSDC",
+    side="buy",
+    quantity="2%",
+    stop_loss=41000,
+    take_profits=[
+        {"price": 48000, "quantity": "50%"},
+        {"price": 52000, "quantity": "remainder"},
+    ],
+)
+
+if not result.get("success"):
+    print("rejected:", result.get("code"), result.get("message"))
+```
+
+:::danger Never hardcode the webhook URL
+It is a bearer credential — holding it is sufficient to trade the slot. Read it from an
+environment variable or a secret store. A URL committed to a repository is a URL that will
+eventually be found, and public code search finds them faster than you would expect.
+:::
+
+## Node.js
+
+```javascript
+const WEBHOOK_URL = process.env.METASTATION_WEBHOOK_URL;
+
+async function openPosition({symbol, side, quantity, stopLoss, takeProfits}) {
+  const response = await fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      action: 'open',
+      symbol,
+      side,
+      orderType: 'market',
+      quantity,
+      leverage: 5,
+      marginMode: 'isolated',
+      stopLoss,
+      ...(takeProfits && {takeProfits}),
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return response.json();
+}
+```
+
+## curl, for testing
+
+```bash
+curl -X POST "$METASTATION_WEBHOOK_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"action":"open","symbol":"BTCUSDC","side":"buy","orderType":"market","quantity":"1%","leverage":3,"marginMode":"isolated"}'
+```
+
+---
+
+## Handle the response, don't assume it
+
+A rejected signal returns `"success": false` with a `code`. **A script that fires and forgets will
+believe it is in a position it does not have** — which is how a strategy ends up doubling down on
+a trade that never opened.
+
+At minimum:
+
+```python
+if not result.get("success"):
+    log.error("signal rejected: %s %s", result.get("code"), result.get("message"))
+    # do NOT update local position state here
+```
+
+→ [Error Codes](/docs/developer/error-codes)
+
+## The four actions
+
+| Action | Use |
+|---|---|
+| `open` | New position |
+| `close` | Close fully, or partially with `quantity` |
+| `update` | Change TP/SL on an open position |
+| `reverse` | Close and immediately open the opposite direction |
+
+`reverse` is worth knowing: for a strategy that flips on signal, it is one request instead of a
+close followed by an open, with no window in between where you are flat.
+
+```json
+{ "action": "reverse", "symbol": "BTCUSDC", "side": "sell", "quantity": "2%" }
+```
+
+→ [Supported Actions](/docs/developer/supported-actions)
+
+---
+
+## Mistakes that cost money
+
+| Mistake | Consequence |
+|---|---|
+| No stop loss in the payload | An unbounded worst case on a position nobody is watching |
+| Percentage sizing with a compounding bug | `"2%"` recalculates on each signal. A retry loop compounds into a much larger position than intended |
+| Retrying on timeout without checking | A timeout is not a rejection. The order may have executed — verify before resending |
+| Ignoring `success: false` | Local state diverges from reality |
+| Cross margin by default | One bad signal can take the account, not just the position |
+| No rate limit on the slot | A loop bug becomes dozens of positions before you notice |
+
+The retry case deserves care. A network timeout tells you nothing about whether the request was
+processed. Check the actual position state before sending the order again.
+
+## Before it runs unattended
+
+1. Test each signal path against a small size and confirm it in **Webhook Management**.
+2. Set a **rate limit** on the slot so a loop bug is bounded.
+3. Set **max open positions** so a stuck condition opens one position, not forty.
+4. Add an **IP whitelist** for your server's address — this makes a leaked URL unusable to anyone
+   else.
+5. Verify your error path by sending a deliberately malformed payload and confirming your code
+   handles the rejection.
+
+→ [Risk Controls](/docs/concepts/risk-controls) · [Secure Your Webhook](/docs/guides/secure-your-webhook)
+
+<FAQ
+  items={[
+    {
+      question: 'How do I place trades from a Python script?',
+      answer:
+        'Send an HTTP POST with a JSON body to your slot’s webhook URL — there is no SDK to install and no session to establish. The payload specifies action, symbol, side, quantity and any protection such as stop loss and take-profit levels. Read the webhook URL from an environment variable rather than hardcoding it, because it is a bearer credential.',
+    },
+    {
+      question: 'Does MetaStation have a trading API?',
+      answer:
+        'Yes — a single webhook endpoint that accepts JSON or natural-language signals over HTTP POST. The token in the URL identifies both the credential and the trading slot, so any language that can make an HTTP request can trade. An interactive Try-It console is available in the API Reference.',
+    },
+    {
+      question: 'What should my bot do if a webhook request times out?',
+      answer:
+        'Check the actual position state before resending. A timeout says nothing about whether the request was processed — the order may well have executed — so retrying blindly can open a second unintended position. Only treat an explicit "success": false response as a rejection.',
+    },
+    {
+      question: 'How do I flip a position from long to short in one request?',
+      answer:
+        'Use the reverse action. It closes the current position and immediately opens the opposite direction in a single request, with no window in between where the account is flat — cleaner than sending a close followed by an open.',
+    },
+    {
+      question: 'Is it safe to put my webhook URL in my code?',
+      answer:
+        'No. The token in the URL is the entire credential, so anyone holding it can trade that slot. Read it from an environment variable or a secret store, never commit it, and add an IP whitelist so the URL is unusable from any address other than your server. If it has been exposed, regenerate the secret immediately.',
+    },
+  ]}
+/>

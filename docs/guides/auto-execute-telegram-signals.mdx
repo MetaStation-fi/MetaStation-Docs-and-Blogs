@@ -1,0 +1,163 @@
+---
+id: auto-execute-telegram-signals
+title: Auto-Execute Telegram Signals
+sidebar_label: Telegram Signals → Trades
+description: Turn a Telegram signal channel into live trades — connect Telegram, let MetaStation detect the channel, map it to an account, and cap what an unknown caller can do with your balance.
+keywords: [telegram signal bot, auto trade telegram signals, telegram copy trading, crypto signal channel automation, telegram to trade]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Auto-Execute Telegram Signals"
+  description="Connect a Telegram signal channel to a MetaStation account so posted signals execute as trades, with risk limits."
+  section="Guides"
+/>
+
+# Auto-Execute Telegram Signals
+
+**The job:** a signal is posted in a Telegram channel, and the trade opens on your account
+automatically — parsed from the message, sized by your rules, not the caller's.
+
+**Time:** about 10 minutes. **You need:** a Telegram account, access to the signal channel, and a
+slot with automation (free on your MetaStation Account).
+
+:::caution You are automating someone else's judgement
+This is the highest-trust thing you can wire into a trading account. A channel that occasionally
+posts an oversized "high conviction" call will act on that conviction with your balance unless you
+have capped it. Step 4 is not optional here — do it before mapping any channel.
+:::
+
+---
+
+## Step 1 — Connect your Telegram account
+
+Open **Webhook Management** and switch to the **Telegram Connection** tab
+([metastation.fi/social-trade/webhook-management](https://metastation.fi/social-trade/webhook-management)).
+
+1. Enter your **phone number with country code** — for example `+1 234 567 8900`.
+2. Click **Connect Telegram**.
+3. Telegram sends a code to your Telegram app. Enter it under **Enter Verification Code**.
+4. If your *Telegram* account has two-step verification enabled, you are asked for that password
+   next. That is Telegram's password, not your MetaStation one.
+
+{/* SCREENSHOT: guide-tg-connect | Telegram Connection tab, phone number entry state | 1440x900 | redact: phone number */}
+
+:::warning
+Your Telegram session is stored encrypted and MetaStation does not read your private messages.
+Never share a Telegram login code with anyone — MetaStation support will never ask for it.
+:::
+
+## Step 2 — Let MetaStation detect the channel
+
+Channels are detected **by forwarding**, not by pasting a link:
+
+1. Open the signal channel in Telegram.
+2. Forward any message from it to **[@MetaStationBot](https://t.me/MetaStationBot)**.
+3. It appears in MetaStation as a detected channel.
+
+The connection card shows how many channels have been detected and how many are set to
+copy-trade or broadcast. Press **Refresh** if a newly forwarded channel has not appeared yet.
+
+## Step 3 — Map the channel to an account slot
+
+1. Open the account card for the slot you want to trade on.
+2. Pick the detected channel in its Telegram section.
+3. Choose whether it is a **copy-trade** source or a **broadcast** target.
+4. Save.
+
+:::note Three channels per account
+Up to **3 signal channels per account**. If you follow more sources than that, map different
+channels to different slots.
+:::
+
+## Step 4 — Cap what the channel can do
+
+Set these on the channel before you let it trade. They override whatever the signal says.
+
+| Control | Why it matters here |
+|---|---|
+| **Position size** | Fixed USD per signal. The caller decides direction; you decide exposure |
+| **Max leverage** | A `50x` call executes at your cap instead. This is the setting that separates a loss from a liquidation |
+| **Symbol whitelist** | Confines the channel to pairs you actually want, however far it drifts |
+| **Max open positions** | Contains a channel that posts ten calls in an hour |
+
+A defensible starting point for an unproven channel: fixed size at 1–2% of balance, leverage
+capped at 3x–5x, two or three whitelisted symbols, three open positions maximum.
+
+→ [Risk Controls](/docs/concepts/risk-controls)
+
+## Step 5 — Watch it parse before you trust it
+
+MetaStation reads ordinary signal formatting. A message like this parses cleanly:
+
+```
+📈 LONG BTC/USDT
+Entry: Market
+TP1: 48000
+TP2: 51000
+SL: 41000
+Leverage: 10x
+```
+
+The parser extracts action, symbol, direction, entry, take-profit levels, stop loss and leverage.
+
+**If a signal is ambiguous or missing something required, it logs a parse error and executes
+nothing.** It never guesses — a wrong trade costs more than a missed one.
+
+Let a channel run for a few real signals with parsing visible before you size up. Channels that
+post prose commentary, images, or edits to earlier calls will produce parse errors, and it is
+better to learn that at 1% than at 10%.
+
+{/* SCREENSHOT: guide-tg-parse | Telegram Connection showing a received signal with its parse result | 1440x900 | redact: channel name optional */}
+
+## Step 6 — Monitor and disconnect
+
+**Webhook Management → Telegram Connection** shows every received message per channel, its parse
+result, execution status and trade details.
+
+**Disconnect** ends the session and signal parsing stops immediately. Reconnect any time by
+repeating the phone-number flow.
+
+---
+
+## When a signal does not trade
+
+| Symptom | Cause |
+|---|---|
+| Channel never appeared | The forward did not reach @MetaStationBot. Forward again, then press Refresh |
+| No slot available to map | The target slot has no automation entitlement — free exchange slots need a Store subscription |
+| Message logged with a parse error | The format was not understood. Commentary and image-only posts do not parse |
+| Parsed but not executed | A risk control blocked it — leverage cap, whitelist, or max open positions |
+| Traded smaller than the call | Your position-size setting overrode it, which is the intended behaviour |
+
+<FAQ
+  items={[
+    {
+      question: 'How do I automatically execute trades from a Telegram signal channel?',
+      answer:
+        'Connect your Telegram account in MetaStation’s Webhook Management under the Telegram Connection tab, forward any message from the signal channel to @MetaStationBot so the channel is detected, then map that channel to a trading slot and set your risk limits. Signals posted in the channel are parsed and executed automatically from then on.',
+    },
+    {
+      question: 'How many Telegram signal channels can I connect?',
+      answer:
+        'Up to three signal channels per account. If you follow more sources than that, map different channels to different trading slots.',
+    },
+    {
+      question: 'Can MetaStation read my private Telegram messages?',
+      answer:
+        'No. The Telegram session is stored encrypted and MetaStation does not read private messages. Channels are only monitored once you explicitly detect them by forwarding a message to @MetaStationBot and map them to a trading slot.',
+    },
+    {
+      question: 'What happens if a Telegram signal asks for more leverage than I want?',
+      answer:
+        'Your maximum leverage cap on that channel overrides the signal, so a 50x call executes at your cap instead of being rejected. The same applies to position size — your configured size per signal takes precedence over whatever the caller specified.',
+    },
+    {
+      question: 'Why did a Telegram signal log a parse error instead of trading?',
+      answer:
+        'The message did not contain the fields needed to build a trade, or was ambiguous. Prose commentary, image-only posts and edits to earlier calls commonly produce parse errors. MetaStation executes nothing rather than guessing at missing values.',
+    },
+  ]}
+/>

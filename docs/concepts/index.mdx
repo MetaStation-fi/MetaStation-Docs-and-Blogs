@@ -1,0 +1,68 @@
+---
+id: concepts-index
+title: Concepts — How MetaStation Works
+sidebar_label: Overview
+description: The mechanisms behind the product — accounts and slots, how a signal becomes a trade, how orders execute, how copy trading translates a provider's position onto your balance.
+keywords: [how metastation works, crypto trading automation concepts, trading platform architecture]
+slug: /concepts
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+
+<ArticleSchema
+  headline="MetaStation Concepts — How the Platform Works"
+  description="The mechanisms behind accounts, signals, orders, copy trading, risk controls and settlement."
+  section="Concepts"
+/>
+
+# Concepts
+
+**Guides tell you which buttons to press. These pages tell you what happens after you press
+them.**
+
+Read them when a guide worked but you want to know why, when something behaved differently from
+what you expected, or before you automate anything with real money — automation removes the
+moment where a human would have noticed something was wrong, and these pages are where the
+replacement for that moment is described.
+
+---
+
+## Start here
+
+**[The Account Model](/docs/concepts/account-model)** — The login account, trading slots, and the
+Funding Wallet are three different things that everyday language calls "your account". Almost
+every question about where money sits, or why a feature is greyed out, resolves here.
+
+**[How a Signal Becomes a Trade](/docs/concepts/signal-pipeline)** — The path from a webhook POST
+or a Telegram message to a fill, and every point at which it can be rejected instead. This is the
+page to read when an alert fired and nothing happened.
+
+---
+
+## Execution
+
+**[How Orders Execute](/docs/concepts/order-execution)** — Trigger and fill are different events.
+That distinction explains why a stop loss can fill worse than its stop price, why a stop-limit can
+fail to fill at all, and what a take-profit ladder actually changes about your outcome.
+
+**[How Copy Trading Executes](/docs/concepts/copy-trading-mechanics)** — A provider's trade is
+translated into your account's terms, not duplicated. Why your result structurally differs from
+their published performance, and which multiplier reproduces their risk rather than their size.
+
+---
+
+## Money and safety
+
+**[Funding and Settlement](/docs/concepts/funding-and-settlement)** — Where a deposit goes,
+why everything settles in USDC, and why withdrawals need two codes from two channels.
+
+**[Risk Controls](/docs/concepts/risk-controls)** — Every limit that can stop or modify a trade,
+which layer it lives on, and a defensible starting configuration for a source you have not yet
+verified. Worth reading before your first automated trade rather than after it.
+
+---
+
+## Definitions
+
+Terms used across the docs — perpetuals, SLX, slots, gasless, mark price, the remainder keyword —
+are defined in the **[Glossary](/docs/glossary)**.

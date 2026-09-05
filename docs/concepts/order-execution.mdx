@@ -1,0 +1,167 @@
+---
+id: order-execution
+title: How Orders Execute
+sidebar_label: Order Execution
+description: What actually happens when an order is placed — trigger versus fill, why a stop loss can fill worse than its stop price, and how a take-profit ladder unwinds a position.
+keywords: [order types explained, stop loss vs stop limit, mark price vs last price, take profit ladder, market vs limit order crypto]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="How Orders Execute on MetaStation"
+  description="Trigger versus fill, why a stop loss can fill worse than its stop price, and how a take-profit ladder unwinds a position."
+  section="Concepts"
+/>
+
+# How Orders Execute
+
+Order types are usually explained as a list of names. The names are the easy part. What decides
+whether a strategy behaves as intended is a smaller set of mechanics underneath them.
+
+---
+
+## Trigger and fill are two different events
+
+This is the distinction that explains most surprises.
+
+A **trigger** is a condition being met — price reached your stop level. A **fill** is a trade
+actually happening. Between the two, price keeps moving.
+
+| Order | Triggers when | Fills at | Can it fail to fill? |
+|---|---|---|---|
+| Market | Immediately | Best available price | No |
+| Limit | Immediately | Your price **or better** | Yes — if price never reaches it |
+| Stop Market | Price hits the stop | Best available price at that moment | No |
+| Stop Limit | Price hits the stop | Your limit price or better | **Yes** |
+
+So a **Stop Market** loss order always closes you, but not necessarily at the number you typed —
+in a fast move the fill can be materially worse. That gap is slippage, and it is the price of
+certainty.
+
+A **Stop Limit** protects you from a bad fill and, in exchange, can leave you in the position
+entirely. If price gaps straight through your limit, nothing fills and the loss keeps running.
+
+:::warning The trade-off has no free side
+A market stop guarantees you are out at an uncertain price. A limit stop guarantees the price and
+not the exit. Choosing "limit" for a stop loss because it sounds safer is the more dangerous of
+the two options in exactly the conditions a stop exists for.
+:::
+
+---
+
+## Which price triggers it
+
+A trigger has to be measured against *some* price, and there is more than one.
+
+| Price type | What it is | Behaviour |
+|---|---|---|
+| **Mark price** | A smoothed reference price, the default | Resistant to brief wicks and thin-book spikes |
+| **Last price** | The most recent actual trade | Reacts to every print, including outliers |
+| **Index price** | An aggregate across external venues | Least affected by any single venue |
+
+Mark price is the default because it is the conservative choice: a single wick on thin liquidity
+should not close a position that the wider market never actually moved against. Selecting last
+price makes stops fire more readily — sometimes wanted, more often not.
+
+---
+
+## Sizing: three ways to say "how much"
+
+| Form | Example | Behaviour as the account grows |
+|---|---|---|
+| Percentage of balance | `2%` | Position size grows with the account — it compounds |
+| USD value | `$300` | Constant risk per trade regardless of balance |
+| Token amount | `0.001 BTC` | Constant token exposure; USD risk moves with price |
+
+None is correct in general. Percentage sizing compounds gains and drawdowns alike; fixed USD
+sizing keeps a losing streak from shrinking your position size just as a strategy recovers.
+
+---
+
+## The take-profit ladder
+
+Up to **10** take-profit levels can be attached to one position. Each is an independent order
+against a slice of the position.
+
+Take a long from $45,000:
+
+| Level | Price | Slice |
+|---|---|---|
+| TP1 | $48,000 | 30% |
+| TP2 | $50,000 | 40% |
+| TP3 | $52,000 | remainder |
+
+Price reaching $48,000 closes 30% and leaves the rest running. If it then reverses, TP2 and TP3
+stay open — they are not cancelled, and they are not "missed". They simply have not triggered.
+The last level takes `remainder` so that rounding across the earlier slices cannot strand a
+fragment of the position with no exit.
+
+**A ladder changes the shape of your outcome, not your edge.** It converts one binary result into
+a distribution: you give up some of the best case in exchange for banking part of the move
+earlier. That is a preference, not an improvement.
+
+---
+
+## Moving the stop as profit accrues
+
+Two mechanisms trail a stop, and they respond to different things.
+
+**Trailing stop** follows *price*. It ratchets up behind the peak and never moves back down.
+Distance is fixed or a percentage, and trailing starts at an activation price.
+
+**SLX (Stop Loss X)** follows *your take-profit events*, which is what makes it distinctive:
+
+- `breakeven` — once the activation TP fills, the stop moves to entry. The trade can no longer
+  lose money.
+- `follow_tp` — after each TP fills, the stop moves up to the previous TP level, locking in each
+  step of the ladder as it completes.
+
+SLX also has a `callback_rate` mode that trails by a percentage from the peak, which is the same
+idea as a trailing stop expressed in the automation payload.
+
+→ [Advanced Orders](/docs/trading/advanced-orders) · [Risk-Free Trade with SLX](/docs/guides/risk-free-trade-with-slx)
+
+---
+
+## Isolated and cross margin
+
+| Mode | Margin at risk | Liquidation |
+|---|---|---|
+| **Isolated** | Only what you allocated to that position | That position only; the rest of the balance survives |
+| **Cross** | The whole slot balance backs every position | Can take the account down with it |
+
+Cross margin gives a position more room before liquidation, by putting everything else behind it.
+Isolated caps the damage at a known number. For automated strategies — where a bad signal can
+arrive while you are asleep — isolated is the mode that lets you state your worst case in advance.
+
+<FAQ
+  items={[
+    {
+      question: 'Why did my stop loss fill at a worse price than I set?',
+      answer:
+        'A stop-market order triggers at your stop price but fills at whatever the market offers at that moment. In a fast move those are different numbers, and the difference is slippage. A stop-limit order avoids the bad fill but can fail to fill at all if price gaps through your limit, which leaves the position open and the loss running.',
+    },
+    {
+      question: 'What is the difference between mark price and last price for triggering orders?',
+      answer:
+        'Mark price is a smoothed reference price that resists brief wicks and thin-book spikes; last price is the most recent actual trade and reacts to every print. Mark price is the default because a single outlier trade should not close a position the wider market never moved against. Triggering on last price fires stops more readily.',
+    },
+    {
+      question: 'How many take profit levels can one position have?',
+      answer:
+        'Up to 10. Each level is an independent order against a slice of the position, and levels that have not triggered stay open after earlier ones fill. Setting the final level to "remainder" ensures rounding across the earlier slices cannot leave a fragment of the position without an exit.',
+    },
+    {
+      question: 'What is the difference between isolated and cross margin?',
+      answer:
+        'Isolated margin risks only the amount allocated to that one position, so a liquidation cannot take the rest of the balance. Cross margin backs every position with the whole slot balance, which gives a position more room before liquidation but puts the entire account behind it. Isolated is the safer default for automated strategies because it bounds the worst case in advance.',
+    },
+    {
+      question: 'What does SLX do that a trailing stop does not?',
+      answer:
+        'A trailing stop follows price. SLX follows your take-profit events: in breakeven mode the stop moves to your entry price once a chosen take-profit level fills, making the trade risk-free from that point; in follow_tp mode the stop moves up to the previous take-profit level each time a new one fills, locking in each completed step of the ladder.',
+    },
+  ]}
+/>

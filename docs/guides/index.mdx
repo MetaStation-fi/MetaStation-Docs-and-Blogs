@@ -1,0 +1,73 @@
+---
+id: guides-index
+title: Guides — Complete Walkthroughs
+sidebar_label: Overview
+description: End-to-end walkthroughs for the jobs people actually bring to MetaStation — automating TradingView alerts, executing Telegram signals, copy trading, scaling out of positions, and trading from your own code.
+keywords: [crypto trading guides, tradingview automation guide, telegram trading bot guide, copy trading guide]
+slug: /guides
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+
+<ArticleSchema
+  headline="MetaStation Guides — Complete Walkthroughs"
+  description="End-to-end walkthroughs for automating alerts, executing signals, copy trading and trading from your own code."
+  section="Guides"
+/>
+
+# Guides
+
+**Each of these is one job, start to finish, ending in something that works.**
+
+Where the reference sections describe what a feature does, these describe how to get a specific
+outcome — including the risk settings to configure first and the failure modes to expect.
+
+---
+
+## Automation
+
+**[Send TradingView Alerts to Binance Automatically](/docs/guides/tradingview-webhook-to-binance)**
+The full path from a TradingView alert to a live Binance position: connecting the exchange,
+unlocking automation, the alert payload, and the placeholders that let one alert serve every
+signal. *~15 minutes.*
+
+**[Auto-Execute Telegram Signals](/docs/guides/auto-execute-telegram-signals)**
+Turn a signal channel into trades — connect Telegram, let the channel be detected, map it to an
+account, and cap what an unknown caller can do with your balance. *~10 minutes.*
+
+**[Trade from Your Own Script or Bot](/docs/guides/automate-with-a-script)**
+One HTTP POST, with working Python and Node, error handling that keeps local state honest, and the
+mistakes that cost money. *For developers.*
+
+**[Secure Your Webhook URL](/docs/guides/secure-your-webhook)**
+The URL is a bearer credential. Where they leak from, how to restrict one in advance, and what to
+do in the first five minutes after one is exposed. **Read this before the others go live.**
+
+---
+
+## Trading
+
+**[Scale Out with Multiple Take Profits](/docs/guides/scale-out-with-take-profits)**
+Build a take-profit ladder that banks part of a move while the rest runs — where to place levels,
+how to split size, and an honest account of what a ladder does and does not improve.
+
+**[Make a Trade Risk-Free with SLX](/docs/guides/risk-free-trade-with-slx)**
+Move the stop to breakeven automatically once the first target fills, then walk it up behind each
+level. Configured once, in the UI or in the payload.
+
+---
+
+## Getting funded
+
+**[Fund Your Account from Any Chain](/docs/guides/fund-from-any-chain)**
+Deposit whatever you already hold, on whichever of 56 blockchain networks it sits on, and have it arrive as
+USDC margin — no manual bridging, no gas token.
+
+---
+
+## New to MetaStation?
+
+Start with the **[Quick Start](/docs/getting-started/quick-start)** — zero to a first trade in
+about five minutes — then come back here for the automation you actually want.
+
+To understand the mechanics rather than the steps, read **[Concepts](/docs/concepts)**.

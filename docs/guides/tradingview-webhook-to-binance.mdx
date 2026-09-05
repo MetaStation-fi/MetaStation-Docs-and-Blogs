@@ -1,0 +1,230 @@
+---
+id: tradingview-webhook-to-binance
+title: Send TradingView Alerts to Binance Automatically
+sidebar_label: TradingView → Binance
+description: Connect a TradingView strategy or indicator alert to a Binance account so signals execute as live trades without you at the keyboard. Complete walkthrough with a working alert payload.
+keywords: [tradingview webhook binance, tradingview alert to binance, automate tradingview strategy, tradingview bot binance, execute tradingview alerts]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Send TradingView Alerts to Binance Automatically"
+  description="Connect a TradingView alert to a Binance account through MetaStation so signals execute as live trades."
+  section="Guides"
+/>
+
+# Send TradingView Alerts to Binance Automatically
+
+**The job:** a TradingView indicator or strategy fires an alert, and a trade opens on your
+Binance account — sized, leveraged and protected — with nobody watching the chart.
+
+**Time:** about 15 minutes. **You need:** a TradingView plan that includes webhooks (any paid
+tier), a Binance account, and a MetaStation account.
+
+:::info Binance needs a paid slot; the native account does not
+Webhook automation on a connected Binance, ByBit or KuCoin slot requires a slot subscription from
+the Store. It is **free on your MetaStation Account slot**. If you are here to test whether
+webhook automation suits you, run this guide against the MetaStation Account first — every step is
+identical except the slot you pick — and connect Binance once you know you want it.
+:::
+
+---
+
+## Step 1 — Connect Binance
+
+Generate an API key at Binance and add it to MetaStation. The permissions to grant are trading
+permissions only, and **withdrawals must stay disabled** — MetaStation never needs them, so a
+compromised key cannot move funds off your exchange account.
+
+Follow [Connect an Exchange](/docs/trading/connect-exchange) for the key generation and the exact
+fields, then return here.
+
+## Step 2 — Unlock automation on the slot
+
+Open **Account Management** → **Trading Slots**
+([metastation.fi/social-trade/account-management](https://metastation.fi/social-trade/account-management)).
+
+Your Binance slot appears as a free manual slot. Automation is added from the **Store** as a slot
+subscription — monthly, quarterly or annual.
+
+Until this is done the slot has no webhook URL, which is the usual reason Step 3 appears to be
+missing.
+
+## Step 3 — Copy the webhook URL
+
+Open **Webhook Management** → **Webhook URLs** tab
+([metastation.fi/social-trade/webhook-management](https://metastation.fi/social-trade/webhook-management)).
+
+Under **Your Webhook URLs**, find the Binance slot and copy its URL:
+
+```
+https://api.metastation.fi/webhook/{your-unique-token}
+```
+
+{/* SCREENSHOT: guide-tv-webhook-url | Webhook Management, Your Webhook URLs, Binance slot row | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
+
+:::danger This URL is a password
+Anyone holding it can trade this slot. There is no second credential. Do not paste it into a
+public TradingView script, a screenshot, or a shared chat. If it leaks, press **Regenerate
+Secret** — the old URL stops working immediately.
+:::
+
+## Step 4 — Set your risk limits first
+
+Do this **before** the first alert fires, not after. On the slot, set:
+
+| Control | Suggested first value |
+|---|---|
+| Max leverage | 3x–5x |
+| Position size | Fixed USD, 1–2% of balance |
+| Symbol whitelist | Only the pairs this strategy trades |
+| Max open positions | 3 |
+
+The last one is what contains a strategy that repaints or an alert that fires repeatedly — it
+opens one position instead of forty.
+
+→ [Risk Controls](/docs/concepts/risk-controls)
+
+## Step 5 — Create the TradingView alert
+
+On your chart, open the indicator or strategy, click the clock icon, and create an alert.
+
+1. **Condition** — your strategy's entry condition.
+2. **Alert actions** — tick **Webhook URL** and paste the URL from Step 3.
+3. **Message** — this is the payload. Paste the JSON below.
+
+```json
+{
+  "action": "open",
+  "symbol": "BTCUSDT",
+  "side": "buy",
+  "orderType": "market",
+  "quantity": "2%",
+  "leverage": 5,
+  "marginMode": "isolated",
+  "stopLoss": 41000,
+  "takeProfits": [
+    { "price": 47000, "quantity": "50%" },
+    { "price": 50000, "quantity": "remainder" }
+  ]
+}
+```
+
+Three things about this payload are deliberate:
+
+- **`marginMode: "isolated"`** bounds the worst case to this position instead of the account.
+- **`stopLoss` is in the payload**, not added by hand afterwards. Anything you plan to add
+  manually depends on you being awake.
+- **The final take-profit uses `"remainder"`**, so rounding on the earlier slice cannot strand a
+  fragment of the position with no exit.
+
+### Making it follow the chart
+
+Hardcoded prices only suit a fixed level. TradingView placeholders let one alert serve every
+signal:
+
+```json
+{
+  "action": "open",
+  "symbol": "{{ticker}}",
+  "side": "buy",
+  "orderType": "market",
+  "quantity": "2%",
+  "leverage": 5,
+  "marginMode": "isolated"
+}
+```
+
+For a strategy that goes both ways, `{{strategy.order.action}}` resolves to `buy` or `sell`:
+
+```json
+{
+  "action": "open",
+  "symbol": "{{ticker}}",
+  "side": "{{strategy.order.action}}",
+  "orderType": "market",
+  "quantity": "2%",
+  "leverage": 5,
+  "marginMode": "isolated"
+}
+```
+
+→ More patterns in [TradingView Templates](/docs/developer/tradingview-templates)
+
+## Step 6 — Test before you trust it
+
+Send one signal yourself, at a size you do not mind being wrong about:
+
+```bash
+curl -X POST https://api.metastation.fi/webhook/YOUR_TOKEN \
+  -H "Content-Type: application/json" \
+  -d '{"action":"open","symbol":"BTCUSDT","side":"buy","orderType":"market","quantity":"1%","leverage":3,"marginMode":"isolated"}'
+```
+
+Then check **Webhook Management** — the signal should appear with its parse result and execution
+status. Confirm the position exists on Binance, at the size and leverage you expected, then close
+it.
+
+Only after that should you let the strategy run live.
+
+## Step 7 — Close the loop
+
+An entry alert without an exit alert leaves positions open indefinitely. Create a second alert on
+your exit condition with:
+
+```json
+{
+  "action": "close",
+  "symbol": "{{ticker}}",
+  "side": "sell"
+}
+```
+
+Omitting `quantity` closes the whole position. Include `"quantity": "50%"` to scale out instead.
+
+---
+
+## When it does not work
+
+| Symptom | Cause |
+|---|---|
+| No webhook URL on the slot | The Store subscription has not been purchased — Step 2 |
+| Signal missing from the log entirely | It never arrived. Check the URL in the alert, and any IP whitelist |
+| Signal logged with a parse error | The alert message is not valid JSON. TradingView comments and stray text break it |
+| Parsed but not executed | A risk control blocked it — leverage cap, whitelist, or max open positions |
+| Executed at an unexpected size | Check which size form the payload used against the slot's position-size setting |
+
+The order of that table matches the [signal pipeline](/docs/concepts/signal-pipeline) — the first
+row that matches is your answer.
+
+<FAQ
+  items={[
+    {
+      question: 'How do I connect TradingView alerts to Binance?',
+      answer:
+        'Connect your Binance API keys to a MetaStation slot, add a slot subscription to unlock automation, then copy that slot’s webhook URL from Webhook Management. In TradingView, create an alert, tick "Webhook URL", paste the URL, and put a JSON payload in the alert message specifying the action, symbol, side, size and protection. TradingView webhooks require a paid TradingView plan.',
+    },
+    {
+      question: 'Do I need a paid TradingView plan to automate alerts?',
+      answer:
+        'Yes. Webhook alerts are a paid TradingView feature and are not available on the free tier. Any paid tier includes them. On the MetaStation side, webhook automation is free on your MetaStation Account slot but requires a Store slot subscription on a connected Binance, ByBit or KuCoin slot.',
+    },
+    {
+      question: 'Can one TradingView alert trade whichever symbol the chart is on?',
+      answer:
+        'Yes. Use the {{ticker}} placeholder in the symbol field of the alert message and TradingView substitutes the chart’s symbol when the alert fires. For strategies that trade both directions, {{strategy.order.action}} resolves to buy or sell so a single alert handles both.',
+    },
+    {
+      question: 'Is it safe to give MetaStation my Binance API keys?',
+      answer:
+        'Generate the key with trading permissions only and leave withdrawals disabled — MetaStation never needs withdrawal permission, so a compromised key cannot move funds off your Binance account. Your funds stay at Binance throughout; connecting an exchange only grants order placement.',
+    },
+    {
+      question: 'What happens if my TradingView strategy fires the same alert repeatedly?',
+      answer:
+        'Without limits it would open a position each time. Set a maximum open positions limit on the slot so further signals stop executing once you hold that many, and add a webhook rate limit to cap signals per minute. Configure both before the first live alert rather than after a repeating one.',
+    },
+  ]}
+/>

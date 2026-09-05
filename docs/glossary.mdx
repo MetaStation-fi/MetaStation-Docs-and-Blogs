@@ -1,0 +1,244 @@
+---
+id: glossary
+title: Glossary
+sidebar_label: Glossary
+description: Every term MetaStation's documentation uses that is not self-explanatory — perpetuals, SLX, slots, gasless, mark price, the remainder keyword, and the rest.
+keywords: [crypto trading glossary, perpetual futures definition, what is slx, mark price definition, isolated vs cross margin]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+
+<ArticleSchema
+  headline="MetaStation Glossary"
+  description="Definitions of the trading and platform terms used throughout the MetaStation documentation."
+  section="Reference"
+/>
+
+# Glossary
+
+Terms used across these docs, defined once. Platform-specific terms are marked
+**(MetaStation)**; the rest are general trading vocabulary as it applies here.
+
+---
+
+## Accounts and structure
+
+#### Login account
+Your identity on MetaStation — email, password and 2FA. It owns your trading slots but is not
+itself a place where funds sit. → [Account Model](/docs/concepts/account-model)
+
+#### Slot **(MetaStation)**
+One trading configuration: a venue, its balance, its settings, its automation rules and its own
+webhook URL. An account can hold several. Slots are independent — a signal sent to one cannot
+affect another. → [Account Slots](/docs/trading/account-slots)
+
+#### MetaStation Account **(MetaStation)**
+The native trading slot created for you at registration. Web3 by default, settles on-chain in
+USDC, and includes every automation tool free.
+
+#### Connected exchange slot **(MetaStation)**
+A Binance, ByBit or KuCoin account linked with your own API keys. Funds stay at the exchange;
+MetaStation places orders. One free manual slot per exchange; automation requires a Store
+subscription.
+
+#### Funding Wallet **(MetaStation)**
+The smart-contract wallet on Arbitrum that holds the USDC backing a MetaStation Account slot. No
+seed phrase, no gas token. → [Funding and Settlement](/docs/concepts/funding-and-settlement)
+
+#### Manual slot **(MetaStation)**
+A slot without an automation entitlement. Terminal trading and copy-trading as a follower work;
+webhooks and Telegram-to-Trade do not.
+
+---
+
+## Markets and instruments
+
+#### Spot
+Buying or selling the asset itself. You own what you bought; there is no leverage and no
+liquidation.
+
+#### Perpetual futures (perps)
+A futures contract with no expiry date. It tracks the underlying price and can be held
+indefinitely, held to that price by funding payments. Where leverage on MetaStation is used.
+
+#### Funding rate
+Periodic payments between long and short holders of a perpetual that keep its price tethered to
+spot. A cost of *holding* a position, independent of whether price moved your way. Settles in
+USDC.
+
+#### Leverage
+Trading a position larger than your margin. `10x` means $1,000 of margin controls a $10,000
+position — and moves your balance ten times as fast in both directions.
+
+#### Liquidation
+Forced closure when losses consume the margin backing a position. What leverage risks, and the
+reason a leverage cap is the highest-value automation setting.
+
+#### USDC
+The dollar stablecoin MetaStation settles in. Margin, profit, loss and fees are all USDC.
+
+---
+
+## Prices
+
+#### Mark price
+A smoothed reference price, resistant to brief wicks and thin-book spikes. The **default** trigger
+price for stops and SLX, because a single outlier trade should not close a position the wider
+market never moved against.
+
+#### Last price
+The most recent actual trade. Reacts to every print, including outliers — triggering on it fires
+stops more readily.
+
+#### Index price
+An aggregate across external venues. Least affected by any single venue's behaviour.
+
+#### Slippage
+The gap between the price that triggered an order and the price it actually filled at. The cost of
+demanding certainty of execution in a fast market.
+
+---
+
+## Orders
+
+#### Market order
+Executes immediately at the best available price. Always fills; the price is not guaranteed.
+
+#### Limit order
+Executes at your price or better. The price is guaranteed; the fill is not.
+
+#### Stop market
+A market order triggered when price reaches your stop level. Always closes you — possibly at a
+materially worse price than the stop.
+
+#### Stop limit
+A limit order triggered at your stop level. Protects the price and **can fail to fill entirely**,
+leaving the position open and the loss running.
+
+#### Trigger vs. fill
+Two separate events: the condition being met, and a trade actually happening. Price keeps moving
+between them. → [Order Execution](/docs/concepts/order-execution)
+
+#### Take profit (TP)
+An order closing part or all of a position at a favourable price. Up to **10** per position on
+MetaStation.
+
+#### TP ladder
+Several take-profit levels at rising prices, each against a slice of the position. Changes the
+shape of the outcome rather than the edge.
+→ [Scale Out with Multiple TPs](/docs/guides/scale-out-with-take-profits)
+
+#### `remainder` **(MetaStation)**
+Keyword for the final take-profit level's quantity: close whatever is left. Prevents rounding
+across earlier slices from stranding a fragment of the position with no exit.
+
+#### Stop loss (SL)
+An order closing a position at a defined loss. A position without one has no defined worst case.
+
+#### Trailing stop
+A stop that ratchets up behind the peak price and never moves back down. Follows *price*.
+
+#### SLX (Stop Loss X) **(MetaStation)**
+An advanced stop system that follows *take-profit events* rather than price. Three modes:
+`breakeven` (move the stop to entry once a chosen TP fills), `follow_tp` (move it to the previous
+TP after each fill), and `callback_rate` (trail by a percentage from the peak).
+→ [Risk-Free Trade with SLX](/docs/guides/risk-free-trade-with-slx)
+
+#### Callback rate
+In SLX, the percentage below the highest price seen since activation at which the stop sits.
+
+#### Reverse **(MetaStation)**
+An action that closes the current position and immediately opens the opposite direction — one
+request, with no window where the account is flat.
+
+---
+
+## Margin
+
+#### Isolated margin
+Only the margin allocated to a position is at risk. A liquidation cannot take the rest of the
+balance. The safer default for automation, because the worst case is knowable in advance.
+
+#### Cross margin
+The whole slot balance backs every position. More room before liquidation, and the entire account
+standing behind each trade.
+
+---
+
+## Automation
+
+#### Webhook
+An HTTP endpoint that receives trading signals. Your webhook URL ends in a token unique to one
+slot. → [Webhook Trading](/docs/automation/webhook-trading)
+
+#### Webhook token **(MetaStation)**
+The unique string at the end of a webhook URL. It is a **bearer credential** — the whole
+credential — and it also determines which slot trades.
+→ [Secure Your Webhook](/docs/guides/secure-your-webhook)
+
+#### Regenerate Secret **(MetaStation)**
+Issues a new webhook token and invalidates the old URL immediately. The response to any suspected
+leak.
+
+#### Payload
+The JSON or natural-language body of a signal, describing the trade to execute.
+
+#### Parse error **(MetaStation)**
+Logged when a signal cannot be understood. **Nothing executes** — MetaStation never guesses at
+missing values. → [Signal Pipeline](/docs/concepts/signal-pipeline)
+
+#### Natural language format **(MetaStation)**
+Human-readable signals — the kind Telegram channels post — accepted on the same endpoint as JSON.
+
+#### Telegram-to-Trade **(MetaStation)**
+Executing signals posted in a Telegram channel bound to one of your slots. Up to three channels
+per account.
+
+#### Gasless **(MetaStation)**
+Network gas on your trades is abstracted away. You never hold a gas token, and a trade cannot fail
+for lack of one.
+
+---
+
+## Social trading
+
+#### Provider
+A trader publishing to the marketplace whose trades followers copy, earning subscription revenue.
+
+#### Follower
+A subscriber whose account replicates a provider's trades.
+
+#### Multiplier
+Scales each copied trade relative to the provider's size. Start from
+`your_balance / provider_balance` — that reproduces their *risk*, not their notional.
+
+#### Maximum position cap
+A hard per-trade limit that applies regardless of the multiplier.
+
+#### Loss threshold **(MetaStation)**
+A circuit breaker that pauses copying once realised losses from a provider pass a set percentage.
+Resuming is a manual decision. → [Copy Settings](/docs/social-trading/copy-settings)
+
+#### Drawdown
+The peak-to-trough fall in an account or track record. The number a follower has to sit through,
+and a better guide to whether a provider is followable than the headline return.
+
+---
+
+## Security
+
+#### 2FA / TOTP
+Two-factor authentication via Google Authenticator. **Required to withdraw.**
+
+#### Withdrawal gating **(MetaStation)**
+Every withdrawal needs two independent codes: your authenticator code **and** a code emailed to
+your registered address. → [Withdrawal Security](/docs/security/withdrawal-whitelist)
+
+#### IP whitelist
+Restricts a webhook to accept signals only from named addresses, making a leaked URL unusable to
+anyone else.
+
+#### Exchange API key
+Credentials generated at Binance, ByBit or KuCoin letting MetaStation place orders. Grant trading
+permissions only — **never withdrawals**.
+→ [API Key Management](/docs/security/api-key-management)

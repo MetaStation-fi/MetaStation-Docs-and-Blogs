@@ -6,7 +6,7 @@ sidebar_label: Fund Your Account
 
 # Fund Your Account
 
-MetaStation accepts deposits from **35+ blockchain networks**. Whatever asset you send is automatically bridged and converted to USDC and credited to your MetaStation Account.
+MetaStation accepts deposits from **56 blockchain networks**. Whatever asset you send is automatically bridged and converted to USDC and credited to your MetaStation Account.
 
 ## Your Funding Wallet
 

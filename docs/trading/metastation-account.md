@@ -34,7 +34,7 @@ phrase to manage and no gas to pay on your trades.
 
 This is what makes the MetaStation Account effortless to fund: **send almost any asset, from almost any network, and it arrives as USDC in your account.**
 
-- **35+ networks supported** — Ethereum, Arbitrum, Optimism, Base, Polygon, BNB Smart Chain, Avalanche, Solana, TRON, TON, and many more EVM and non-EVM chains.
+- **56 blockchain networks supported** — Ethereum, Arbitrum, Optimism, Base, Polygon, BNB Smart Chain, Avalanche, Solana, TRON, TON, and many more EVM and non-EVM chains.
 - **Any asset → USDC** — Deposit ETH, USDT, SOL, native tokens, stablecoins — whatever you hold. It's automatically bridged and converted to USDC and credited to your account.
 - **One simple flow** — Pick your source network and asset, confirm, and your funds land as trading margin. No manual bridging, no juggling wallets across chains.
 

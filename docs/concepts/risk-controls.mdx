@@ -1,0 +1,169 @@
+---
+id: risk-controls
+title: Risk Controls — Every Limit That Can Stop a Trade
+sidebar_label: Risk Controls
+description: The complete set of limits that sit between a signal and a fill, which layer each one lives on, and how to decide what to set before automating anything.
+keywords: [automated trading risk management, leverage cap, symbol whitelist, max open positions, trading bot safety]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="Risk Controls on MetaStation"
+  description="Every limit that can stop or modify a trade, which layer it lives on, and how to choose settings before automating."
+  section="Concepts"
+/>
+
+# Risk Controls
+
+Automation removes the pause where a human would have said "that looks wrong". The controls below
+are what replace it. They are the only thing standing between a malformed signal at 3am and your
+balance.
+
+**Every one of them is off, or unlimited, until you set it.**
+
+---
+
+## The layers
+
+Limits live at four levels, and they compose — a trade must pass all of them.
+
+| Layer | Controls | Applies to |
+|---|---|---|
+| **Account** | 2FA, withdrawal gating | Everything |
+| **Slot** | Leverage defaults, margin mode, automation entitlement | Every trade on that slot |
+| **Channel / source** | Position size, max leverage, symbol whitelist, max open positions | Signals from that source |
+| **Position** | Stop loss, take-profit ladder, SLX | One trade |
+
+The important consequence: a limit set on a Telegram channel does not constrain trades arriving
+by webhook on the same slot. Each source is configured separately.
+
+---
+
+## Source-level controls
+
+These are the ones that matter most for automation, because they bound what an untrusted signal
+can do.
+
+### Maximum leverage
+
+Caps leverage regardless of what the signal asks for. A channel capped at 5x executes a `20x`
+signal at 5x rather than rejecting it.
+
+This is the highest-value single setting available. Leverage is what turns a wrong signal into a
+liquidation instead of a loss.
+
+### Position size
+
+Fixed USD amount or percentage of wallet per signal, overriding whatever size the signal carried.
+Set this whenever the signal source is someone else's — a Telegram channel that occasionally
+posts an oversized "high conviction" call should not be able to act on that conviction with your
+balance.
+
+### Symbol whitelist
+
+Only listed pairs execute; everything else is skipped. Narrow, liquid, and deliberate beats
+broad: it protects against both a compromised source and a provider drifting into illiquid
+markets where slippage does the damage.
+
+### Maximum open positions
+
+Stops new signals executing once you already hold N. This is the control that contains a
+malfunctioning source — a stuck alert firing repeatedly opens one position, not forty.
+
+---
+
+## Position-level protection
+
+A stop loss is not a risk control you configure once. It is per-trade, and a position without one
+has an undefined worst case.
+
+For automated strategies, attach protection **in the signal itself** rather than adding it by
+hand afterwards. Anything added manually depends on you being awake:
+
+```json
+{
+  "action": "open",
+  "symbol": "BTCUSDC",
+  "side": "buy",
+  "quantity": "2%",
+  "leverage": 5,
+  "marginMode": "isolated",
+  "stopLoss": 41000,
+  "takeProfits": [
+    { "price": 47000, "quantity": "50%" },
+    { "price": 50000, "quantity": "remainder" }
+  ]
+}
+```
+
+`marginMode: "isolated"` belongs in that payload for the same reason: it bounds the loss to the
+position rather than the account.
+
+→ [Order Execution](/docs/concepts/order-execution)
+
+---
+
+## Credential controls
+
+The webhook URL is a bearer credential — holding it is sufficient to trade the slot. Two controls
+reduce what a leaked one is worth:
+
+- **IP whitelist** — accept signals only from the addresses your source actually sends from. This
+  turns a leaked URL from a working key into a useless string for anyone else.
+- **Rate limit** — cap signals per minute, so a runaway or replayed sender cannot flood the slot.
+
+And one recovery: **Regenerate Secret** invalidates the old URL immediately. Use it the moment a
+URL has been pasted anywhere you would not paste a password.
+
+→ [Secure Your Webhook](/docs/guides/secure-your-webhook)
+
+---
+
+## A defensible starting configuration
+
+For a signal source you have not yet verified with real money:
+
+| Control | Starting value | Why |
+|---|---|---|
+| Max leverage | 3x–5x | Survive being wrong |
+| Position size | Fixed USD, 1–2% of balance | Constant risk, no compounding into a bad run |
+| Symbol whitelist | The 2–3 pairs you actually want | Bounds both compromise and drift |
+| Max open positions | 3 | Contains a stuck or looping source |
+| Margin mode | Isolated | Worst case is knowable in advance |
+| Stop loss | In every payload | A position without one has no defined worst case |
+| IP whitelist | Your source's addresses | A leaked URL stops being usable |
+
+Loosen these once a source has proven itself over a real sample. Tightening them after a loss is
+the expensive order to do it in.
+
+<FAQ
+  items={[
+    {
+      question: 'What risk controls should I set before automating a trading strategy?',
+      answer:
+        'At minimum: a maximum leverage cap, a fixed position size rather than a percentage, a symbol whitelist limited to pairs you actually want, a maximum open positions limit, isolated margin mode, and a stop loss in every signal payload. All of these are unset or unlimited by default, so an unconfigured slot places no bound on what an incoming signal can do.',
+    },
+    {
+      question: 'Does a leverage cap reject a signal or reduce it?',
+      answer:
+        'It reduces it. A source capped at 5x that sends a 20x signal executes at 5x rather than being rejected. A symbol whitelist behaves differently — a symbol outside the list is skipped entirely rather than executed at a smaller size.',
+    },
+    {
+      question: 'What happens if someone gets my MetaStation webhook URL?',
+      answer:
+        'They can execute trades on the slot that URL belongs to, because the token in the URL is the entire credential. Regenerate the secret immediately, which invalidates the old URL. An IP whitelist limits the damage in advance by making the URL unusable from any address your signal source does not send from.',
+    },
+    {
+      question: 'Do risk limits on a Telegram channel also apply to webhook signals?',
+      answer:
+        'No. Limits are configured per signal source, so a cap set on a Telegram channel does not constrain webhook signals arriving on the same trading slot. Each source needs its own configuration.',
+    },
+    {
+      question: 'How do I stop a malfunctioning signal source from opening endless positions?',
+      answer:
+        'Set a maximum open positions limit on that source. Once you hold that many positions, further signals are not executed, so an alert that fires repeatedly opens one position instead of dozens. A rate limit on the webhook adds a second bound on how many signals can arrive per minute.',
+    },
+  ]}
+/>
