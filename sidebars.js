@@ -190,6 +190,7 @@ const sidebars = {
       },
       items: [
         'developer/webhook-api-overview',
+        'developer/payload-builder',
         'developer/json-format',
         'developer/natural-language-format',
         'developer/supported-actions',

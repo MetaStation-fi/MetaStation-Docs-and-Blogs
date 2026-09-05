@@ -1,0 +1,137 @@
+---
+id: payload-builder
+title: Webhook Payload Builder
+sidebar_label: Payload Builder
+description: Build a valid MetaStation webhook payload without hand-writing JSON. Pick an action, size, take-profit ladder and stop, and copy out the JSON, a TradingView alert message, or a ready-to-run curl command.
+keywords:
+  [
+    tradingview alert json generator,
+    webhook payload builder,
+    tradingview webhook json,
+    trading webhook generator,
+    tradingview alert message format,
+  ]
+---
+
+import ArticleSchema from '@site/src/components/ArticleSchema';
+import PayloadBuilder from '@site/src/components/PayloadBuilder';
+import FAQ from '@site/src/components/FAQ';
+
+<ArticleSchema
+  headline="MetaStation Webhook Payload Builder"
+  description="Generate a valid webhook payload, TradingView alert message, or curl command for automated trading."
+  section="Developer"
+/>
+
+# Webhook Payload Builder
+
+Hand-writing this JSON is where most first webhook attempts fail, and the failure is invisible —
+a malformed alert message does not error at you, it simply never trades. Build it here instead.
+
+Set the trade up below and copy the result into your TradingView alert, your script, or a terminal.
+
+<PayloadBuilder />
+
+---
+
+## What to do with each output
+
+**JSON payload** — the request body. Use it from a script, or as the alert message in any signal
+source that lets you set one.
+
+**TradingView alert** — paste into the alert's **Message** box, with your slot's webhook URL in
+**Webhook URL**. Nothing else belongs in that box: comments, labels or stray text break the parse.
+
+**curl** — run it directly to test. Set `METASTATION_WEBHOOK_URL` in your shell first rather than
+pasting the URL inline, so it does not end up in your shell history:
+
+```bash
+export METASTATION_WEBHOOK_URL="https://api.metastation.fi/webhook/YOUR_TOKEN"
+```
+
+:::danger Your webhook URL is a bearer credential
+The token in it is the entire credential — anyone holding the URL can trade that slot. Never paste
+it into a public script, a screenshot, or a shared chat. If it is exposed, press **Regenerate
+Secret** in Webhook Management immediately.
+
+→ [Secure Your Webhook](/docs/guides/secure-your-webhook)
+:::
+
+---
+
+## The TradingView placeholders
+
+Ticking **Use TradingView placeholders** swaps the symbol and side for substitutions TradingView
+fills in when the alert fires:
+
+| Placeholder | Resolves to | Works on |
+|---|---|---|
+| `{{ticker}}` | The chart's symbol | Any alert |
+| `{{strategy.order.action}}` | `buy` or `sell` | **Strategy** alerts only |
+
+That turns one alert into a template serving every symbol you attach it to and — for a strategy
+that trades both ways — both directions. An *indicator* alert has no strategy order, so
+`{{strategy.order.action}}` will not resolve there; leave the toggle off and pick a fixed side.
+
+It changes only those two values, never the shape of the payload. **Test the concrete version
+first** — a placeholder that fails to resolve produces a parse error, and a parse error is silent.
+
+→ [More patterns: TradingView Templates](/docs/developer/tradingview-templates)
+
+---
+
+## Why the builder warns you
+
+Some notes above the output flag payloads the parser will **reject outright**; others flag choices
+that are legal but expensive when a position runs unattended:
+
+| Warning | Why it matters |
+|---|---|
+| No stop loss | An automated position without one has no defined worst case |
+| Cross margin | The whole slot balance backs the position, not just its margin |
+| Leverage above 10x | Turns a wrong signal into a liquidation rather than a loss |
+| A TP level has a price but no `amount` | The validator rejects the signal with "TPn missing price or amount" |
+| TP amounts total more than the order quantity | Rejected with "Total TP amount exceeds order amount" |
+
+→ [Risk Controls](/docs/concepts/risk-controls) · [How Orders Execute](/docs/concepts/order-execution)
+
+---
+
+## Test it before you trust it
+
+Send one signal at a size you do not mind being wrong about, then open **Webhook Management** and
+confirm it appears with a successful parse and the position you expected. Only then point a live
+strategy at it.
+
+→ [Full walkthrough: TradingView → Binance](/docs/guides/tradingview-webhook-to-binance)
+→ [Try requests interactively: API Reference](/docs/api/metastation-webhook-api)
+
+<FAQ
+  items={[
+    {
+      question: 'What JSON should I put in a TradingView alert message?',
+      answer:
+        'A single JSON object describing the trade — at minimum an action, a symbol and a side, plus size and protection such as stop loss and take-profit levels. Nothing else may appear in the alert message box: comments, labels or stray text break the parse and the alert silently fails to trade. The builder on this page generates a valid message you can paste directly.',
+    },
+    {
+      question: 'How do I make one TradingView alert work for any symbol?',
+      answer:
+        'Use the {{ticker}} placeholder in the symbol field, which TradingView substitutes with the chart’s symbol when the alert fires. For a strategy that trades both directions, {{strategy.order.action}} resolves to buy or sell — but only on strategy alerts, not indicator alerts.',
+    },
+    {
+      question: 'Why does my webhook alert fire but no trade appears?',
+      answer:
+        'Most often the alert message is not valid JSON, so it is logged with a parse error and nothing executes. Check the Webhook Management log: if the signal is not listed at all it never arrived, if it shows a parse error the body was malformed, and if it parsed but did not execute then a risk control such as a leverage cap or symbol whitelist blocked it.',
+    },
+    {
+      question: 'Do I need to include a stop loss in the webhook payload?',
+      answer:
+        'It is not required by the format, but a position opened by automation with no stop loss has no defined worst case, and adding one by hand afterwards depends on you being awake. Include stopLoss in the payload so protection is attached as the position opens.',
+    },
+    {
+      question: 'What format do take profit levels use in a MetaStation webhook?',
+      answer:
+        'Each level is an object with a price and an amount, where amount is a number of base tokens — for example { "price": 48000, "amount": 0.005 }. Percentage strings and keywords such as "remainder" are rejected by the validator, and the total of all amounts must not exceed the order quantity.',
+    },
+  ]}
+/>

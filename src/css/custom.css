@@ -52,8 +52,15 @@
   /* Accent — the token that must pass contrast on --ms-bg */
   --ms-accent: #0f766e;          /* ~5.6:1 on #f8fafc — AA for body text */
   --ms-accent-hover: #0b5f59;
-  --ms-accent-fill: #0d9488;     /* filled surfaces, not text */
-  --ms-accent-on-fill: #ffffff;  /* text sitting on --ms-accent-fill */
+  /* CAUTION: white on --ms-accent-fill measures ~3.7:1. That clears WCAG AA
+     for UI components and LARGE text (3:1) and FAILS it for normal-size text
+     (4.5:1). So this pair is for filled chrome — badges, bars, icon plates —
+     not for a filled control carrying a small label.
+     For a filled surface with small text, use --ms-accent (~5.4:1 on white)
+     as the background instead; both tokens resolve to the same #2dd4bf in
+     dark mode, so it costs nothing there. */
+  --ms-accent-fill: #0d9488;     /* filled surfaces, not small text */
+  --ms-accent-on-fill: #ffffff;  /* text sitting on a filled accent surface */
   --ms-accent-soft: rgba(13, 148, 136, 0.09);
   --ms-accent-line: rgba(13, 148, 136, 0.28);
 

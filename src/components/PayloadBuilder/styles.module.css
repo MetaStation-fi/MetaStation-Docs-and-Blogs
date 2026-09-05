@@ -1,0 +1,257 @@
+/* Tokens only. Both colour schemes are defined in custom.css, so any literal
+   colour here would break one of them — the exact bug the Phase 1 token
+   rewrite existed to remove. */
+
+.builder {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface);
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.86rem;
+}
+
+.field > span {
+  font-weight: 600;
+  color: var(--ms-text);
+}
+
+.field small {
+  color: var(--ms-text-muted);
+  font-size: 0.76rem;
+}
+
+.field input,
+.field select,
+.tpRow input {
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--ms-border-strong);
+  border-radius: var(--ms-radius-sm);
+  background: var(--ms-bg);
+  color: var(--ms-text);
+  width: 100%;
+  min-width: 0;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.tpRow input:focus-visible {
+  outline: 2px solid var(--ms-accent);
+  outline-offset: 1px;
+}
+
+.field input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.block {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ms-border);
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: var(--ms-text);
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.check input {
+  margin-top: 0.15rem;
+  accent-color: var(--ms-accent-fill);
+  flex: none;
+}
+
+.tps {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tpRow {
+  display: grid;
+  grid-template-columns: 3rem 1fr 1fr 2rem;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tpLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ms-text-muted);
+}
+
+.iconBtn,
+.addBtn {
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--ms-radius-sm);
+  border: 1px solid var(--ms-border-strong);
+  background: var(--ms-surface-2);
+  color: var(--ms-text);
+}
+
+.iconBtn {
+  height: 2rem;
+  line-height: 1;
+  font-size: 1.1rem;
+}
+
+.addBtn {
+  align-self: flex-start;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.iconBtn:hover:not(:disabled),
+.addBtn:hover:not(:disabled) {
+  border-color: var(--ms-accent);
+  color: var(--ms-accent);
+}
+
+.iconBtn:disabled,
+.addBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.warnings {
+  margin: 1rem 0 0;
+  padding: 0.7rem 0.9rem 0.7rem 2rem;
+  border-radius: var(--ms-radius);
+  background: var(--ms-accent-soft);
+  border: 1px solid var(--ms-accent-line);
+  font-size: 0.83rem;
+  color: var(--ms-text-secondary);
+}
+
+.warnings li + li {
+  margin-top: 0.35rem;
+}
+
+.output {
+  margin-top: 1.25rem;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.tab,
+.tabActive,
+.copyBtn {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--ms-radius-pill);
+  cursor: pointer;
+  border: 1px solid var(--ms-border-strong);
+  background: transparent;
+  color: var(--ms-text-secondary);
+}
+
+.tab:hover {
+  border-color: var(--ms-accent);
+  color: var(--ms-accent);
+}
+
+/* Fill is --ms-accent, NOT --ms-accent-fill. The tab label is 13px, so it is
+   "normal" text under WCAG and needs 4.5:1. White on --ms-accent-fill
+   (#0d9488) measures ~3.7:1 in light mode and fails; white on --ms-accent
+   (#0f766e) measures ~5.4:1 and passes. Both tokens resolve to the same
+   #2dd4bf in dark mode, so this is a light-mode-only fix with no dark-mode
+   change at all. */
+.tabActive {
+  background: var(--ms-accent);
+  border-color: var(--ms-accent);
+  color: var(--ms-accent-on-fill);
+  font-weight: 600;
+}
+
+.copyBtn {
+  margin-left: auto;
+}
+
+.copyBtn:hover {
+  border-color: var(--ms-accent);
+  color: var(--ms-accent);
+}
+
+.tab:focus-visible,
+.tabActive:focus-visible,
+.copyBtn:focus-visible,
+.iconBtn:focus-visible,
+.addBtn:focus-visible {
+  outline: 2px solid var(--ms-accent);
+  outline-offset: 2px;
+}
+
+.note {
+  font-size: 0.82rem;
+  color: var(--ms-text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.code {
+  margin: 0;
+  max-height: 22rem;
+  overflow: auto;
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  padding: 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--ms-text);
+}
+
+@media (max-width: 480px) {
+  .tpRow {
+    grid-template-columns: 2.5rem 1fr 2rem;
+  }
+  .tpRow input:nth-of-type(2) {
+    grid-column: 2 / 4;
+  }
+}
+
+.blockTitle {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--ms-text);
+  margin-bottom: 0.25rem;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--ms-text-muted);
+  margin: 0 0 0.6rem;
+  line-height: 1.5;
+}
+
+.hint code {
+  font-size: 0.92em;
+}

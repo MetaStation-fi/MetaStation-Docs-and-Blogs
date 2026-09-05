@@ -35,7 +35,11 @@ its **Your Webhook URLs** section lists one webhook URL per account slot you can
 
 {/* SCREENSHOT: webhook-urls | Webhook Management -> Your Webhook URLs | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
 {/* SCREENSHOT: regenerate-secret | Regenerate Secret confirm state | 1440x900 | redact: webhook token */}
-{/* COMPONENT: payload-builder | Webhook Payload Builder — pick action/symbol/TP/SL, emits JSON + curl + TradingView alert template. Phase 4, highest-value linkable asset on the site */}
+:::tip Build the payload instead of writing it
+The **[Webhook Payload Builder](/docs/developer/payload-builder)** generates a valid JSON payload,
+a TradingView alert message and a ready-to-run `curl` command from a form — no hand-written JSON,
+which is where most first attempts fail.
+:::
 
 :::note
 Webhook automation is **included free** on your MetaStation Account slot. For Binance, ByBit, or KuCoin slots, a paid slot subscription is required.
