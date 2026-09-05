@@ -117,6 +117,39 @@ const config = {
       attributes: { rel: 'preconnect', href: 'https://giscus.app' },
     },
 
+    // ── Analytics ──────────────────────────────────────────────────────────
+    // Same-site, but analytics.metastation.fi is still a separate origin and
+    // therefore a separate DNS + TLS handshake. Warm it before the deferred
+    // script below asks for it.
+    {
+      tagName: 'link',
+      attributes: { rel: 'preconnect', href: 'https://analytics.metastation.fi' },
+    },
+    // Plausible Community Edition, self-hosted on VPS2 at
+    // analytics.metastation.fi. Cookieless and storing no personal data, so it
+    // needs no consent banner — which is most of the reason to self-host it
+    // rather than take Google Analytics.
+    //
+    // `defer` and nothing else: the script is ~1.5 KB, it is not in the
+    // critical path, and the Lighthouse budget in lighthouserc.json is an
+    // error gate that this must not spend.
+    //
+    // The dashboard sits behind Cloudflare Access. Two separate Access
+    // applications with BYPASS policies keep /js/* and /api/event public —
+    // without them, protecting the dashboard silently breaks tracking on every
+    // page here, and the only symptom is a dashboard that stays empty.
+    {
+      tagName: 'script',
+      attributes: {
+        // Docusaurus validates headTags attributes as strings — a boolean
+        // `true` here fails the build with
+        // `"headTags[4].attributes.defer" must be a string`. It renders as a
+        // bare `defer` attribute either way.
+        defer: 'true',
+        'data-domain': 'metastation.fi',
+        src: 'https://analytics.metastation.fi/js/script.js',
+      },
+    },
     // ── Structured data ────────────────────────────────────────────────────
     // The site shipped exactly one JSON-LD block before this (BreadcrumbList,
     // from the theme). Organization + SoftwareApplication are site-wide facts,
