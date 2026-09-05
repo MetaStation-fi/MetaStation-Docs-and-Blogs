@@ -217,6 +217,22 @@ const config = {
           includeDocs: true,
           includeBlog: true,
           includePages: true,
+          // Same reasoning as sitemap.ignorePatterns above: `/` is VPS1's
+          // trading app, not a page this site serves. Until now the build
+          // *warned* and skipped it anyway — src/pages/index.js is a
+          // <Redirect>, so there is no content to extract — which meant the
+          // right outcome was arriving as a side effect of the page being
+          // empty. Give any future homepage the same treatment by intent
+          // rather than by accident, and silence the warning so a real
+          // extraction failure is visible.
+          //
+          // Option shape read from the installed package's own
+          // lib/types/public.d.ts (v1.2.2): excludeRoutes lives under
+          // `content`, takes glob patterns, and is matched with the same
+          // micromatch createMatcher the sitemap uses. rehype-links reads it
+          // too, so links pointing at an excluded route are also dropped from
+          // the generated markdown.
+          excludeRoutes: ['/'],
         },
       },
     ],
@@ -301,6 +317,23 @@ const config = {
           // when the build ran. A build-time timestamp would mark all 42 pages
           // fresh on every deploy, which is noise a crawler learns to ignore.
           lastmod: 'date',
+
+          // `/` is not this site. The Cloudflare Snippet
+          // (vps2-config/cloudflare-snippet-docs.js) forwards only /docs,
+          // /blogs, /assets/, /img/, /search, /sitemap.xml, /llms.txt and
+          // /search-index.json to VPS2; metastation.fi/ is VPS1, the trading
+          // app. src/pages/index.js therefore builds to a route we do not
+          // serve — it is a redirect kept purely so `npm start` and
+          // `npm run serve` land somewhere useful.
+          //
+          // Advertising https://metastation.fi/ from OUR sitemap is worse than
+          // useless: it is a URL this site does not own, submitted under this
+          // site's property, pointing at a page whose content we do not
+          // control and cannot keep in step. Filter it out.
+          //
+          // Patterns match the route path, so '/' is the exact route and
+          // nothing else — createMatcher is micromatch, not a prefix test.
+          ignorePatterns: ['/'],
         },
       }),
     ],

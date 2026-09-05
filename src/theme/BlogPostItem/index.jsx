@@ -152,11 +152,21 @@ function BlogPostListItem({ children, className }) {
         {hasTruncateMarker && (
           <Link
             to={permalink}
-            /* "Read more" on its own is on Lighthouse's non-descriptive
-               link-text blocklist, and `link-text` is an ERROR in
-               lighthouserc.json — it already failed this site once. The
-               visible label stays short; the accessible name carries the
-               title. Do not remove this aria-label. */
+            /* THE ARIA-LABEL DOES NOT SATISFY THE `link-text` AUDIT. That was
+               the assumption the first fix here was built on and it is wrong:
+               lighthouse/core/audits/seo/link-text.js tests
+               `BLOCKLIST.has(link.text.trim().toLowerCase())` against the
+               anchor's innerText and never looks at the accessible name. So
+               "Read more" — which is on that blocklist verbatim — scored 0 and
+               dragged /blogs to SEO 0.92 against a hard 1.0 gate, with the
+               aria-label sitting right there.
+
+               The VISIBLE text is therefore what has to change. "Read the full
+               post" is not on the blocklist (`more` and `read more` are
+               matched exactly, not as substrings). The aria-label stays
+               because it is still the better accessible name — it carries the
+               title, which is what a screen-reader user scanning a list of
+               links actually needs. Do not shorten the visible label back. */
             aria-label={translate(
               {
                 message: 'Read more about {title}',
@@ -168,7 +178,7 @@ function BlogPostListItem({ children, className }) {
             )}
             className="tw:inline-flex tw:items-center tw:gap-1.5 tw:text-xs tw:font-semibold tw:text-brand tw:no-underline tw:hover:text-brand-hover tw:hover:no-underline"
           >
-            Read more
+            Read the full post
             <IconArrowRight
               size={14}
               className="tw:transition-transform tw:duration-200 tw:group-hover:translate-x-0.5"

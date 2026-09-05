@@ -114,13 +114,20 @@ Grouped by doc. `id` is the filename stem.
 
 ## Design / effect register
 
-| id | Where | What |
-|---|---|---|
-| `hero-canvas` | `src/pages/index.js` | Canvas UI effect on the docs homepage hero. Lazy-mount behind IntersectionObserver, `prefers-reduced-motion` static fallback, must pass the Lighthouse budget gate |
-| `blog-hero` | blog index | Same treatment, lighter |
-| `card-icons` | `src/pages/index.js` | Replace 🚀 💹 🤝 🤖 💰 👨‍💻 with inline lucide SVG |
-| `section-hubs` | Phase 3 IA | Landing hub per section, card grid, own hero header |
-| `payload-builder` | `docs/developer/`, `docs/automation/webhook-trading.md` | Webhook Payload Builder MDX component — the highest-value linkable asset on the site |
-| `order-visualiser` | `docs/trading/advanced-orders.md`, `order-types-reference.md` | Interactive SLX / trailing / 10-TP ladder visualiser |
-| `copy-calculator` | `docs/social-trading/copy-settings.md` | Allocation → position size → fee split calculator |
-| `try-it-console` | `docs/developer/` | OpenAPI Try-It, via `@PaloAltoNetworks/docusaurus-openapi-docs` |
+**The `Where` column moved for the first three entries.** They all said
+`src/pages/index.js`, which builds to `/` — and `/` is not this site. The Cloudflare
+Snippet forwards only `/docs`, `/blogs`, `/assets/`, `/img/`, `/search`, `/sitemap.xml`,
+`/llms.txt` and `/search-index.json` to VPS2; `metastation.fi/` is VPS1, the trading app.
+The hero and the card grid now live on `docs/intro.md` (`slug: /`), which is the page
+readers actually arrive on, and `src/pages/index.js` is a `<Redirect>`.
+
+| id | Where | Status | What |
+|---|---|---|---|
+| `hero-canvas` | `docs/intro.md` → `src/components/DocsHero` | **done** | Canvas UI effect on the docs landing hero. Lazy-mount behind IntersectionObserver, `prefers-reduced-motion` static fallback, must pass the Lighthouse budget gate |
+| `blog-hero` | `src/theme/BlogListPage` | **done** | Same treatment, lighter — `intensity="soft"` in a `.ms-hero--blog` band. Carries the page's h1, which `DocsHero` deliberately does not |
+| `card-icons` | `docs/intro.md` → `src/components/SectionCards` | **done** | Replace 🚀 💹 🤝 🤖 💰 👨‍💻 with inline lucide SVG. Inlined in `src/components/icons.jsx` — no `lucide-react` dependency |
+| `section-hubs` | Phase 3 IA | **done** | Landing hub per section, card grid, own hero header |
+| `payload-builder` | `docs/developer/`, `docs/automation/webhook-trading.md` | **done** | Webhook Payload Builder MDX component — the highest-value linkable asset on the site |
+| `order-visualiser` | `docs/trading/advanced-orders.md`, `order-types-reference.md` | | Interactive SLX / trailing / 10-TP ladder visualiser |
+| `copy-calculator` | `docs/social-trading/copy-settings.md` | | Allocation → position size → fee split calculator |
+| `try-it-console` | `docs/developer/` | **done** | OpenAPI Try-It, via `@PaloAltoNetworks/docusaurus-openapi-docs` |
