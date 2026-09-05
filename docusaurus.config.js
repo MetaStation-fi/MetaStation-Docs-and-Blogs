@@ -130,9 +130,41 @@ const config = {
     // needs no consent banner — which is most of the reason to self-host it
     // rather than take Google Analytics.
     //
-    // `defer` and nothing else: the script is ~1.5 KB, it is not in the
-    // critical path, and the Lighthouse budget in lighthouserc.json is an
-    // error gate that this must not spend.
+    // The variant below is the full-extension build, taken verbatim from the
+    // integration snippet in the Plausible dashboard. The extension list is
+    // part of the FILENAME and its order is canonical — reordering the words
+    // gives a 404, and a 404 here is silent because the page still renders.
+    // Verified 200 against our own instance before shipping.
+    //
+    // What each extension buys:
+    //   file-downloads   counts PDF/zip/etc clicks as events
+    //   outbound-links   counts clicks leaving the domain
+    //   pageview-props   allows custom properties on pageviews
+    //   revenue          revenue attribution on custom events
+    //   tagged-events    lets a CSS class on an element declare an event
+    //
+    // ── `hash` IS DELIBERATELY NOT IN THAT LIST ────────────────────────────
+    // The dashboard's copy-paste snippet includes it. It must not be used
+    // here, and the reason is not stylistic — it BREAKS pageview tracking on
+    // this site.
+    //
+    // Plausible's script binds hash mode as an ALTERNATIVE to history
+    // tracking, not as an addition: with `hash` it listens for `hashchange`
+    // INSTEAD OF patching `history.pushState`. Docusaurus is a history-routing
+    // SPA, so every client-side navigation goes through pushState.
+    //
+    // Measured on the live site with the hash build, payloads carrying "h":1:
+    //   - clicking one table-of-contents entry  -> a NEW pageview for
+    //     `/docs/trading/advanced-orders#multiple-take-profits-tp1tp10`
+    //   - navigating /docs/ -> /blogs           -> ZERO events
+    //
+    // So it simultaneously invents traffic that did not happen and loses
+    // traffic that did. `hash` exists for sites that route on the fragment
+    // (`#/page`); this one does not. Re-add it only if the routing changes.
+    //
+    // `defer` and nothing else: 5 KB, not in the critical path, and the
+    // Lighthouse budget in lighthouserc.json is an error gate this must not
+    // spend.
     //
     // The dashboard sits behind Cloudflare Access. Two separate Access
     // applications with BYPASS policies keep /js/* and /api/event public —
@@ -147,8 +179,22 @@ const config = {
         // bare `defer` attribute either way.
         defer: 'true',
         'data-domain': 'metastation.fi',
-        src: 'https://analytics.metastation.fi/js/script.js',
+        src: 'https://analytics.metastation.fi/js/script.file-downloads.outbound-links.pageview-props.revenue.tagged-events.js',
       },
+    },
+    // The queue shim. The script above is deferred, so it does not exist until
+    // after parse; this makes `window.plausible(...)` callable before then by
+    // buffering calls into `window.plausible.q`, which the real script drains
+    // on load. Without it, any custom event fired early — from an MDX
+    // component's effect, say — throws "plausible is not a function" and is
+    // lost. It is inert until something actually calls it.
+    {
+      tagName: 'script',
+      // Required by the headTags schema even when empty — omitting it fails
+      // the build with `"headTags[5].attributes" is required`.
+      attributes: {},
+      innerHTML:
+        'window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }',
     },
     // ── Structured data ────────────────────────────────────────────────────
     // The site shipped exactly one JSON-LD block before this (BreadcrumbList,
