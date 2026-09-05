@@ -9,6 +9,15 @@ slug: /
 ---
 
 import FAQ from '@site/src/components/FAQ';
+import DocsHero from '@site/src/components/DocsHero';
+import SectionCards from '@site/src/components/SectionCards';
+
+{/* DESIGN: hero-canvas — the Canvas UI band. It is mounted here, on /docs/,
+    and NOT on src/pages/index.js as the register originally said: that page
+    builds to `/`, which the Cloudflare Snippet does not route to this site,
+    so nothing mounted there is reachable in production. */}
+
+<DocsHero />
 
 # What is MetaStation?
 
@@ -46,17 +55,7 @@ It combines professional trading tools, social copy trading, and full automation
 
 ## What's next?
 
-{/* DESIGN: intro-cards | this raw div is a placeholder for the Phase 2 DocCard grid (swizzled, shadcn). Replace with real cards + lucide icons, not styled text links */}
-
-<div className="cards-grid" style={{marginTop: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px'}}>
-
-Get started in 5 minutes → [Quick Start](/docs/getting-started/quick-start)
-
-Explore your native account → [MetaStation Account](/docs/trading/metastation-account)
-
-Set up automation → [Webhooks](/docs/automation/webhook-trading)
-
-</div>
+<SectionCards />
 
 ---
 

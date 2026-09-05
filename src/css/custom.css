@@ -106,6 +106,17 @@
   --ms-gradient: linear-gradient(120deg, var(--ms-teal-deep) 0%, var(--ms-green-deep) 55%, var(--ms-blue-deep) 100%);
   --ms-gradient-on: #ffffff;
 
+  /* Footer — DARK IN BOTH THEMES, so it needs its own fixed tokens.
+     --ifm-footer-background-color is a near-black in light mode too, which
+     means every theme-flipping token is wrong inside the footer: --ms-text
+     resolves to #0f172a there and would paint black type on a black bar.
+     These five never flip. Anything rendered inside <Footer> must use them. */
+  --ms-footer-bg: #0b0f17;
+  --ms-footer-fg: #e2e8f0;        /* ~13:1 on the bar */
+  --ms-footer-muted: #9aa8bd;     /* ~7:1 — still AA for body text */
+  --ms-footer-border: #1e2d3d;
+  --ms-footer-accent: #2dd4bf;    /* ~9:1 */
+
   /* Announcement bar — opaque in both themes, see the component rule below */
   --ms-announce-bg: #e6fbf6;
   --ms-announce-fg: #0b4f49;
@@ -155,8 +166,33 @@
 
 /* ── 2b. Tokens — dark ───────────────────────────────────────────────────
    Same token names, different values. Nothing below this block is
-   theme-conditional except where a surface genuinely differs. */
-[data-theme='dark'] {
+   theme-conditional except where a surface genuinely differs.
+
+   THE SELECTOR IS `html[data-theme='dark']`, NOT `[data-theme='dark']`, AND
+   THAT IS LOAD-BEARING.
+
+   Docusaurus declares its own dark palette on `html[data-theme='dark']`
+   (specificity 0,1,1). A bare attribute selector is 0,1,0 and LOSES to it no
+   matter how late this file loads. That is not hypothetical — it is what this
+   file did until now, and it silently defeated five of the fifteen --ifm-*
+   overrides below:
+
+     --ifm-background-color         page ground stayed Infima's #1b1b1d, not #0b0f17
+     --ifm-background-surface-color
+     --ifm-color-content            body text stayed #e3e3e3, not #e2e8f0
+     --ifm-color-content-secondary
+     --ifm-toc-border-color
+
+   Every --ms-* token DID apply (nothing else declares those), so cards,
+   buttons and admonitions were painted from this palette while the page they
+   sat on was painted from Infima's — the whole dark theme was two designs
+   overlaid, which reads as "slightly off" rather than as a bug, which is why
+   it survived four sessions.
+
+   Matching the specificity and loading later is what makes these win. If you
+   add an --ifm-* override here, check it actually lands: compare
+   getComputedStyle against the token, do not trust the file. */
+html[data-theme='dark'] {
   --ms-bg: #0b0f17;
   --ms-surface: #0f1724;
   --ms-surface-2: #141f30;
@@ -191,6 +227,11 @@
 
   --ms-gradient: linear-gradient(120deg, var(--ms-teal) 0%, var(--ms-green) 55%, var(--ms-blue) 100%);
   --ms-gradient-on: #04211c;
+
+  /* Only the ground changes in dark mode — it drops to match the page's own
+     background so the footer reads as the end of the page rather than a slab
+     laid on top of it. The four foreground tokens are already correct. */
+  --ms-footer-bg: #080c12;
 
   /* Deep navy strip, light teal type — ~10:1. Reads as part of the dark
      chrome instead of a white band above the navbar. */
@@ -229,11 +270,64 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-/* ── Navbar ── */
+/* ── Navbar ──────────────────────────────────────────────────────────────
+   The SHELL is the sticky element, not the navbar. src/theme/Navbar wraps the
+   theme's navbar so it can hang a reading-progress bar off its bottom edge,
+   and a sticky element only sticks within its parent's box — so a plain
+   wrapper would leave the navbar with zero room to travel and it would scroll
+   away with the page. Making the shell sticky and the navbar static inside it
+   preserves the original behaviour exactly.
+
+   Do NOT put a transform, filter or will-change on the shell: any of those
+   would make it a containing block for position:fixed, and the mobile drawer
+   inside the navbar is fixed. */
+.ms-navbar-shell {
+  position: sticky;
+  top: 0;
+  z-index: var(--ifm-z-index-fixed);
+}
+
+.ms-navbar-shell .navbar {
+  position: static;
+}
+
 .navbar {
-  border-bottom: 1px solid var(--ms-border);
+  /* Flat at rest, lifted once content passes underneath — the state comes from
+     data-ms-scrolled, set by the Navbar wrapper. The border is transparent
+     rather than absent so the bar does not change height at the transition;
+     collapsing a 1px border on a sticky element is a 1px layout shift on every
+     page, and the CLS budget is a hard gate. */
+  border-bottom: 1px solid transparent;
   backdrop-filter: blur(12px);
   box-shadow: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+html[data-ms-scrolled='true'] .navbar {
+  border-bottom-color: var(--ms-border);
+  box-shadow: var(--ms-shadow-sm);
+}
+
+/* Reading progress. Absolutely positioned on the shell's bottom edge, so it is
+   out of flow and cannot move content. Scaled rather than resized: transform
+   is compositor-only, width is not, and this updates on every scroll frame. */
+.ms-navbar-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ms-navbar-progress-bar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: var(--ms-gradient);
 }
 
 .navbar__items--right {
@@ -596,41 +690,69 @@ td {
 }
 
 /* ============================================================================
-   Homepage
-   DESIGN: hero-canvas — the Canvas UI WebGL effect mounts on .hero-section in
-   Phase 2. Lazy-mount behind an IntersectionObserver, honour
-   prefers-reduced-motion with the static wash below as the fallback, and it
-   must clear the Lighthouse budget gate before it ships. Marketing surfaces
-   only: never on a doc content page.
+   Hero band — /docs/ and /blogs/
+   ----------------------------------------------------------------------------
+   This replaces the old .hero-section / .doc-card / .btn-* block, which styled
+   src/pages/index.js. That page built to `/`, and `/` is not routed to this
+   site in production — the Cloudflare Snippet forwards only /docs, /blogs,
+   /assets/, /img/, /search, /sitemap.xml, /llms.txt and /search-index.json to
+   VPS2, and metastation.fi/ is VPS1's trading app. So every rule in that block
+   painted a page no reader outside localhost could open. The hero now lives on
+   /docs/ (docs/intro.md) and /blogs/, which are the pages readers arrive on.
+
+   EVERY RULE HERE IS WRITTEN AS `.ms-hero .ms-hero__x`, NOT `.ms-hero__x`.
+   The band renders inside `.markdown` on /docs/, where `.markdown p` (0,2,0)
+   would otherwise beat a single class (0,1,0) and restore its own margins on
+   the deck and subtitle. The doubled selector ties on specificity and wins on
+   order. Drop the parent and the spacing quietly reverts.
    ========================================================================= */
-.hero-section {
-  background: var(--ms-hero-wash), var(--ms-bg);
-  min-height: min(100vh, 780px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px 60px;
-  text-align: center;
+.ms-hero {
   position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-hero-wash), var(--ms-surface);
+  padding: 46px 34px 42px;
+  margin: 0 0 2.75rem;
 }
 
-.hero-badge {
+/* The canvas fills the band's padding box and is out of flow, so the effect
+   cannot move a single pixel of content — which is what keeps it clear of the
+   CLS gate. The band's height is set by its text, not by the canvas. */
+.ms-hero-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ms-hero-canvas--soft {
+  opacity: 0.6;
+}
+
+.ms-hero .ms-hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.ms-hero .ms-hero__badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--ms-accent-soft);
+  margin: 0 0 22px;
+  padding: 6px 16px;
   border: 1px solid var(--ms-accent-line);
   border-radius: var(--ms-radius-pill);
-  padding: 6px 16px;
+  background: var(--ms-accent-soft);
+  color: var(--ms-accent);
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--ms-accent);
-  margin-bottom: 28px;
   letter-spacing: 0.02em;
 }
 
-.hero-badge .hero-dot {
+.ms-hero .ms-hero__dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -638,174 +760,68 @@ td {
   box-shadow: 0 0 0 3px var(--ms-accent-soft);
 }
 
-.hero-title {
-  font-size: clamp(2.3rem, 5vw, 3.6rem);
+/* A <p>, not a heading. intro.md's own h1 sits directly below this band and is
+   the page's SEO identity; a second h1 here would compete with it and an h2
+   above an h1 is an invalid heading order. Styled large, announced as prose. */
+.ms-hero .ms-hero__deck {
+  margin: 0 0 14px;
+  max-width: 20ch;
+  font-size: clamp(1.85rem, 3.4vw, 2.6rem);
   font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.032em;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
   color: var(--ms-text);
-  margin-bottom: 20px;
-  max-width: 18ch;
 }
 
-/* The emphasis word gets the accent colour, not a clipped gradient. Both
-   themes clear AA against the page background. */
-.hero-title em {
+/* Accent colour, never a clipped gradient — see the file header. */
+.ms-hero .ms-hero__deck em {
   font-style: normal;
   color: var(--ms-accent);
 }
 
-.hero-subtitle {
-  font-size: 1.06rem;
-  color: var(--ms-text-muted);
-  max-width: 58ch;
-  line-height: 1.65;
-  margin-bottom: 40px;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 64px;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--ms-gradient);
-  color: var(--ms-gradient-on);
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 12px 26px;
-  border-radius: var(--ms-radius);
-  text-decoration: none;
-  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-}
-
-.btn-primary:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-  box-shadow: var(--ms-shadow-md);
-  color: var(--ms-gradient-on);
-  text-decoration: none;
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--ms-surface);
-  color: var(--ms-text);
-  font-weight: 500;
-  font-size: 0.95rem;
-  padding: 12px 26px;
-  border-radius: var(--ms-radius);
-  border: 1px solid var(--ms-border);
-  text-decoration: none;
-  transition: border-color 0.2s, background 0.2s, transform 0.15s;
-}
-
-.btn-secondary:hover {
-  border-color: var(--ms-accent);
-  background: var(--ms-accent-soft);
-  color: var(--ms-accent);
-  transform: translateY(-1px);
-  text-decoration: none;
-}
-
-/* ── Cards grid ── */
-.cards-section {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 24px 84px;
-}
-
-.cards-heading {
-  color: var(--ms-text-muted);
-  text-align: center;
-  margin-bottom: 28px;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 16px;
-}
-
-.doc-card {
-  background: var(--ms-surface);
-  border: 1px solid var(--ms-border);
-  border-radius: var(--ms-radius-lg);
-  padding: 22px;
-  text-decoration: none;
-  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s, background 0.2s;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: var(--ms-shadow-sm);
-}
-
-.doc-card:hover {
-  border-color: var(--ms-accent);
-  background: var(--ms-surface-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--ms-shadow-md);
-  text-decoration: none;
-}
-
-/* Icons are inline SVG (lucide geometry), stroked with currentColor. The
-   previous emoji set rendered differently on every OS and read as unfinished. */
-.doc-card-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--ms-radius-sm);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ms-accent-soft);
-  border: 1px solid var(--ms-accent-line);
-  color: var(--ms-accent);
-}
-
-.doc-card-icon svg {
-  width: 19px;
-  height: 19px;
-}
-
-.doc-card-title {
+.ms-hero .ms-hero__sub {
+  margin: 0 0 26px;
+  max-width: 62ch;
   font-size: 1rem;
-  font-weight: 650;
-  color: var(--ms-text);
-  margin: 0 0 6px;
-}
-
-.doc-card-desc {
-  font-size: 0.875rem;
+  line-height: 1.65;
   color: var(--ms-text-muted);
-  line-height: 1.55;
-  margin: 0;
-  flex: 1;
 }
 
-.doc-card-link {
-  font-size: 0.8rem;
-  color: var(--ms-accent);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+.ms-hero .ms-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.doc-card:hover .doc-card-link {
-  color: var(--ms-accent-hover);
+/* ── Blog variant: "same treatment, lighter" (PLACEHOLDERS.md) ──────────── */
+.ms-hero--blog {
+  padding: 34px 28px 30px;
+  margin-bottom: 2rem;
+}
+
+.ms-hero--blog .ms-hero__deck {
+  font-size: clamp(1.6rem, 2.6vw, 2.05rem);
+  margin-bottom: 10px;
+}
+
+.ms-hero--blog .ms-hero__sub {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .ms-hero {
+    padding: 32px 20px 30px;
+  }
+}
+
+/* The band is decoration built on a canvas; if a reader has asked for less
+   motion the engine draws a single static frame (see HeroCanvas). This rule is
+   the belt to that braces: no transition on the band itself can animate. */
+@media (prefers-reduced-motion: reduce) {
+  .ms-hero,
+  .ms-hero * {
+    transition: none !important;
+  }
 }
 
 /* ============================================================================

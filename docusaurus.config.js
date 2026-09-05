@@ -1,6 +1,30 @@
 // @ts-check
 const { themes } = require('prism-react-renderer');
 
+/**
+ * Tailwind v4 runs as a PostCSS plugin. Docusaurus exposes exactly one hook for
+ * that — configurePostCss — and it applies to every stylesheet the CSS loader
+ * chain touches, including src/css/tailwind.css.
+ *
+ * This still works under future.faster (Rspack + SWC): it swaps the
+ * bundler and the CSS minifier, not postcss-loader.
+ *
+ * Everything that makes this integration safe — preflight off, the tw prefix,
+ * unlayered utilities, source scoping — is configured in src/css/tailwind.css
+ * itself, because v4 is CSS-first. There is no tailwind.config.js and adding
+ * one would not be read.
+ */
+function tailwindPlugin() {
+  return {
+    name: 'metastation-tailwind',
+    configurePostCss(postcssOptions) {
+      postcssOptions.plugins.push(require('@tailwindcss/postcss'));
+      return postcssOptions;
+    },
+  };
+}
+
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'MetaStation Docs',
@@ -159,6 +183,7 @@ const config = {
   ],
 
   plugins: [
+    tailwindPlugin,
     [
       // Generates llms.txt (an index for LLMs), llms-full.txt, and a .md
       // twin of every page at build time.
@@ -257,7 +282,11 @@ const config = {
           blogSidebarCount: 10,
         },
         theme: {
-          customCss: './src/css/custom.css',
+          // Order matters for readability, not for correctness: Tailwind's
+          // utilities are marked important in tailwind.css, so they do not
+          // depend on load order to win. custom.css stays first because it
+          // defines the --ms-* tokens every Tailwind colour resolves through.
+          customCss: ['./src/css/custom.css', './src/css/tailwind.css'],
         },
         sitemap: {
           changefreq: 'weekly',

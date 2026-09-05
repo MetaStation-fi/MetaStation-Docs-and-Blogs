@@ -1,0 +1,150 @@
+/* ============================================================================
+   Tailwind v4 — preflight off, prefixed, unlayered, token-backed
+   ----------------------------------------------------------------------------
+   Read this before changing a single line here. Every clause is load-bearing
+   and three of them are the difference between working and silently broken.
+
+   1. PREFLIGHT IS NOT IMPORTED.
+      `@import 'tailwindcss'` pulls three files: theme.css, preflight.css and
+      utilities.css. Preflight is a full CSS reset — it zeroes margins on every
+      element, strips list markers, sets `img { display:block }` and resets
+      heading font-size to `inherit`. Infima (Docusaurus's own framework) has
+      already applied its reset and every rule in custom.css is written against
+      the result. Loading both means Infima's typography scale is flattened and
+      the doc content reflows. It is also a CLS regression by construction:
+      changing box-sizing and font metrics after the fact moves text.
+      So theme.css and utilities.css are imported by hand and preflight is
+      simply never named. See the tailwind docs, "disabling preflight".
+
+   2. UTILITIES ARE UNLAYERED, ON PURPOSE.
+      tailwindcss/index.css declares `@layer theme, base, components, utilities`
+      and wraps utilities in `@layer utilities`. Native cascade layers lose to
+      unlayered CSS at ANY specificity. `useCssCascadeLayers` is deliberately
+      off in docusaurus.config.js, so all of Infima is unlayered — which would
+      make every layered Tailwind utility unconditionally lose to it. Importing
+      utilities without `layer()` puts them back on equal footing.
+      If useCssCascadeLayers is ever turned on, revisit this line first.
+
+   3. `important` IS NOT LAZINESS.
+      Our swizzled components render INSIDE Docusaurus's DOM. A DocCard sits
+      inside `.markdown`, so `.markdown a { font-weight: 500 }` (0,2,0) beats a
+      bare utility class (0,1,0) no matter what order the files load in.
+      Rather than sprinkle `!` through component source — where it would be
+      invisible to a reviewer — the whole utility set is marked important once,
+      here, where it is documented. Utilities are opt-in and prefixed, so this
+      can only ever affect elements we wrote.
+
+   4. THE PREFIX IS `tw`, NOT `ms`.
+      A prefix in v4 renames the CSS custom properties too: `prefix(ms)` would
+      emit `--ms-color-*`, `--ms-spacing`, `--ms-radius-*` into the exact
+      namespace custom.css already owns. `tw` keeps the two systems legible and
+      makes it obvious in markup which system a class came from: `tw:flex`.
+
+   5. AUTOMATIC SOURCE DETECTION IS OFF.
+      Tailwind v4 scans the whole project by default and treats any word that
+      parses as a utility candidate as one — including prose in docs/*.md. That
+      would generate `.container`, `.table` and `.hidden`, which are also
+      Infima class names, and quietly restyle the theme. `source(none)` plus
+      explicit `@source` lines means only our own components are scanned.
+   ========================================================================= */
+
+@import 'tailwindcss/theme.css' prefix(tw);
+@import 'tailwindcss/utilities.css' prefix(tw) source(none) important;
+
+@source '../components';
+@source '../theme';
+@source '../pages';
+
+/* Docusaurus stamps `data-theme="dark"` on <html>. Tailwind's stock `dark:`
+   variant reads prefers-color-scheme, which is NOT what drives this site —
+   colorMode.respectPrefersColorScheme is false and the toggle is authoritative.
+   Nearly nothing should need this: the tokens below already swap themselves.
+   It exists for the rare case where a shape, not a colour, differs. */
+@custom-variant dark ([data-theme='dark'] &);
+
+/* ── Theme bridge ─────────────────────────────────────────────────────────
+   Tailwind gets NO palette of its own. Every colour here is `var(--ms-*)`,
+   so a utility resolves through the same token custom.css defines and flips
+   with the colour scheme for free — no `dark:` variant, no second palette to
+   keep in sync. Adding a colour means adding a token to BOTH themes in
+   custom.css first, then naming it here.
+
+   Names on the left are shadcn/ui's semantic vocabulary, so vendored
+   component source reads the way upstream does (`bg-card`, `text-muted-
+   foreground`, `border-border`) while resolving to MetaStation tokens.
+   ────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* shadcn semantics */
+  --color-background: var(--ms-bg);
+  --color-foreground: var(--ms-text);
+  --color-card: var(--ms-surface);
+  --color-card-foreground: var(--ms-text);
+  --color-popover: var(--ms-surface);
+  --color-popover-foreground: var(--ms-text);
+  --color-secondary: var(--ms-surface-2);
+  --color-secondary-foreground: var(--ms-text);
+  --color-muted: var(--ms-surface-2);
+  --color-muted-foreground: var(--ms-text-muted);
+  --color-border: var(--ms-border);
+  --color-input: var(--ms-border);
+  --color-ring: var(--ms-accent);
+  --color-destructive: var(--ms-danger);
+
+  /* shadcn's `primary` is a filled surface carrying a label. It maps to
+     --ms-accent (~5.4:1 on white), NOT --ms-accent-fill (~3.7:1): a Button is
+     the exact case the token comment in custom.css warns about — a filled
+     control with small text. --ms-accent-fill stays available below as
+     `brand-fill` for chrome that carries no small text. */
+  --color-primary: var(--ms-accent);
+  --color-primary-foreground: var(--ms-accent-on-fill);
+
+  /* shadcn's `accent` is a subtle hover SURFACE, not a text colour — a
+     different meaning from --ms-accent. Mapped honestly rather than by name. */
+  --color-accent: var(--ms-accent-soft);
+  --color-accent-foreground: var(--ms-accent);
+
+  /* MetaStation names, for what shadcn's vocabulary has no word for */
+  --color-brand: var(--ms-accent);
+  --color-brand-hover: var(--ms-accent-hover);
+  --color-brand-fill: var(--ms-accent-fill);
+  --color-brand-on-fill: var(--ms-accent-on-fill);
+  --color-brand-soft: var(--ms-accent-soft);
+  --color-brand-line: var(--ms-accent-line);
+  --color-surface: var(--ms-surface);
+  --color-surface-2: var(--ms-surface-2);
+  --color-surface-hover: var(--ms-surface-hover);
+  --color-border-strong: var(--ms-border-strong);
+  --color-fg-secondary: var(--ms-text-secondary);
+  --color-warn: var(--ms-warn);
+  --color-info: var(--ms-info);
+  --color-ok: var(--ms-ok);
+
+  /* Shape and depth come from the same tokens the hand-written CSS uses, so a
+     Tailwind-built card and a custom.css-built card cannot drift apart. */
+  --radius-sm: var(--ms-radius-sm);
+  --radius-md: var(--ms-radius);
+  --radius-lg: var(--ms-radius-lg);
+  --radius-pill: var(--ms-radius-pill);
+  --shadow-sm: var(--ms-shadow-sm);
+  --shadow-md: var(--ms-shadow-md);
+  --shadow-lg: var(--ms-shadow-lg);
+
+  /* Inherit Infima's stack verbatim. It carries 'Inter Fallback', the
+     metrics-matched face that holds CLS at 0.04 — a different font stack on
+     Tailwind-built elements would reintroduce the swap reflow it fixes. */
+  --font-sans: var(--ifm-font-family-base);
+  --font-mono: var(--ifm-font-family-monospace);
+}
+
+/* Footer-only colours. These are separate from the block above on purpose:
+   they are the ONLY tokens here that do not flip with the colour scheme,
+   because the footer bar is dark in both. Keeping them under their own names
+   means a `tw:text-footer-muted` in a component is self-documenting, and a
+   `tw:text-muted-foreground` in the footer is visibly a mistake. */
+@theme {
+  --color-footer-bg: var(--ms-footer-bg);
+  --color-footer-fg: var(--ms-footer-fg);
+  --color-footer-muted: var(--ms-footer-muted);
+  --color-footer-border: var(--ms-footer-border);
+  --color-footer-accent: var(--ms-footer-accent);
+}
