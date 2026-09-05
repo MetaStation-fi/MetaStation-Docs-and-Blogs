@@ -15,3 +15,11 @@ Thumbs.db
 # Env
 .env
 .env.local
+
+# Capture-run artifacts: manifests reference internal endpoints and account ids.
+.screens/
+
+# Screenshot captures are hosted on MetaStation-fi/brand-assets (docs-v* tags)
+# and served by jsDelivr. Kept locally as the regeneration staging area only —
+# the docs origin serves no images.
+static/img/screens/

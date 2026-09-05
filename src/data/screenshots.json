@@ -1,0 +1,317 @@
+{
+  "register-form": {
+    "alt": "Register form, captured empty",
+    "desktop": {
+      "src": "getting-started/register-form.webp",
+      "width": 2880,
+      "height": 2116
+    },
+    "mobile": {
+      "src": "getting-started/register-form--mobile.webp",
+      "width": 1170,
+      "height": 3177
+    }
+  },
+  "google-signin": {
+    "alt": "Login page showing the Continue with Google button",
+    "desktop": {
+      "src": "getting-started/google-signin.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "getting-started/google-signin--mobile.webp",
+      "width": 1170,
+      "height": 3084
+    }
+  },
+  "verify-email": {
+    "alt": "Post-registration verification-pending state",
+    "desktop": {
+      "src": "getting-started/verify-email.webp",
+      "width": 2880,
+      "height": 1984
+    },
+    "mobile": {
+      "src": "getting-started/verify-email--mobile.webp",
+      "width": 1170,
+      "height": 2865
+    }
+  },
+  "deposit-picker": {
+    "alt": "Deposit screen with the network and asset picker",
+    "desktop": {
+      "src": "getting-started/deposit-picker.webp",
+      "width": 2880,
+      "height": 2116
+    },
+    "mobile": {
+      "src": "getting-started/deposit-picker--mobile.webp",
+      "width": 1170,
+      "height": 3177
+    }
+  },
+  "funding-wallet-status": {
+    "alt": "Funding Wallet address and activation state",
+    "desktop": {
+      "src": "getting-started/funding-wallet-status.webp",
+      "width": 2880,
+      "height": 2116
+    },
+    "mobile": {
+      "src": "getting-started/funding-wallet-status--mobile.webp",
+      "width": 1170,
+      "height": 3120
+    }
+  },
+  "buy-crypto": {
+    "alt": "Buy Crypto entry screen",
+    "desktop": {
+      "src": "getting-started/buy-crypto.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "getting-started/buy-crypto--mobile.webp",
+      "width": 1170,
+      "height": 2964
+    }
+  },
+  "first-trade": {
+    "alt": "Trade terminal with the order ticket",
+    "desktop": {
+      "src": "getting-started/first-trade.webp",
+      "width": 2880,
+      "height": 2116
+    },
+    "mobile": {
+      "src": "getting-started/first-trade--mobile.webp",
+      "width": 1170,
+      "height": 2865
+    }
+  },
+  "account-overview": {
+    "alt": "Account overview panel",
+    "desktop": {
+      "src": "trading/account-overview.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "trading/account-overview--mobile.webp",
+      "width": 1170,
+      "height": 3021
+    }
+  },
+  "orderbook": {
+    "alt": "Live order book",
+    "desktop": {
+      "src": "trading/orderbook.webp",
+      "width": 2880,
+      "height": 2116
+    },
+    "mobile": {
+      "src": "trading/orderbook--mobile.webp",
+      "width": 1170,
+      "height": 2808
+    }
+  },
+  "account-management": {
+    "alt": "Account Management, Trading Slots table",
+    "desktop": {
+      "src": "trading/account-management.webp",
+      "width": 2880,
+      "height": 2050
+    }
+  },
+  "slots-overview": {
+    "alt": "Trading Slots table with mixed slot types",
+    "desktop": {
+      "src": "trading/slots-overview.webp",
+      "width": 2880,
+      "height": 2116
+    }
+  },
+  "add-slots": {
+    "alt": "Add Slots dialog",
+    "desktop": {
+      "src": "trading/add-slots.webp",
+      "width": 2880,
+      "height": 1800
+    },
+    "mobile": {
+      "src": "trading/add-slots--mobile.webp",
+      "width": 1170,
+      "height": 2532
+    }
+  },
+  "store-slots": {
+    "alt": "Store slot purchase screen",
+    "desktop": {
+      "src": "trading/store-slots.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "trading/store-slots--mobile.webp",
+      "width": 1170,
+      "height": 3021
+    }
+  },
+  "webhook-urls": {
+    "alt": "Your Webhook URLs",
+    "desktop": {
+      "src": "automation/webhook-urls.webp",
+      "width": 2880,
+      "height": 2116
+    },
+    "mobile": {
+      "src": "automation/webhook-urls--mobile.webp",
+      "width": 1170,
+      "height": 3240
+    }
+  },
+  "regenerate-secret": {
+    "alt": "Regenerate Secret confirmation state",
+    "desktop": {
+      "src": "automation/regenerate-secret.webp",
+      "width": 2880,
+      "height": 1800
+    },
+    "mobile": {
+      "src": "automation/regenerate-secret--mobile.webp",
+      "width": 1170,
+      "height": 2532
+    }
+  },
+  "webhook-history": {
+    "alt": "Signal log",
+    "desktop": {
+      "src": "automation/webhook-history.webp",
+      "width": 2880,
+      "height": 1984
+    },
+    "mobile": {
+      "src": "automation/webhook-history--mobile.webp",
+      "width": 1170,
+      "height": 2865
+    }
+  },
+  "marketplace-grid": {
+    "alt": "Provider grid",
+    "desktop": {
+      "src": "social-trading/marketplace-grid.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "social-trading/marketplace-grid--mobile.webp",
+      "width": 1170,
+      "height": 3021
+    }
+  },
+  "provider-detail": {
+    "alt": "Provider detail card and performance chart, reached by clicking the first grid card — provider ids are not stable",
+    "desktop": {
+      "src": "social-trading/provider-detail.webp",
+      "width": 2880,
+      "height": 1800
+    },
+    "mobile": {
+      "src": "social-trading/provider-detail--mobile.webp",
+      "width": 1170,
+      "height": 2532
+    }
+  },
+  "provider-onboarding": {
+    "alt": "Provider onboarding form",
+    "desktop": {
+      "src": "social-trading/provider-onboarding.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "social-trading/provider-onboarding--mobile.webp",
+      "width": 1170,
+      "height": 3021
+    }
+  },
+  "provider-dashboard": {
+    "alt": "Provider dashboard",
+    "desktop": {
+      "src": "social-trading/provider-dashboard.webp",
+      "width": 2880,
+      "height": 1984
+    },
+    "mobile": {
+      "src": "social-trading/provider-dashboard--mobile.webp",
+      "width": 1170,
+      "height": 2865
+    }
+  },
+  "deposit-flow": {
+    "alt": "Deposit screen, MetaStation Account destination",
+    "desktop": {
+      "src": "wallet/deposit-flow.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "wallet/deposit-flow--mobile.webp",
+      "width": 1170,
+      "height": 3021
+    }
+  },
+  "withdraw-form": {
+    "alt": "Withdraw form",
+    "desktop": {
+      "src": "wallet/withdraw-form.webp",
+      "width": 2880,
+      "height": 2116
+    },
+    "mobile": {
+      "src": "wallet/withdraw-form--mobile.webp",
+      "width": 1170,
+      "height": 3177
+    }
+  },
+  "history-withdrawals": {
+    "alt": "Withdrawal history",
+    "desktop": {
+      "src": "wallet/history-withdrawals.webp",
+      "width": 2880,
+      "height": 1984
+    },
+    "mobile": {
+      "src": "wallet/history-withdrawals--mobile.webp",
+      "width": 1170,
+      "height": 2865
+    }
+  },
+  "2fa-enable": {
+    "alt": "Security page, Google Authenticator card",
+    "desktop": {
+      "src": "security/2fa-enable.webp",
+      "width": 2880,
+      "height": 1984
+    },
+    "mobile": {
+      "src": "security/2fa-enable--mobile.webp",
+      "width": 1170,
+      "height": 2865
+    }
+  },
+  "security-page": {
+    "alt": "Security page, both cards",
+    "desktop": {
+      "src": "security/security-page.webp",
+      "width": 2880,
+      "height": 2050
+    },
+    "mobile": {
+      "src": "security/security-page--mobile.webp",
+      "width": 1170,
+      "height": 3021
+    }
+  }
+}
