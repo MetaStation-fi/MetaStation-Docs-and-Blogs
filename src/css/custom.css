@@ -36,10 +36,28 @@
    adjustment (the set fontaine and next/font generate).
 
    Chosen over font-display:optional, which fixes CLS by often never applying
-   Inter at all — that trades a layout bug for a typography one. */
+   Inter at all — that trades a layout bug for a typography one.
+
+   WHY THERE IS MORE THAN ONE local() HERE — and it is not belt-and-braces.
+
+   This was `local('Arial')` alone, and Arial is a Microsoft font that does not
+   exist on a stock Linux box. On Windows and macOS the override resolved and
+   the swap was invisible, which is exactly why it looked fine locally. On the
+   Ubuntu CI runner the face resolved to NOTHING, so the whole @font-face was
+   inert, text fell through to the next stack entry at unadjusted metrics, and
+   Inter's swap reflowed every line at full magnitude — 0.102 on /docs/guides/
+   and 0.142 on /docs/social-trading/copy-settings/, against a 0.1 budget.
+
+   That is also why the number was byte-identical across CI runs while varying
+   locally: a missing font is deterministic, and the runner image never changes.
+
+   Liberation Sans and Arimo are metric-compatible with Arial *by design* —
+   that is the reason they exist — so the ascent/descent/size-adjust values
+   below stay correct for whichever one the host actually has. Do not drop the
+   non-Arial entries to tidy this up; the tidy version is the bug. */
 @font-face {
   font-family: 'Inter Fallback';
-  src: local('Arial');
+  src: local('Arial'), local('Liberation Sans'), local('Arimo'), local('Helvetica');
   ascent-override: 90.2%;
   descent-override: 22.48%;
   line-gap-override: 0%;
