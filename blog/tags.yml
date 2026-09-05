@@ -1,0 +1,99 @@
+# Curated blog tag taxonomy.
+#
+# WHY THIS FILE EXISTS AT ALL
+# Docusaurus will happily create a tag page for any string typed into a post's
+# front matter. That is the failure mode this file prevents: `webhook`,
+# `webhooks` and `Webhooks` become three separate indexable pages carrying one
+# post each, and a search engine sees a site generating thin, near-duplicate
+# pages. On a docs site whose entire purpose is being found, tag sprawl is not
+# untidiness — it is an actively negative ranking signal.
+#
+# `onInlineTags: 'throw'` in docusaurus.config.js makes any tag NOT listed here
+# a build failure, so the taxonomy cannot drift by accident. Adding a tag is a
+# deliberate edit to this file, which is exactly the amount of friction it
+# should have.
+#
+# EVERY TAG NEEDS A DESCRIPTION. It becomes the tag page's meta description.
+# Without one the page ships with the site-wide default, which makes every tag
+# page look identical to a crawler — the same duplicate-content problem by a
+# different route.
+#
+# Keys are what posts write in front matter. Keep them lowercase and hyphenated
+# so `Copy-Trading` and `copy-trading` cannot both exist.
+#
+# NO EXPLICIT `permalink:` ANYWHERE. The key IS the URL segment, so
+# /blogs/tags/announcement stays exactly where it already is. Adding a
+# permalink that reads slightly better — `announcements` for the `announcement`
+# key — silently moves a live URL, and a tag page that moves takes its indexed
+# position and any inbound link with it. If a nicer URL is genuinely worth it,
+# rename the key AND every post that uses it, deliberately, in one commit.
+#
+# A tag listed here but used by no post generates NO page, so the unused
+# entries below cost nothing. They exist so an author picks an approved tag
+# instead of inventing a near-duplicate.
+
+announcement:
+  label: Announcements
+  description: >-
+    Platform announcements from MetaStation — launches, releases, maintenance
+    windows and changes that affect how you trade.
+
+changelog:
+  label: Changelog
+  description: >-
+    What shipped, and when. Every MetaStation release with the features, fixes
+    and behaviour changes it carried.
+
+guides:
+  label: Guides
+  description: >-
+    Step-by-step walkthroughs for real trading jobs — from a first webhook to a
+    full take-profit ladder. The deep-dive companions to the MetaStation docs.
+
+automation:
+  label: Automation
+  description: >-
+    Trading without sitting at the screen — webhook signals, TradingView
+    alerts, scripted strategies and the pipeline that executes them.
+
+webhooks:
+  label: Webhooks
+  description: >-
+    The MetaStation webhook API in practice — payload shapes, signal sources,
+    debugging a signal that did not fill, and securing the endpoint.
+
+copy-trading:
+  label: Copy Trading
+  description: >-
+    Following and providing signals on the MetaStation marketplace —
+    allocation, position sizing, fee splits and the mechanics underneath.
+
+telegram:
+  label: Telegram
+  description: >-
+    Telegram-to-Trade and the MetaStation Mini App — executing channel signals
+    and running the platform from a chat window.
+
+security:
+  label: Security
+  description: >-
+    Protecting an account that can place trades — two-factor authentication,
+    API key scope, withdrawal controls and safe webhook secrets.
+
+wallet:
+  label: Wallet
+  description: >-
+    Funding, moving and withdrawing money — cross-chain deposits into the
+    Funding Wallet, settlement, and how withdrawals differ from deposits.
+
+product:
+  label: Product Notes
+  description: >-
+    How MetaStation is built and why it is built that way — design decisions,
+    trade-offs and the thinking behind the platform.
+
+market:
+  label: Market Notes
+  description: >-
+    Commentary on crypto market structure, volatility and execution conditions
+    from the MetaStation desk.

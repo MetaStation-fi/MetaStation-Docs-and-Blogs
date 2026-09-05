@@ -25,12 +25,10 @@ import HeroCanvas from '@site/src/components/HeroCanvas';
  *    surface that a reader can actually reach — `/` is VPS1, not this site
  *    (see src/pages/index.js) — so /docs/ and /blogs are the whole of it.
  *
- * 2. THE LIST NEEDED TO BECOME A GAPPED COLUMN. `BlogPostItems` renders a bare
- *    fragment of `BlogPostItem`s, and the stock item spaced itself with
- *    `margin-bottom--xl`. Our swizzled item dropped that margin deliberately
- *    (see src/theme/BlogPostItem) because margin-based spacing leaves a
- *    trailing gap under the last card and cannot be reasoned about from the
- *    container. The gap lives here now, on the parent, where it belongs.
+ * 2. THE LIST NEEDED A HEADING ABOVE IT. The gapped column the cards sit in
+ *    is NOT here — it is in src/theme/BlogPostItems, which is the one
+ *    component the index, the tag pages and the author pages all render
+ *    through. Fixing the spacing here would have fixed the index only.
  *
  * ── WHAT IS DELIBERATELY REUSED ────────────────────────────────────────────
  * `BlogListPageStructuredData` emits the `Blog` + `ItemList` JSON-LD that
@@ -97,10 +95,7 @@ function BlogListPageContent(props) {
     <BlogLayout sidebar={sidebar}>
       <BlogHero description={metadata.blogDescription} />
 
-      {/* The gap the swizzled BlogPostItem stopped carrying itself. */}
-      <div className="tw:flex tw:flex-col tw:gap-6">
-        <BlogPostItems items={items} />
-      </div>
+      <BlogPostItems items={items} />
 
       <BlogListPaginator metadata={metadata} />
     </BlogLayout>

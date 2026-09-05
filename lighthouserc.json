@@ -7,7 +7,9 @@
         "http://localhost/docs/guides/index.html",
         "http://localhost/docs/guides/tradingview-webhook-to-binance/index.html",
         "http://localhost/docs/developer/payload-builder/index.html",
-        "http://localhost/blogs/index.html"
+        "http://localhost/blogs/index.html",
+        "http://localhost/blogs/welcome/index.html",
+        "http://localhost/blogs/authors/metastation-team/index.html"
       ],
       "numberOfRuns": 1,
       "settings": {

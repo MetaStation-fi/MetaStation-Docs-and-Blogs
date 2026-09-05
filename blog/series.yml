@@ -1,0 +1,35 @@
+# Blog series — the reading order for multi-part posts.
+#
+# Consumed by plugins/docusaurus-plugin-series.js, which resolves every slug
+# against a real post file at build time and THROWS if one is missing. A series
+# link that 404s renders exactly like one that works, so that check is a build
+# failure rather than a warning.
+#
+# Each key is a series id. `posts` is the reading order, and it is authored
+# rather than derived from dates on purpose: publishing part 4 as a correction
+# two months later must not reorder the series, and back-dating a post to fix
+# the order corrupts <lastmod> and the RSS feed.
+#
+# A post may belong to at most one series — it shows one series band. Use a tag
+# from blog/tags.yml if a post genuinely spans two topics.
+#
+# Shape:
+#
+#   webhook-automation:
+#     label: Webhook automation, end to end
+#     description: >-
+#       From a first TradingView alert to a live automated strategy, in the
+#       order a trader actually meets the problems.
+#     posts:
+#       - your-first-tradingview-webhook
+#       - sizing-a-webhook-order
+#       - take-profit-ladders-over-webhooks
+#
+# Slugs are the post's final URL segment — the `slug:` in its front matter, or
+# the filename with the date prefix stripped.
+#
+# No series are published yet. The blog carries one post; a series needs at
+# least two parts to mean anything, and inventing them to exercise the code
+# would put fiction on a site whose job is being trusted. The hub route is not
+# registered while this file is empty, so nothing thin ships in the meantime.
+

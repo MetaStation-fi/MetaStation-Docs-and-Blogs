@@ -1,0 +1,122 @@
+name: Changelog from releases
+
+# Turns a published GitHub release into a changelog blog post, commits it, and
+# lets the normal push-to-main pipeline build and deploy it.
+#
+# WHY IT MATTERS MORE THAN IT LOOKS
+# The docs are 53 static pages. Crawlers learn how often a site changes and
+# come back at that rate, and AI answer engines skew hard toward recently
+# updated pages — so the blog is the crawl-frequency engine. A changelog is the
+# only content line whose supply does not depend on somebody finding time to
+# write: the release notes already exist.
+#
+# WHICH REPOSITORY'S RELEASES
+# By default this repo's, because that is the one this workflow can be
+# triggered from. Point it elsewhere with the `repo` input on a manual run, or
+# set the CHANGELOG_SOURCE_REPO repository variable, once the product repo
+# publishes releases.
+#
+# THE SCRIPT REFUSES TO WRITE A LEAK. Release notes are the one content source
+# not written under the docs' disclosure discipline, so
+# scripts/changelog-from-releases.mjs checks each generated post for the venue
+# name, the provider name and the origin hostname BEFORE writing, and exits
+# non-zero. That failure lands here, on the changelog job, instead of surfacing
+# later as a mystery in the deploy gate.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Source repo (owner/name). Defaults to this one.'
+        required: false
+        type: string
+      tag:
+        description: 'Single release tag. Leave empty for the newest releases.'
+        required: false
+        type: string
+      force:
+        description: 'Rewrite posts that already exist'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: changelog
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  # Needed by the last step: a push made with GITHUB_TOKEN does NOT trigger
+  # other workflows, so the deploy has to be dispatched explicitly.
+  actions: write
+
+jobs:
+  generate:
+    name: Generate and commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The generated post is committed back, and the commit date is what
+          # the sitemap's <lastmod> reads. A shallow clone still commits fine,
+          # but full history keeps every OTHER page's date intact if a later
+          # step ever builds here.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate changelog posts
+        env:
+          # Lifts the unauthenticated 60/hour rate limit and is required if the
+          # source repo is private.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHANGELOG_SOURCE_REPO: >-
+            ${{ inputs.repo || vars.CHANGELOG_SOURCE_REPO || github.repository }}
+        run: |
+          node scripts/changelog-from-releases.mjs \
+            ${{ inputs.tag && format('--tag {0}', inputs.tag) || '' }} \
+            ${{ github.event_name == 'release' && format('--tag {0}', github.event.release.tag_name) || '' }} \
+            ${{ inputs.force && '--force' || '' }}
+
+      - name: Verify the site still builds with the new post
+        # The generated markdown is sanitised for MDX before it is written, but
+        # "sanitised" is a claim and this is the proof. Committing a post that
+        # breaks the build would take main red on somebody else's next push.
+        env:
+          DOCUSAURUS_STRICT_LINKS: 'true'
+        run: |
+          if git diff --quiet -- blog/; then
+            echo "No new posts; skipping build."
+          else
+            npm ci --no-audit --no-fund
+            npm run build
+          fi
+
+      - name: Commit
+        run: |
+          if git diff --quiet -- blog/; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add blog/
+          git commit -m "docs(blog): changelog post from release ${{ github.event.release.tag_name || inputs.tag || 'batch' }}"
+          git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+        id: commit
+
+      - name: Dispatch the deploy
+        # GitHub deliberately does not trigger workflows from a push made with
+        # GITHUB_TOKEN, to stop workflows looping. Without this the changelog
+        # post sits committed and undeployed until somebody else pushes, which
+        # is the whole value of the automation gone. deploy.yml short-circuits
+        # harmlessly if the deploy secrets are not configured yet.
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref main

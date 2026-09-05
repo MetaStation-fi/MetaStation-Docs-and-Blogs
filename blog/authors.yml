@@ -1,3 +1,11 @@
+# Blog authors.
+#
+# `onInlineAuthors: 'throw'` in docusaurus.config.js means a post cannot invent
+# an author inline — every byline resolves to a key in this file. That keeps the
+# avatar, the title and the socials identical everywhere the author appears
+# (post header, blog index, author page, tag pages) instead of drifting per
+# post, and it is what makes `page: true` below worth having.
+
 metastation:
   name: MetaStation Team
   title: MetaStation
@@ -8,3 +16,26 @@ metastation:
   # is a small circle, so a 2.75:1 banner would be cropped to nothing, and the
   # plate keeps the knockout letterforms readable in both light and dark theme.
   image_url: https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@brand-v4/brand/metastation-avatar-192.webp
+
+  # Renders /blogs/authors/metastation — an indexable page listing everything
+  # this author has written, with the avatar, the description and the socials.
+  # It is a real crawl surface, not a vanity page: it gives the blog a second
+  # internal link path into every post (index → post, author → post) and gives
+  # an answer engine a single URL that says who is publishing this.
+  page:
+    permalink: /metastation-team
+
+  description: >-
+    The team building MetaStation — a unified crypto trading platform for spot
+    and perpetual futures, webhook automation, Telegram-to-Trade signal
+    execution and copy trading. We write about how the platform works and how
+    to get more out of it.
+
+  # Handles, not URLs, where Docusaurus has a normalizer for the platform.
+  # `telegram` has none, so it must be a fully qualified URL or the build
+  # throws — see plugin-content-blog/lib/authorsSocials.js. Unknown platforms
+  # render the default social icon with the key as its label.
+  socials:
+    x: MetaStation_fi
+    github: MetaStation-fi
+    telegram: https://t.me/metastation_global

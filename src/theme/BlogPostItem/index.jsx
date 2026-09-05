@@ -9,6 +9,7 @@ import BlogPostItemContent from '@theme/BlogPostItem/Content';
 import BlogPostItemHeaderAuthors from '@theme/BlogPostItem/Header/Authors';
 import BlogPostItemFooter from '@theme/BlogPostItem/Footer';
 import { Badge } from '@site/src/components/ui/badge';
+import SeriesNav from '@site/src/components/SeriesNav';
 import { IconArrowRight, IconCalendar, IconClock } from '@site/src/components/icons';
 
 /**
@@ -205,6 +206,12 @@ function BlogPostPageItem({ children, className }) {
         <PostTags tags={tags} />
         <BlogPostItemHeaderAuthors />
       </header>
+
+      {/* Renders null unless this post is listed in blog/series.yml, so a post
+          joins a series by one edit to that file and no edit here. It is in
+          the POST branch only — the list branch would mount one band per card
+          on /blogs, which is the trap this whole file is shaped around. */}
+      <SeriesNav />
 
       <BlogPostItemContent>{children}</BlogPostItemContent>
 

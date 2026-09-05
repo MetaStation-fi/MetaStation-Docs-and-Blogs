@@ -953,3 +953,29 @@ button:focus-visible,
   outline-offset: 2px;
   border-radius: var(--ms-radius-sm);
 }
+
+/* ── Author socials — hit area ──
+   The theme paints each social link as a bare 16x16 icon, which is under the
+   24x24 minimum the `target-size` accessibility audit enforces. It failed on
+   the author page and on every post header the moment socials were added to
+   blog/authors.yml.
+
+   The glyph stays 16px; what grows is the clickable box around it. Negative
+   margin keeps the row visually as tight as it was, so the fix costs no
+   layout — the targets simply overlap less padding than they gain.
+
+   `.ms-author-socials` comes from src/theme/Blog/Components/Author/Socials, a
+   wrapper swizzle. The theme's own class is a CSS-module hash
+   (`authorSocialLink_owbf`), so it cannot be targeted from here — the same
+   reason the announcement bar is styled through `.theme-announcement-bar`. */
+.ms-author-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.ms-author-socials > div {
+  margin-left: -4px;
+}

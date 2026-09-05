@@ -185,6 +185,19 @@ const config = {
   plugins: [
     tailwindPlugin,
     [
+      // Ordered multi-part posts. Series are cross-post knowledge — a post is
+      // rendered with only its own metadata in scope — so the reading order
+      // has to be resolved at build time by something that can see every post.
+      // Authored in blog/series.yml, validated against real files, and served
+      // to the client as global data. See the plugin header for why series are
+      // not tags and why the order is not derived from dates.
+      require.resolve('./plugins/docusaurus-plugin-series'),
+      {
+        blogBasePath: '/blogs',
+        hubPath: '/blogs/series',
+      },
+    ],
+    [
       // Generates llms.txt (an index for LLMs), llms-full.txt, and a .md
       // twin of every page at build time.
       //
@@ -296,6 +309,29 @@ const config = {
           },
           blogSidebarTitle: 'Recent Posts',
           blogSidebarCount: 10,
+
+          // ── Taxonomy ────────────────────────────────────────────────────
+          // Tags are curated in blog/tags.yml and an unlisted tag is a BUILD
+          // FAILURE. Without this, Docusaurus creates a tag page for any
+          // string a post types, so `webhook`, `webhooks` and `Webhooks`
+          // become three indexable pages carrying one post each. On a site
+          // whose entire purpose is being found, tag sprawl is not
+          // untidiness — it is a site generating thin near-duplicate pages,
+          // which is an actively negative signal.
+          tags: 'tags.yml',
+          onInlineTags: 'throw',
+
+          // Same reasoning for authors: a byline must resolve to
+          // blog/authors.yml, so the avatar, title and socials are identical
+          // on the post, the index, the tag pages and the author page rather
+          // than re-typed per post.
+          onInlineAuthors: 'throw',
+
+          // Every post needs a {/* truncate */} marker. An untruncated post
+          // renders in FULL on the blog index — ten of those is not a list,
+          // it is one enormous page — and it also means the index and the
+          // post ship the same body text at two URLs.
+          onUntruncatedBlogPosts: 'throw',
         },
         theme: {
           // Order matters for readability, not for correctness: Tailwind's
