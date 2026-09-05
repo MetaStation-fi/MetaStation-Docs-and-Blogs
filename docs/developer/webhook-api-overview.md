@@ -21,7 +21,7 @@ Start there: **[Execute a trade signal](/docs/api/execute-webhook)**.
 ## Endpoint
 
 ```
-POST https://api.metastation.fi/webhook/{token}
+POST https://metastation.fi/metastationapi/socialTrade/webhook/{accountId}
 ```
 
 - `{token}` — Your unique webhook token, generated per account slot
@@ -68,15 +68,25 @@ Two formats are accepted:
 
 ## Response format
 
-All responses follow this structure:
+A successful response is an **acknowledgement that the signal was accepted**, not a confirmation
+that the order filled:
 
 ```json
 {
   "success": true,
-  "result": { ... },
-  "message": "Order placed successfully"
+  "message": "Webhook received and queued for processing",
+  "signalId": "6512c0f1e4b0a1c2d3e4f5a6"
 }
 ```
+
+:::warning 200 means queued, not filled
+The signal is validated and queued, then executed asynchronously. A bot that treats a 200 as
+"the position exists" will be wrong whenever execution fails downstream — insufficient margin, a
+symbol the venue rejects, a risk control on the slot.
+
+Confirm real state from your positions, or from the signal log in **Webhook Management**, not from
+this response.
+:::
 
 **Error response:**
 

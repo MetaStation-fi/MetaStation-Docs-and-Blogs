@@ -1,1 +1,1 @@
-{"parameters":[{"name":"token","in":"path","required":true,"description":"Unique webhook token for the account slot","schema":{"type":"string"}}]}
+{"parameters":[{"name":"accountId","in":"path","required":true,"description":"The account slot's webhook secret. This is a bearer credential","schema":{"type":"string"}}]}

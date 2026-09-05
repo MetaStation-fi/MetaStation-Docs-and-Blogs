@@ -51,7 +51,7 @@ Webhook automation is **included free** on your MetaStation Account slot. For Bi
 2. Copy its **Webhook URL** — it looks like:
 
 ```
-https://api.metastation.fi/webhook/{your-unique-token}
+https://metastation.fi/metastationapi/socialTrade/webhook/{your-webhook-secret}
 ```
 
 3. Store it securely. Treat it like a password — anyone with this URL can execute trades on your account.
@@ -92,7 +92,7 @@ Open **Webhook Management** to see all received signals, their parsed content, e
 Use a tool like Postman or curl to send a test signal:
 
 ```bash
-curl -X POST https://api.metastation.fi/webhook/YOUR_TOKEN \
+curl -X POST https://metastation.fi/metastationapi/socialTrade/webhook/YOUR_SECRET \
   -H "Content-Type: application/json" \
   -d '{"action":"open","symbol":"BTCUSDC","side":"buy","orderType":"market","quantity":"1%"}'
 ```

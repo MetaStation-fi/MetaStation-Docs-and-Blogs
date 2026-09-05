@@ -10,26 +10,36 @@ info:
     url: https://metastation.fi
 
 servers:
-  - url: https://api.metastation.fi
+  # Verified against the running service. api.metastation.fi/webhook/<token>
+  # does NOT reach this endpoint - it falls through to the SPA catch-all and
+  # returns index.html with a 200, which is why a signal sent there fails
+  # silently. The backend mounts every route under /metastationapi.
+  - url: https://metastation.fi
     description: Production
 
 security: []
 
 paths:
-  /webhook/{token}:
+  /metastationapi/socialTrade/webhook/{accountId}:
     post:
       summary: Execute a trade signal
       description: |
-        Send a trading signal to execute on the account slot associated with the token.
-        Accepts JSON or natural language in the request body.
+        Send a trading signal to execute on the account slot associated with the
+        webhook secret in the URL. Accepts JSON or natural language in the body.
+
+        Copy the exact URL from Webhook Management -> Webhook URLs rather than
+        assembling it by hand.
+
+        A 200 means the signal was accepted and QUEUED, not that the order
+        filled. Confirm real state from your positions or the signal log.
       operationId: executeWebhook
       tags:
         - Webhook
       parameters:
-        - name: token
+        - name: accountId
           in: path
           required: true
-          description: Unique webhook token for the account slot
+          description: The account slot's webhook secret. This is a bearer credential
           schema:
             type: string
       requestBody:

@@ -60,7 +60,7 @@ Open **Webhook Management** → **Webhook URLs** tab
 Under **Your Webhook URLs**, find the Binance slot and copy its URL:
 
 ```
-https://api.metastation.fi/webhook/{your-unique-token}
+https://metastation.fi/metastationapi/socialTrade/webhook/{your-webhook-secret}
 ```
 
 {/* SCREENSHOT: guide-tv-webhook-url | Webhook Management, Your Webhook URLs, Binance slot row | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
@@ -163,7 +163,7 @@ For a strategy that goes both ways, `{{strategy.order.action}}` resolves to `buy
 Send one signal yourself, at a size you do not mind being wrong about:
 
 ```bash
-curl -X POST https://api.metastation.fi/webhook/YOUR_TOKEN \
+curl -X POST https://metastation.fi/metastationapi/socialTrade/webhook/YOUR_SECRET \
   -H "Content-Type: application/json" \
   -d '{"action":"open","symbol":"BTCUSDT","side":"buy","orderType":"market","quantity":"1%","leverage":3,"marginMode":"isolated"}'
 ```

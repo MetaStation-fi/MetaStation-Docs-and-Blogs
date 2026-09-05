@@ -1,0 +1,107 @@
+name: CI
+
+# Quality gates for the docs site. Runs on every PR and on pushes to main.
+#
+# Free unlimited minutes now that the repo is public — that was the reason
+# making it public was the keystone decision in the phase plan.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build, links and leak check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Docusaurus derives sitemap <lastmod> and the "Last updated" line
+          # from git commit dates. A shallow clone has none, so every page
+          # would silently lose its date.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Build (broken links are fatal in CI)
+        env:
+          # docusaurus.config.js reads this. Locally onBrokenLinks stays 'warn'
+          # so a work-in-progress link does not block an author mid-edit; in CI
+          # it throws, so a broken link cannot reach main.
+          DOCUSAURUS_STRICT_LINKS: 'true'
+        run: npm run build
+
+      - name: Leak check
+        # Mirrors vps2-config/deploy-docs.sh. Kept here as well so a bad page
+        # is caught on the PR rather than at deploy time.
+        run: |
+          fail=0
+          check() {
+            if grep -ril "$1" build/ >/dev/null 2>&1; then
+              echo "::error::'$1' appears in the build output"
+              grep -ril "$1" build/ | head -10
+              fail=1
+            fi
+          }
+          # The execution venue is never disclosed to users.
+          check "hyperliquid"
+          # The cross-chain infrastructure provider is not named in the docs.
+          check "symbiosis"
+          # The origin hostname leaking means canonicals or asset paths point at
+          # docs-origin, which silently breaks the subdirectory SEO strategy.
+          check "docs-origin"
+          exit $fail
+
+      - name: Canonicals must be on the real domain
+        run: |
+          bad=$(grep -rho 'rel=canonical href=[^ >]*' build/ 2>/dev/null \
+                | grep -v "href=https://metastation.fi/" | head -5 || true)
+          if [ -n "$bad" ]; then
+            echo "::error::canonical(s) not pointing at metastation.fi"
+            echo "$bad"
+            exit 1
+          fi
+
+      - name: JSON examples in docs must parse
+        # Every ```json block a reader might copy is parsed. This is the gate
+        # that would have caught the take-profit format being wrong.
+        run: node scripts/check-json-examples.mjs
+
+      - name: Structured data must be valid
+        run: node scripts/check-structured-data.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build
+          retention-days: 3
+
+  lighthouse:
+    name: Lighthouse budget
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: build
+      - name: Run Lighthouse CI
+        # Budgets live in lighthouserc.json. This is the gate that keeps the
+        # Phase 2 Canvas UI work honest: shader effects that cost Core Web
+        # Vitals fail here rather than quietly costing rankings, which is the
+        # whole reason this project exists.
+        run: |
+          npm install -g @lhci/cli@0.14.x
+          lhci autorun || exit 1

@@ -10,7 +10,13 @@ const config = {
   url: 'https://metastation.fi',
   baseUrl: '/',
 
-  onBrokenLinks: 'warn',
+  // Locally this stays 'warn' so a work-in-progress link does not block an
+  // author mid-edit. CI sets DOCUSAURUS_STRICT_LINKS=true so a broken link
+  // fails the build and cannot reach main — the docs are full of deep
+  // cross-links between guides, concepts and reference, and a silent 404
+  // between them is exactly the kind of rot nobody notices for months.
+  onBrokenLinks: process.env.DOCUSAURUS_STRICT_LINKS === 'true' ? 'throw' : 'warn',
+  onBrokenAnchors: process.env.DOCUSAURUS_STRICT_LINKS === 'true' ? 'throw' : 'warn',
   // Docusaurus 3.10 is the last v3 release and exists to stage v4. Adopting the
   // flags now makes the v4 upgrade a no-op instead of a migration.
   future: {
