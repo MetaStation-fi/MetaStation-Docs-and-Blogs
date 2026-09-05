@@ -1,101 +1,40 @@
-# Search Engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Googlebot-Video
-Allow: /
-
-User-agent: Googlebot-News
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Baiduspider
-Allow: /
-
-User-agent: YandexBot
-Allow: /
-
-User-agent: Sogou
-Allow: /
-
-User-agent: Exabot
-Allow: /
-
-User-agent: facebot
-Allow: /
-
-User-agent: ia_archiver
-Allow: /
-
-# AI Search Crawlers
-User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: cohere-ai
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-# AI Training Crawlers
-User-agent: Google-Extended
-Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: Diffbot
-Allow: /
-
-User-agent: FacebookBot
-Allow: /
-
-User-agent: Omgilibot
-Allow: /
-
-User-agent: Timpibot
-Allow: /
-
-User-agent: YouBot
-Allow: /
-
-User-agent: ImagesiftBot
-Allow: /
-
-User-agent: Bytespider
-Allow: /
-
-User-agent: PetalBot
-Allow: /
-
-# Catch-all
-User-agent: *
-Allow: /
+# READ THE LIVE FILE, NOT THIS ONE.
+#
+#   curl https://metastation.fi/robots.txt
+#
+# Cloudflare's MANAGED robots.txt is enabled on this zone (`is_robots_txt_managed:
+# true`). Managed mode does not replace the origin's file — it PREPENDS its own
+# block and appends the origin's, separated by `# END Cloudflare Managed
+# Content`. So what a crawler receives is Cloudflare's block followed by this
+# text, and reading this file alone tells you almost nothing about the live
+# policy.
+#
+# WHY THIS FILE IS ALMOST EMPTY
+# It used to list forty user-agents, every one of them `Allow: /`. All of it was
+# dead twice over: the Cloudflare Snippet did not route `/robots.txt` to VPS2,
+# and the managed file would have overridden it anyway. Worse, it contradicted
+# reality — it allowed GPTBot, ClaudeBot, CCBot and Google-Extended while the
+# zone was blocking them at the edge.
+#
+# THE BOT POLICY IS NOT HERE, AND MUST NOT BE ADDED HERE.
+# It lives in the zone's bot settings (`ai_bots_protection`, currently `block`).
+# That is an EDGE block: it refuses the request. A robots.txt line saying
+# otherwise is a promise the network does not keep. Re-stating per-agent rules
+# below would also place a second group for a user-agent Cloudflare's block has
+# already named, in the same file — the resolution of which is undefined and
+# differs per crawler. One policy, one place: change it at Cloudflare.
+#
+# There is deliberately no `User-agent: *` group either, for exactly that
+# reason: the managed block already declares one.
+#
+# WHAT THIS FILE IS FOR
+# Cloudflare's managed file carries no `Sitemap:` line at all, and a sitemap
+# declaration is the single most useful thing robots.txt can do for a site whose
+# whole purpose is being found. `Sitemap:` is a non-group directive, so it is
+# valid standing alone and cannot conflict with anything above it.
+#
+# Served from VPS2. `/robots.txt` is in the Snippet's path list
+# (vps2-config/cloudflare-snippet-docs.js) — VPS1 is not touched. Its own CRA
+# default robots.txt is what the managed file used to append instead.
 
 Sitemap: https://metastation.fi/sitemap.xml

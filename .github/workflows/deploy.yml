@@ -133,8 +133,17 @@ jobs:
         env:
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
         run: |
+          # The key is NOT a secret — IndexNow requires it to be publicly
+          # fetchable, which is the whole verification mechanism. It is
+          # committed as static/<key>.txt and discovered from that filename, so
+          # this step works with no secret configured at all. An explicit
+          # INDEXNOW_KEY secret still wins if someone sets one.
           if [ -z "$INDEXNOW_KEY" ]; then
-            echo "::warning::INDEXNOW_KEY unset — skipping"
+            keyfile=$(ls static/ | grep -E '^[0-9a-f]{8,128}\.txt$' | head -1 || true)
+            [ -n "$keyfile" ] && INDEXNOW_KEY="${keyfile%.txt}"
+          fi
+          if [ -z "$INDEXNOW_KEY" ]; then
+            echo "::warning::no IndexNow key found — skipping"
             exit 0
           fi
           # Covers Bing, Yandex, Naver, Seznam and Yep, and downstream
@@ -142,9 +151,13 @@ jobs:
           # retired sitemap ping endpoint, so it is not addressed here.
           urls=$(grep -o '<loc>[^<]*</loc>' build/sitemap.xml | sed 's/<[^>]*>//g' \
                  | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          # keyLocation must sit at or ABOVE every submitted URL. It pointed at
+          # /docs/<key>.txt, which authorises only /docs/* — the sitemap also
+          # carries /blogs/* and /search, so every submission would have been
+          # rejected 422. Root, routed to VPS2 by the Snippet.
           code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "https://api.indexnow.org/IndexNow" \
             -H "Content-Type: application/json" \
-            --data "{\"host\":\"metastation.fi\",\"key\":\"$INDEXNOW_KEY\",\"keyLocation\":\"${SITE}/docs/${INDEXNOW_KEY}.txt\",\"urlList\":$urls}")
+            --data "{\"host\":\"metastation.fi\",\"key\":\"$INDEXNOW_KEY\",\"keyLocation\":\"${SITE}/${INDEXNOW_KEY}.txt\",\"urlList\":$urls}")
           case "$code" in
             200|202) echo "IndexNow accepted ($code)" ;;
             *) echo "::warning::IndexNow returned HTTP $code" ;;
