@@ -552,6 +552,12 @@ export default function PayloadBuilder() {
               {label}
             </button>
           ))}
+        </div>
+
+        {/* Outside the tablist on purpose: role="tablist" may only contain
+            role="tab" children, and a stray button fails
+            aria-required-children for the entire group. */}
+        <div className={styles.actions}>
           <button type="button" className={styles.copyBtn} onClick={() => copy(output, tab)}>
             {copied === tab ? 'Copied' : copied === 'failed' ? 'Select and copy' : 'Copy'}
           </button>

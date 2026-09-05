@@ -80,6 +80,14 @@ const config = {
       attributes: { rel: 'dns-prefetch', href: 'https://cdn.jsdelivr.net' },
     },
 
+    // Giscus is mounted below the fold on every doc and blog post, so the
+    // handshake to its origin is guaranteed and worth warming early rather
+    // than paying for it when the reader scrolls.
+    {
+      tagName: 'link',
+      attributes: { rel: 'preconnect', href: 'https://giscus.app' },
+    },
+
     // ── Structured data ────────────────────────────────────────────────────
     // The site shipped exactly one JSON-LD block before this (BreadcrumbList,
     // from the theme). Organization + SoftwareApplication are site-wide facts,

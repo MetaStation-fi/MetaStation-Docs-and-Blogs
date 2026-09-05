@@ -1,0 +1,10 @@
+{
+  "theme.blog.post.readMore": {
+    "message": "Read the full post",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.readMoreLabel": {
+    "message": "Read the full post: {title}",
+    "description": "The ARIA label for the link to the full blog post from the excerpt"
+  }
+}

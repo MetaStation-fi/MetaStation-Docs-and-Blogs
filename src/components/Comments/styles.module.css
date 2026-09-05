@@ -17,3 +17,18 @@
   line-height: 1.6;
   margin-bottom: 1.25rem;
 }
+
+/* Lighthouse link-in-text-block: the accent on muted body text measured 1.37:1
+   against its surroundings and carried no other affordance, so the link was
+   distinguishable by colour alone. Underlining it removes the dependence on
+   colour entirely, which is the accessible fix rather than merely a darker
+   accent that would still fail for a colour-blind reader. */
+.intro a {
+  color: var(--ms-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.intro a:hover {
+  color: var(--ms-accent);
+}
