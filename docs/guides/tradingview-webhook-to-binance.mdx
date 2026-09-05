@@ -101,13 +101,18 @@ On your chart, open the indicator or strategy, click the clock icon, and create 
   "symbol": "BTCUSDT",
   "side": "buy",
   "orderType": "market",
-  "quantity": "2%",
+  "quantity": 0.01,
+  "category": "linear",
   "leverage": 5,
   "marginMode": "isolated",
-  "stopLoss": 41000,
+  "futurestopLoss": {
+    "slType": "market",
+    "stopLossPrice": 41000,
+    "priceType": "mark"
+  },
   "takeProfits": [
-    { "price": 47000, "quantity": "50%" },
-    { "price": 50000, "quantity": "remainder" }
+    { "price": 47000, "amount": 0.005 },
+    { "price": 50000, "amount": 0.005 }
   ]
 }
 ```
@@ -115,10 +120,10 @@ On your chart, open the indicator or strategy, click the clock icon, and create 
 Three things about this payload are deliberate:
 
 - **`marginMode: "isolated"`** bounds the worst case to this position instead of the account.
-- **`stopLoss` is in the payload**, not added by hand afterwards. Anything you plan to add
+- **The stop loss is in the payload**, not added by hand afterwards. Anything you plan to add
   manually depends on you being awake.
-- **The final take-profit uses `"remainder"`**, so rounding on the earlier slice cannot strand a
-  fragment of the position with no exit.
+- **Take-profit `amount` values are token quantities** and total exactly the order quantity.
+  Percentages and keywords are rejected by the API, and amounts summing above `quantity` are too.
 
 ### Making it follow the chart
 

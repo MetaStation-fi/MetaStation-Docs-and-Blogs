@@ -18,6 +18,12 @@ Full reference for all order types available on MetaStation.
 | **Limit** | Executes at your specified price or better | Price control, entries/exits |
 | **Stop Market** | Market order triggered when price reaches stop level | Breakout entries, loss limits |
 | **Stop Limit** | Limit order triggered at stop level | Precise conditional entries |
+
+:::note Webhook API accepts only market and limit
+The table above describes order types available **in the trading terminal**. The webhook API
+accepts only `market` and `limit` as `orderType`; stop behaviour is configured through the stop
+loss fields instead. → [Supported Actions](/docs/developer/supported-actions#order-types)
+:::
 | **Trailing Stop** | Dynamic stop that follows price | Profit protection in trending markets |
 
 ---

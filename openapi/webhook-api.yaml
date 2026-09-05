@@ -47,10 +47,16 @@ paths:
                   side: buy
                   orderType: market
                   quantity: "2%"
+                  category: linear
                   leverage: 10
                   marginMode: isolated
-                  takeProfit: 50000
-                  stopLoss: 40000
+                  takeProfits:
+                    - price: 50000
+                      amount: 0.005
+                  futurestopLoss:
+                    slType: market
+                    stopLossPrice: 40000
+                    priceType: mark
               closePosition:
                 summary: Close a position
                 value:
@@ -99,8 +105,12 @@ components:
       properties:
         action:
           type: string
-          enum: [open, close, update, reverse]
-          description: Trade action to execute
+          enum: [open, close, update]
+          description: >-
+            Trade action to execute. reverse is NOT accepted - it is rejected with
+            "Invalid action: reverse. Must be one of: open, close, update, cancel".
+            To flip a position, send a close followed by an open. cancel passes
+            validation but has no handler, so it is not a usable action.
         symbol:
           type: string
           example: BTCUSDC
@@ -111,15 +121,20 @@ components:
           description: Required for open and close actions
         orderType:
           type: string
-          enum: [market, limit, stop_market, stop_limit]
+          enum: [market, limit]
           default: market
+          description: >-
+            Only market and limit are accepted. Any other value is rejected with
+            "Invalid order type ... Supported types: market, limit".
         price:
           type: number
           description: Required for limit orders
         quantity:
           oneOf:
             - type: string
-              description: "Percentage (\"2%\"), USD (\"$300\"), or token amount (\"0.001 BTC\")"
+              description: >-
+                Percentage ("2%"), USD ("300 USD"), or token amount with a unit
+                ("0.001 BTC"). A bare "$300" is NOT accepted - write "300 USD".
             - type: number
               description: Token amount as a number
         leverage:
@@ -136,16 +151,44 @@ components:
         takeProfits:
           type: array
           maxItems: 10
+          description: >-
+            Each level closes part of the position. The sum of all amounts must
+            not exceed the order quantity, or the signal is rejected with
+            "Total TP amount exceeds order amount".
           items:
             type: object
+            required: [price, amount]
             properties:
               price:
                 type: number
-              quantity:
-                type: string
+              amount:
+                type: number
+                description: >-
+                  Quantity to close at this level, in base tokens. Must be a
+                  positive number - percentage strings and keywords such as
+                  "remainder" are rejected with "TPn missing price or amount".
         stopLoss:
           type: number
-          description: Stop loss price (simple market SL)
+          description: >-
+            Simple stop loss price. Used with the update action; for futures
+            orders prefer futurestopLoss, which is what the platform emits.
+        futurestopLoss:
+          type: object
+          description: Futures stop loss configuration.
+          required: [slType, stopLossPrice]
+          properties:
+            slType:
+              type: string
+              enum: [market, limit]
+            stopLossPrice:
+              type: number
+            stopLimitPrice:
+              type: number
+              description: Required when slType is limit.
+            priceType:
+              type: string
+              enum: [mark, last, index]
+              default: mark
         stopLossX:
           $ref: '#/components/schemas/SLXConfig'
 

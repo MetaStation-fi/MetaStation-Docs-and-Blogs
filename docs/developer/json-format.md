@@ -2,11 +2,18 @@
 id: json-format
 title: JSON Message Format
 sidebar_label: JSON Format
+description: The exact JSON a MetaStation webhook accepts — every field, the values that validate, and the shapes that are rejected.
 ---
 
 # JSON Message Format
 
 Full reference for the JSON webhook message format.
+
+:::tip Build it instead of typing it
+The **[Payload Builder](/docs/developer/payload-builder)** generates a valid payload from a form,
+including the TradingView alert message and a `curl` command. It emits the same shape the
+platform's own Webhook Management builder does.
+:::
 
 ---
 
@@ -15,14 +22,13 @@ Full reference for the JSON webhook message format.
 ```json
 {
   "action": "open",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
   "side": "buy",
   "orderType": "market",
-  "quantity": "2%",
+  "quantity": 0.01,
+  "category": "linear",
   "leverage": 10,
-  "marginMode": "isolated",
-  "takeProfit": 50000,
-  "stopLoss": 40000
+  "marginMode": "isolated"
 }
 ```
 
@@ -34,76 +40,121 @@ Full reference for the JSON webhook message format.
 
 | Field | Type | Values | Description |
 |---|---|---|---|
-| `action` | string | `open`, `close`, `update`, `reverse` | Trade action |
-| `symbol` | string | e.g. `BTCUSDC`, `ETHUSDT` | Trading pair |
-| `side` | string | `buy`, `sell` | Direction (for `open`) |
+| `action` | string | `open`, `close`, `update` | Trade action |
+| `symbol` | string | e.g. `BTCUSDT` | Trading pair |
+| `side` | string | `buy`, `sell` | Direction |
 
 ### Optional fields
 
 | Field | Type | Example | Description |
 |---|---|---|---|
-| `orderType` | string | `market`, `limit` | Default: `market` |
-| `price` | number | `45000` | Required for limit orders |
-| `quantity` | string/number | `"2%"`, `"300 USD"`, `0.001` | Position size |
-| `leverage` | number | `10` | Leverage multiplier |
-| `marginMode` | string | `isolated`, `cross` | Margin mode |
+| `orderType` | string | `market`, `limit` | Default: `market`. **Only these two validate** |
+| `category` | string | `linear`, `spot` | Market type. Default: `linear` |
+| `price` | number | `44500` | Required for limit orders |
+| `quantity` | string/number | `0.01`, `"2%"`, `"300 USD"` | Position size |
+| `leverage` | number | `10` | Futures only |
+| `marginMode` | string | `isolated`, `cross` | Futures only |
 | `takeProfit` | number | `50000` | Single TP price |
-| `stopLoss` | number | `40000` | Stop loss price |
+| `takeProfits` | array | see below | Multiple TP levels |
+| `futurestopLoss` | object | see below | Futures stop loss |
+| `stopLossX` | object | see below | SLX configuration |
+| `comment` | string | `"my strategy"` | Free-text label, echoed back |
 
 ---
 
 ## Quantity formats
 
 ```json
+{ "quantity": 0.001 }        // 0.001 tokens
+{ "quantity": "0.001 BTC" }  // same, with an explicit unit
 { "quantity": "2%" }         // 2% of wallet balance
 { "quantity": "300 USD" }    // $300 worth
-{ "quantity": "$300" }       // same as above
-{ "quantity": 0.001 }        // 0.001 BTC (token amount)
-{ "quantity": "0.001 BTC" }  // same with explicit unit
 ```
+
+:::warning `"$300"` is not accepted
+The parser recognises a trailing `%`, the literal substring `USD`, or a
+`<number> <TICKER>` pair. A bare `"$300"` matches none of them and falls through to a numeric
+parse, which fails. Write `"300 USD"`.
+:::
 
 ---
 
 ## Multiple Take Profits
 
+Up to 10 levels. **Each level takes `price` and `amount`, both numbers.**
+
 ```json
 {
   "action": "open",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
   "side": "buy",
   "orderType": "market",
-  "quantity": "2%",
+  "quantity": 0.01,
+  "category": "linear",
   "takeProfits": [
-    { "price": 48000, "quantity": "30%" },
-    { "price": 50000, "quantity": "40%" },
-    { "price": 52000, "quantity": "remainder" }
-  ],
-  "stopLoss": 40000
+    { "price": 48000, "amount": 0.003 },
+    { "price": 50000, "amount": 0.004 },
+    { "price": 52000, "amount": 0.003 }
+  ]
 }
 ```
 
-Up to 10 TP levels. Use `"remainder"` for the last level to close whatever is left.
+:::danger `amount` is a token quantity, not a percentage
+This is the single most common reason a multi-TP signal is rejected.
+
+- `amount` must be a **positive number in base tokens**. Percentage strings (`"30%"`) and
+  keywords (`"remainder"`) are **rejected** — the validator returns
+  `TPn missing price or amount`.
+- Both `price` and `amount` are required on every level.
+- The **sum of all amounts must not exceed `quantity`**, or the signal is rejected with
+  `Total TP amount exceeds order amount`.
+
+In the example above the three amounts total `0.01`, matching the order quantity exactly.
+:::
+
+For a single take profit, use the scalar `takeProfit` field instead:
+
+```json
+{ "takeProfit": 50000 }
+```
 
 ---
 
-## Advanced Stop Loss types
+## Stop loss
+
+For futures, the stop loss travels as an object under `futurestopLoss`:
 
 ```json
 {
-  "stopLoss": {
-    "slType": "limit",
-    "stopLossPrice": 40000,
-    "stopLimitPrice": 39900,
+  "futurestopLoss": {
+    "slType": "market",
+    "stopLossPrice": 41000,
     "priceType": "mark"
   }
 }
 ```
 
-| `slType` | Behaviour |
-|---|---|
-| `market` | Market SL — guaranteed fill |
-| `limit` | Limit SL — may not fill in fast markets |
-| `trailing` | Trailing SL — dynamic |
+A limit stop additionally needs `stopLimitPrice`:
+
+```json
+{
+  "futurestopLoss": {
+    "slType": "limit",
+    "stopLossPrice": 41000,
+    "stopLimitPrice": 40900,
+    "priceType": "mark"
+  }
+}
+```
+
+| Field | Values | Notes |
+|---|---|---|
+| `slType` | `market`, `limit` | `market` always fills; `limit` may not |
+| `stopLossPrice` | number | The trigger price |
+| `stopLimitPrice` | number | Required when `slType` is `limit` |
+| `priceType` | `mark`, `last`, `index` | Default `mark` |
+
+The scalar `stopLoss` field is used with the [`update`](#update-tp-and-sl) action.
 
 ---
 
@@ -134,7 +185,15 @@ Up to 10 TP levels. Use `"remainder"` for the last level to close whatever is le
 }
 ```
 
-`trailingType` options: `breakeven` or `follow_tp`
+`trailingType` options: `breakeven` or `follow_tp`.
+
+:::note Two accepted forms
+The nested `stopLossX` object above is accepted by the API. The platform's own Webhook Management
+builder emits an equivalent **flattened** form instead — `slxChecked` with either
+`trailingStatus` / `activationPoint` / `trailingType`, or `callBackStatus` /
+`callbackActivationPrice` / `callbackRate`. Both work; the [Payload
+Builder](/docs/developer/payload-builder) emits the flattened form so it matches the app exactly.
+:::
 
 ---
 
@@ -143,7 +202,7 @@ Up to 10 TP levels. Use `"remainder"` for the last level to close whatever is le
 ```json
 {
   "action": "close",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
   "side": "sell"
 }
 ```
@@ -153,7 +212,7 @@ Up to 10 TP levels. Use `"remainder"` for the last level to close whatever is le
 ```json
 {
   "action": "close",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
   "side": "sell",
   "quantity": "50%"
 }
@@ -161,56 +220,49 @@ Up to 10 TP levels. Use `"remainder"` for the last level to close whatever is le
 
 ---
 
-## Update TP/SL
+## Update TP and SL
 
 ```json
 {
   "action": "update",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
+  "side": "buy",
   "takeProfit": 51000,
   "stopLoss": 44000
 }
 ```
 
----
-
-## Reverse position
-
-```json
-{
-  "action": "reverse",
-  "symbol": "BTCUSDC",
-  "side": "sell",
-  "quantity": "2%"
-}
-```
-
-Closes the current position and opens the opposite direction with the specified size.
+`update` uses the scalar `takeProfit` and `stopLoss` fields.
 
 ---
 
-## Full example with all features
+## Full example
 
 ```json
 {
   "action": "open",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
   "side": "buy",
   "orderType": "limit",
   "price": 44500,
-  "quantity": "3%",
+  "quantity": 0.01,
+  "category": "linear",
   "leverage": 10,
   "marginMode": "isolated",
   "takeProfits": [
-    { "price": 47000, "quantity": "30%" },
-    { "price": 49000, "quantity": "40%" },
-    { "price": 52000, "quantity": "remainder" }
+    { "price": 47000, "amount": 0.003 },
+    { "price": 49000, "amount": 0.004 },
+    { "price": 52000, "amount": 0.003 }
   ],
-  "stopLoss": 41000,
+  "futurestopLoss": {
+    "slType": "market",
+    "stopLossPrice": 41000,
+    "priceType": "mark"
+  },
   "stopLossX": {
     "slxMode": "trailing_profits",
     "activationPoint": "TP1",
-    "trailingType": "follow_tp"
+    "trailingType": "breakeven"
   }
 }
 ```

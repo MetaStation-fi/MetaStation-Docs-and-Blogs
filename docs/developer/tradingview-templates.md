@@ -96,13 +96,13 @@ Use with custom indicators or price alerts. You manually define the values.
   "symbol": "BTCUSDC",
   "side": "buy",
   "orderType": "market",
-  "quantity": "3%",
+  "quantity": 0.01,
   "leverage": 10,
   "marginMode": "isolated",
   "takeProfits": [
-    {"price": 48000, "quantity": "30%"},
-    {"price": 50000, "quantity": "40%"},
-    {"price": 52000, "quantity": "remainder"}
+    {"price": 48000, "amount": 0.003},
+    {"price": 50000, "amount": 0.004},
+    {"price": 52000, "amount": 0.003}
   ],
   "stopLoss": 41000
 }

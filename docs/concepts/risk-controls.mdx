@@ -87,13 +87,18 @@ hand afterwards. Anything added manually depends on you being awake:
   "action": "open",
   "symbol": "BTCUSDC",
   "side": "buy",
-  "quantity": "2%",
+  "quantity": 0.01,
+  "category": "linear",
   "leverage": 5,
   "marginMode": "isolated",
-  "stopLoss": 41000,
+  "futurestopLoss": {
+    "slType": "market",
+    "stopLossPrice": 41000,
+    "priceType": "mark"
+  },
   "takeProfits": [
-    { "price": 47000, "quantity": "50%" },
-    { "price": 50000, "quantity": "remainder" }
+    { "price": 47000, "amount": 0.005 },
+    { "price": 50000, "amount": 0.005 }
   ]
 }
 ```

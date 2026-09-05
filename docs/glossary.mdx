@@ -2,7 +2,7 @@
 id: glossary
 title: Glossary
 sidebar_label: Glossary
-description: Every term MetaStation's documentation uses that is not self-explanatory — perpetuals, SLX, slots, gasless, mark price, the remainder keyword, and the rest.
+description: Every term MetaStation's documentation uses that is not self-explanatory — perpetuals, SLX, slots, gasless, mark price, trigger versus fill, and the rest.
 keywords: [crypto trading glossary, perpetual futures definition, what is slx, mark price definition, isolated vs cross margin]
 ---
 
@@ -109,7 +109,8 @@ Executes at your price or better. The price is guaranteed; the fill is not.
 
 #### Stop market
 A market order triggered when price reaches your stop level. Always closes you — possibly at a
-materially worse price than the stop.
+materially worse price than the stop. Available in the terminal; over the webhook API this is
+configured through `futurestopLoss`, not as an `orderType`.
 
 #### Stop limit
 A limit order triggered at your stop level. Protects the price and **can fail to fill entirely**,
@@ -128,9 +129,10 @@ Several take-profit levels at rising prices, each against a slice of the positio
 shape of the outcome rather than the edge.
 → [Scale Out with Multiple TPs](/docs/guides/scale-out-with-take-profits)
 
-#### `remainder` **(MetaStation)**
-Keyword for the final take-profit level's quantity: close whatever is left. Prevents rounding
-across earlier slices from stranding a fragment of the position with no exit.
+#### TP `amount` **(MetaStation)**
+The quantity closed at one take-profit level over the webhook API, expressed as a number of base
+tokens. Percentage strings and keywords are rejected, and the total across levels must not exceed
+the order quantity. The trading terminal additionally accepts USD and percentage entry.
 
 #### Stop loss (SL)
 An order closing a position at a defined loss. A position without one has no defined worst case.
@@ -146,10 +148,6 @@ TP after each fill), and `callback_rate` (trail by a percentage from the peak).
 
 #### Callback rate
 In SLX, the percentage below the highest price seen since activation at which the stop sits.
-
-#### Reverse **(MetaStation)**
-An action that closes the current position and immediately opens the opposite direction — one
-request, with no window where the account is flat.
 
 ---
 

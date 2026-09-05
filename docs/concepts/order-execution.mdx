@@ -91,12 +91,13 @@ Take a long from $45,000:
 |---|---|---|
 | TP1 | $48,000 | 30% |
 | TP2 | $50,000 | 40% |
-| TP3 | $52,000 | remainder |
+| TP3 | $52,000 | 30% |
 
 Price reaching $48,000 closes 30% and leaves the rest running. If it then reverses, TP2 and TP3
 stay open — they are not cancelled, and they are not "missed". They simply have not triggered.
-The last level takes `remainder` so that rounding across the earlier slices cannot strand a
-fragment of the position with no exit.
+Slices are set in the terminal as a token amount, a USD value or a percentage. Over the webhook
+API they must be **token amounts**, and their total must not exceed the order quantity — see
+[JSON Format](/docs/developer/json-format#multiple-take-profits).
 
 **A ladder changes the shape of your outcome, not your edge.** It converts one binary result into
 a distribution: you give up some of the best case in exchange for banking part of the move
@@ -151,7 +152,7 @@ arrive while you are asleep — isolated is the mode that lets you state your wo
     {
       question: 'How many take profit levels can one position have?',
       answer:
-        'Up to 10. Each level is an independent order against a slice of the position, and levels that have not triggered stay open after earlier ones fill. Setting the final level to "remainder" ensures rounding across the earlier slices cannot leave a fragment of the position without an exit.',
+        'Up to 10. Each level is an independent order against a slice of the position, and levels that have not triggered stay open after earlier ones fill. Over the webhook API each level needs a price and an amount in base tokens, and the total of those amounts must not exceed the order quantity.',
     },
     {
       question: 'What is the difference between isolated and cross margin?',

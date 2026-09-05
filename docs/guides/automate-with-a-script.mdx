@@ -54,9 +54,14 @@ def open_position(symbol, side, quantity, stop_loss, take_profits=None):
         "side": side,
         "orderType": "market",
         "quantity": quantity,
+        "category": "linear",
         "leverage": 5,
         "marginMode": "isolated",
-        "stopLoss": stop_loss,
+        "futurestopLoss": {
+            "slType": "market",
+            "stopLossPrice": stop_loss,
+            "priceType": "mark",
+        },
     }
     if take_profits:
         payload["takeProfits"] = take_profits
@@ -67,13 +72,13 @@ def open_position(symbol, side, quantity, stop_loss, take_profits=None):
 
 
 result = open_position(
-    symbol="BTCUSDC",
+    symbol="BTCUSDT",
     side="buy",
-    quantity="2%",
+    quantity=0.01,
     stop_loss=41000,
     take_profits=[
-        {"price": 48000, "quantity": "50%"},
-        {"price": 52000, "quantity": "remainder"},
+        {"price": 48000, "amount": 0.005},
+        {"price": 52000, "amount": 0.005},
     ],
 )
 
@@ -102,9 +107,10 @@ async function openPosition({symbol, side, quantity, stopLoss, takeProfits}) {
       side,
       orderType: 'market',
       quantity,
+      category: 'linear',
       leverage: 5,
       marginMode: 'isolated',
-      stopLoss,
+      futurestopLoss: {slType: 'market', stopLossPrice: stopLoss, priceType: 'mark'},
       ...(takeProfits && {takeProfits}),
     }),
   });
@@ -121,7 +127,7 @@ async function openPosition({symbol, side, quantity, stopLoss, takeProfits}) {
 ```bash
 curl -X POST "$METASTATION_WEBHOOK_URL" \
   -H "Content-Type: application/json" \
-  -d '{"action":"open","symbol":"BTCUSDC","side":"buy","orderType":"market","quantity":"1%","leverage":3,"marginMode":"isolated"}'
+  -d '{"action":"open","symbol":"BTCUSDT","side":"buy","orderType":"market","quantity":0.001,"category":"linear","leverage":3,"marginMode":"isolated"}'
 ```
 
 ---
@@ -142,21 +148,18 @@ if not result.get("success"):
 
 → [Error Codes](/docs/developer/error-codes)
 
-## The four actions
+## The three actions
 
 | Action | Use |
 |---|---|
 | `open` | New position |
 | `close` | Close fully, or partially with `quantity` |
 | `update` | Change TP/SL on an open position |
-| `reverse` | Close and immediately open the opposite direction |
 
-`reverse` is worth knowing: for a strategy that flips on signal, it is one request instead of a
-close followed by an open, with no window in between where you are flat.
-
-```json
-{ "action": "reverse", "symbol": "BTCUSDC", "side": "sell", "quantity": "2%" }
-```
+:::note There is no `reverse` action
+The API rejects it: `Invalid action: reverse. Must be one of: open, close, update, cancel`. A
+strategy that flips on signal sends a `close` followed by an `open`.
+:::
 
 → [Supported Actions](/docs/developer/supported-actions)
 
@@ -167,6 +170,7 @@ close followed by an open, with no window in between where you are flat.
 | Mistake | Consequence |
 |---|---|
 | No stop loss in the payload | An unbounded worst case on a position nobody is watching |
+| TP `amount` as a percentage | Rejected — `amount` is a token quantity, and totals above `quantity` are rejected too |
 | Percentage sizing with a compounding bug | `"2%"` recalculates on each signal. A retry loop compounds into a much larger position than intended |
 | Retrying on timeout without checking | A timeout is not a rejection. The order may have executed — verify before resending |
 | Ignoring `success: false` | Local state diverges from reality |
@@ -206,9 +210,9 @@ processed. Check the actual position state before sending the order again.
         'Check the actual position state before resending. A timeout says nothing about whether the request was processed — the order may well have executed — so retrying blindly can open a second unintended position. Only treat an explicit "success": false response as a rejection.',
     },
     {
-      question: 'How do I flip a position from long to short in one request?',
+      question: 'How do I flip a position from long to short with the MetaStation API?',
       answer:
-        'Use the reverse action. It closes the current position and immediately opens the opposite direction in a single request, with no window in between where the account is flat — cleaner than sending a close followed by an open.',
+        'Send a close for the current position followed by an open in the opposite direction. There is no single reverse action — the API rejects it with "Invalid action: reverse. Must be one of: open, close, update, cancel".',
     },
     {
       question: 'Is it safe to put my webhook URL in my code?',

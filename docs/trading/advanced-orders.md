@@ -26,7 +26,7 @@ Scale out of a position automatically at different price levels. Up to 10 TPs pe
 |---|---|---|
 | TP1 | $48,000 | 30% |
 | TP2 | $50,000 | 40% |
-| TP3 | $52,000 | 30% (remainder) |
+| TP3 | $52,000 | 30% |
 
 Each TP executes independently. If price hits TP1 and reverses, TP2 and TP3 remain open.
 

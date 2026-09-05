@@ -129,15 +129,20 @@ Everything together — entry, ladder, stop, and SLX — in one payload:
   "symbol": "BTCUSDC",
   "side": "buy",
   "orderType": "market",
-  "quantity": "3%",
+  "quantity": 0.01,
+  "category": "linear",
   "leverage": 5,
   "marginMode": "isolated",
   "takeProfits": [
-    { "price": 48000, "quantity": "30%" },
-    { "price": 50000, "quantity": "40%" },
-    { "price": 52000, "quantity": "remainder" }
+    { "price": 48000, "amount": 0.003 },
+    { "price": 50000, "amount": 0.004 },
+    { "price": 52000, "amount": 0.003 }
   ],
-  "stopLoss": 41000,
+  "futurestopLoss": {
+    "slType": "market",
+    "stopLossPrice": 41000,
+    "priceType": "mark"
+  },
   "stopLossX": {
     "slxMode": "trailing_profits",
     "activationPoint": "TP1",

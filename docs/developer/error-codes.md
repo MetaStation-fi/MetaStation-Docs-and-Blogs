@@ -28,7 +28,7 @@ All webhook errors return a JSON response with `"success": false` and a `code` f
 | `MISSING_ACTION` | 400 | `action` field missing | Add `"action": "open"` etc. |
 | `MISSING_SYMBOL` | 400 | `symbol` field missing | Add trading pair |
 | `INVALID_SIDE` | 400 | `side` is not `buy` or `sell` | Use exactly `"buy"` or `"sell"` |
-| `INVALID_ORDER_TYPE` | 400 | Unrecognized `orderType` | Use `market`, `limit`, `stop_market`, or `stop_limit` |
+| `INVALID_ORDER_TYPE` | 400 | Unrecognized `orderType` | Use `market` or `limit` — these are the only values accepted |
 | `INVALID_QUANTITY` | 400 | Quantity format not recognized | Use `"2%"`, `"$300"`, or a number |
 
 ---
