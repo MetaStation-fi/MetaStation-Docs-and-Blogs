@@ -75,9 +75,9 @@ Grouped by doc. `id` is the filename stem.
 | `api-key-form` | connect-exchange.md | Per-exchange key form | key, secret, passphrase |
 | `slots-overview` | account-slots.md | Trading Slots table with mixed slot types | account ids |
 | `store-slots` | account-slots.md | Store slot purchase screen | — |
-| `tp-ladder` | advanced-orders.md | 10-TP configuration UI | — |
-| `trailing-stop` | advanced-orders.md | Trailing stop config | — |
-| `slx-setup` | advanced-orders.md | SLX setup | — |
+| `tp-ladder` | advanced-orders.mdx | 10-TP configuration UI | — |
+| `trailing-stop` | advanced-orders.mdx | Trailing stop config | — |
+| `slx-setup` | advanced-orders.mdx | SLX setup | — |
 
 ### automation/
 
@@ -96,7 +96,7 @@ Grouped by doc. `id` is the filename stem.
 |---|---|---|---|
 | `marketplace-grid` | browse-marketplace.md | Marketplace provider grid | — |
 | `provider-detail` | browse-marketplace.md | Provider detail card + performance chart | — |
-| `copy-settings` | copy-settings.md | Copy settings form, sizing options visible | balance |
+| `copy-settings` | copy-settings.mdx | Copy settings form, sizing options visible | balance |
 | `provider-onboarding` | become-provider.md | Provider onboarding form | — |
 | `provider-dashboard` | become-provider.md | Provider dashboard | earnings optional |
 
@@ -128,6 +128,6 @@ readers actually arrive on, and `src/pages/index.js` is a `<Redirect>`.
 | `card-icons` | `docs/intro.md` → `src/components/SectionCards` | **done** | Replace 🚀 💹 🤝 🤖 💰 👨‍💻 with inline lucide SVG. Inlined in `src/components/icons.jsx` — no `lucide-react` dependency |
 | `section-hubs` | Phase 3 IA | **done** | Landing hub per section, card grid, own hero header |
 | `payload-builder` | `docs/developer/`, `docs/automation/webhook-trading.md` | **done** | Webhook Payload Builder MDX component — the highest-value linkable asset on the site |
-| `order-visualiser` | `docs/trading/advanced-orders.md`, `order-types-reference.md` | | Interactive SLX / trailing / 10-TP ladder visualiser |
-| `copy-calculator` | `docs/social-trading/copy-settings.md` | | Allocation → position size → fee split calculator |
+| `order-visualiser` | `docs/trading/advanced-orders.mdx` → `src/components/OrderVisualiser` | **done** | Interactive SLX / trailing / 10-TP ladder visualiser. One control — how far price travelled — drives both SLX modes. `order-types-reference.md` links to it rather than mounting a second copy |
+| `copy-calculator` | `docs/social-trading/copy-settings.mdx` → `src/components/CopyCalculator` | **done** | Copy mode → position size → margin → subscription break-even. Refuses settings the platform refuses. The platform's commission split with the provider is unpublished, so the fee side is the subscription cost only |
 | `try-it-console` | `docs/developer/` | **done** | OpenAPI Try-It, via `@PaloAltoNetworks/docusaurus-openapi-docs` |

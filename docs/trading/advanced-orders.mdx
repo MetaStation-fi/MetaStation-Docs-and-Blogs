@@ -2,11 +2,34 @@
 id: advanced-orders
 title: Advanced Orders
 sidebar_label: Advanced Orders (TP / SL / SLX)
+description: Up to ten take profits, trailing stops and SLX — drawn interactively, so you can watch the stop loss walk up behind the ladder instead of reading about it.
+keywords: [take profit ladder, trailing stop loss, SLX, stop loss x, multiple take profits, crypto order types]
 ---
+
+import OrderVisualiser from '@site/src/components/OrderVisualiser';
 
 # Advanced Orders
 
 MetaStation provides professional-grade order management: up to 10 Take Profits, Trailing Stops, and the **Stop Loss X (SLX)** system.
+
+---
+
+## See it move
+
+Every order type on this page is one thing: a set of price levels, and a rule for where the stop
+loss goes as price passes them. Drag the control and watch it happen — the ladder fills, the stop
+follows, and the result changes sign the moment the stop clears your entry. Come back to it as you
+read each section below.
+
+<OrderVisualiser />
+
+:::note[Take-profit amounts are in base tokens]
+The visualiser uses **token amounts**, because that is what the API accepts: a take profit's
+`amount` is a number of base tokens, never a percentage and never `"remainder"`. The order panel
+also lets you enter a percentage or a USD value and converts for you. The example table in the next
+section is written the way the panel shows it.
+→ [JSON Format](/docs/developer/json-format)
+:::
 
 ---
 

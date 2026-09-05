@@ -1,0 +1,327 @@
+/* Tokens only. Both colour schemes are defined in custom.css, so any literal
+   colour here would break one of them — the exact bug the Phase 1 token
+   rewrite existed to remove. */
+
+.visualiser {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface);
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.86rem;
+}
+
+.field > span {
+  font-weight: 600;
+  color: var(--ms-text);
+}
+
+.field small {
+  color: var(--ms-text-muted);
+  font-size: 0.76rem;
+}
+
+.field input,
+.field select,
+.tpRow input {
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--ms-border-strong);
+  border-radius: var(--ms-radius-sm);
+  background: var(--ms-bg);
+  color: var(--ms-text);
+  width: 100%;
+  min-width: 0;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.tpRow input:focus-visible,
+.travel input:focus-visible {
+  outline: 2px solid var(--ms-accent);
+  outline-offset: 1px;
+}
+
+/* ── Take-profit rows ── */
+
+.tps {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  padding: 0.85rem;
+  margin: 0 0 0.85rem;
+}
+
+.tps legend {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ms-text);
+  padding: 0 0.35rem;
+}
+
+.tpRow {
+  display: grid;
+  grid-template-columns: 3rem 1fr 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.tpRow label {
+  display: block;
+  min-width: 0;
+}
+
+.tpTag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ms-text-muted);
+}
+
+/* Both buttons carry their full label as visible text rather than an icon and
+   a title. "Remove" repeated eight times down a column is indistinguishable in
+   a screen reader's link/button list, and it is on Lighthouse's
+   non-descriptive blocklist territory for the same reason. */
+.remove,
+.add {
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--ms-radius-sm);
+  border: 1px solid var(--ms-border-strong);
+  background: var(--ms-surface-2);
+  color: var(--ms-text);
+  cursor: pointer;
+}
+
+.remove:hover:not(:disabled),
+.add:hover:not(:disabled) {
+  border-color: var(--ms-accent);
+  color: var(--ms-accent);
+}
+
+.remove:disabled,
+.add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add {
+  margin-top: 0.35rem;
+}
+
+/* ── The one control ── */
+
+.travel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem;
+  border: 1px solid var(--ms-accent-line);
+  border-radius: var(--ms-radius);
+  background: var(--ms-accent-soft);
+  font-size: 0.86rem;
+}
+
+.travel > span {
+  color: var(--ms-text);
+}
+
+.travel small {
+  color: var(--ms-text-muted);
+  font-size: 0.76rem;
+}
+
+.travel input {
+  width: 100%;
+  accent-color: var(--ms-accent);
+}
+
+/* ── Messages ── */
+
+.errors,
+.warnings {
+  list-style: disc;
+  margin: 0.85rem 0 0;
+  padding-left: 1.2rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.errors {
+  color: var(--ms-danger);
+}
+
+.warnings {
+  color: var(--ms-warn);
+}
+
+/* ── Chart ── */
+
+.chartWrap {
+  margin-top: 1rem;
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-bg);
+  padding: 0.5rem;
+  /* A wide ladder scrolls inside its own box rather than pushing the page
+     sideways. */
+  overflow-x: auto;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  min-width: 420px;
+  height: 340px;
+}
+
+.travelled {
+  fill: var(--ms-accent-soft);
+}
+
+.entryLine {
+  stroke: var(--ms-text);
+  stroke-width: 2;
+}
+
+.tpLine {
+  stroke: var(--ms-border-strong);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.tpLineHit {
+  stroke: var(--ms-ok);
+  stroke-width: 2;
+}
+
+.stopLine {
+  stroke: var(--ms-danger);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.peakLine {
+  stroke: var(--ms-accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 3;
+}
+
+.entryText,
+.tpText,
+.tpTextHit,
+.stopText {
+  font-size: 11px;
+  font-family: var(--ifm-font-family-base);
+}
+
+.entryText {
+  fill: var(--ms-text);
+  font-weight: 600;
+}
+
+.tpText {
+  fill: var(--ms-text-muted);
+}
+
+.tpTextHit {
+  fill: var(--ms-ok);
+  font-weight: 600;
+}
+
+.stopText {
+  fill: var(--ms-danger);
+  font-weight: 600;
+}
+
+/* ── Readout ── */
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0.85rem;
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface-2);
+}
+
+.readout dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ms-text-muted);
+  margin: 0 0 0.15rem;
+}
+
+.readout dd {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--ms-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.pos {
+  color: var(--ms-ok) !important;
+}
+
+.neg {
+  color: var(--ms-danger) !important;
+}
+
+.reason {
+  margin: 0.75rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--ms-text-secondary);
+}
+
+.note {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ms-text-muted);
+}
+
+/* Visually hidden but announced — the take-profit inputs are identified by
+   their column position, which a screen reader cannot see. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  /* Three columns, so the Remove button auto-places onto a second row and
+     keeps its full label rather than being squeezed to an icon. */
+  .tpRow {
+    grid-template-columns: 3rem 1fr 1fr;
+    margin-bottom: 0.85rem;
+  }
+
+  .remove {
+    grid-column: 1 / -1;
+  }
+}

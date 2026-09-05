@@ -1,0 +1,118 @@
+---
+id: copy-settings
+title: Copy Trading Settings
+sidebar_label: Copy Settings
+description: How a provider's trade becomes your trade — the three copy modes, leverage and margin, and what the subscription has to earn back before you are ahead.
+keywords: [copy trading settings, copy mode, fixed ratio, fixed amount, copy trading position size, copy trading fees]
+---
+
+import CopyCalculator from '@site/src/components/CopyCalculator';
+
+# Copy Trading Settings
+
+Copy settings decide one thing: how big your version of the provider's trade is. Everything else
+follows from that — the margin it locks up, the share of your account it puts at risk, and how much
+the trade has to make before the subscription has paid for itself.
+
+---
+
+## Where they live
+
+**Marketplace → My Subscriptions → Settings**, next to a provider.
+
+:::warning[Copy mode is fixed once you subscribe]
+The three modes below are chosen when you subscribe and **cannot be changed afterwards** — the
+settings form ignores the change on an existing subscription. Everything else on the page can be
+edited at any time. To move from one copy mode to another, cancel and subscribe again.
+:::
+
+---
+
+## The three copy modes
+
+| Mode | What it does | Range |
+|---|---|---|
+| **Copy Trader** | Mirrors the provider's position size exactly | — |
+| **Fixed Ratio** | Takes a **percentage of the provider's** position size | 0.01% – 100% |
+| **Fixed Amount** | Uses a flat position size on every copied trade | Set by the provider — 100 to 10,000 by default |
+
+**Fixed Ratio is capped at 100%.** You cannot copy more than the provider's own size: a value above
+100 fails validation before the subscription is saved. If a provider trades smaller than you want to,
+the answer is leverage or a different provider, not the ratio.
+
+**Fixed Amount ignores what the provider risked.** Every copied trade is the same size, whether the
+provider staked a tenth of their account or half of it. It is the predictable option and the blunt
+one.
+
+**Copy Trader is only sensible if your account is the same size as theirs.** Mirroring a provider
+with ten times your balance mirrors their notional, not their risk.
+
+### Sizing Fixed Ratio to your account
+
+The ratio that reproduces the provider's *risk* rather than their notional is the ratio of the two
+balances:
+
+```
+ratio % = (your balance / provider balance) × 100
+```
+
+A 2,000 account following a 20,000 provider is `10%`. That is the starting point, not the answer —
+halve it while you are learning how the provider behaves.
+
+---
+
+## Work out your size before you subscribe
+
+<CopyCalculator />
+
+The calculator refuses settings the platform refuses, and says which rule they broke. The
+break-even figures are the ones worth sitting with: a subscription is a **fixed** cost, so the
+smaller your allocation, the larger the return it has to produce before you are ahead of simply not
+subscribing.
+
+---
+
+## Leverage and margin
+
+Under **Advanced Settings**:
+
+| Setting | Range | Notes |
+|---|---|---|
+| **Margin mode** | Isolated or Cross | Isolated confines a loss to that position's margin |
+| **Leverage** | 1× – 125× | Applied to your copied position, independent of the provider's |
+
+Leverage multiplies the position, not the edge. At 10× a copied trade needs a tenth of the margin
+and moves ten times as fast against you.
+
+---
+
+## Take profit and stop loss overrides
+
+If the provider trades on **ByBit**, you can override their take profit and stop loss with your own
+percentages, leaving the rest of the trade as they set it.
+
+These overrides are **not offered for providers trading a MetaStation Account** — that venue does
+not accept a follower-side TP/SL override — and the fields are hidden rather than ignored, so you
+will know from the form whether they apply.
+
+---
+
+## What you are still responsible for
+
+Copy settings size the trade. They do not watch it.
+
+- **There is no automatic circuit breaker.** Nothing pauses copying for you after a drawdown. If a
+  provider is losing, you pause or cancel the subscription yourself, from
+  **My Subscriptions → Pause**.
+- **There is no per-symbol filter.** Every symbol the provider trades is copied. If you do not want
+  their altcoin trades, you do not want the provider.
+- **Pausing does not close anything.** Existing copied positions stay open and remain yours to
+  manage. → [Subscribe to a Provider](/docs/social-trading/subscribe-provider)
+
+:::tip[A workable starting point]
+- Fixed Ratio, at half the balance-derived ratio, until the provider has earned your confidence
+- Leverage no higher than the provider's own
+- Margin per copied trade at 5–10% of your balance — the calculator above warns past 30%
+- No more than 30% of your capital following any one provider
+- A weekly look at the subscription, because nothing else is going to take it for you
+:::

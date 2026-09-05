@@ -70,6 +70,11 @@ Advanced trailing stop system. Two modes:
 
 → Full SLX documentation: [Advanced Orders](/docs/trading/advanced-orders#stop-loss-x-slx)
 
+Both modes, the take-profit ladder and the stop loss are drawn together in the interactive
+visualiser: → [See it move](/docs/trading/advanced-orders#see-it-move). It is one control — how far
+price has travelled — with every consequence recomputed from it, which is the fastest way to see
+what "move the stop to the previous take profit" actually does.
+
 ---
 
 ## Exchange availability

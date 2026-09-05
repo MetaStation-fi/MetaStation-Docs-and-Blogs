@@ -1,0 +1,125 @@
+/* Tokens only. Both colour schemes are defined in custom.css, so any literal
+   colour here would break one of them — the exact bug the Phase 1 token
+   rewrite existed to remove. */
+
+.calculator {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface);
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.group {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  padding: 0.85rem;
+  margin: 0 0 0.85rem;
+}
+
+.group legend {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ms-text);
+  padding: 0 0.35rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.86rem;
+}
+
+.field > span {
+  font-weight: 600;
+  color: var(--ms-text);
+}
+
+.field small {
+  color: var(--ms-text-muted);
+  font-size: 0.76rem;
+}
+
+.field input,
+.field select {
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--ms-border-strong);
+  border-radius: var(--ms-radius-sm);
+  background: var(--ms-bg);
+  color: var(--ms-text);
+  width: 100%;
+  min-width: 0;
+}
+
+.field input:focus-visible,
+.field select:focus-visible {
+  outline: 2px solid var(--ms-accent);
+  outline-offset: 1px;
+}
+
+.errors,
+.warnings {
+  list-style: disc;
+  margin: 0.85rem 0 0;
+  padding-left: 1.2rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.errors {
+  color: var(--ms-danger);
+}
+
+.warnings {
+  color: var(--ms-warn);
+}
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 0.85rem 0 0;
+  padding: 0.85rem;
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface-2);
+}
+
+.readout dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ms-text-muted);
+  margin: 0 0 0.15rem;
+}
+
+.readout dd {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--ms-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.reason {
+  margin: 0.6rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--ms-text-secondary);
+}
+
+.note {
+  margin: 0.6rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--ms-text-muted);
+}
