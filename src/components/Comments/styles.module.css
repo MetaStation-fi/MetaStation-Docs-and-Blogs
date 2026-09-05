@@ -41,13 +41,28 @@
 
    The height is the empty-thread case: heading, reaction row, and the sign-in
    prompt. A thread with comments grows past this, but growth below the fold is
-   not a shift a reader sees, whereas the collapse-then-expand at load is. */
+   not a shift a reader sees, whereas the collapse-then-expand at load is.
+
+   RE-MEASURED 2026-09-06, after the giscus GitHub App was actually installed.
+   The old 320px was calibrated against the *uninstalled* widget — giscus was
+   rendering its short "giscus is not installed on this repository" error box,
+   not a real thread. Once installed the empty-thread UI renders at 372px, so
+   the reservation was 60px short and the footer was pushed down by exactly
+   that on every docs and blog page. That is what took CLS on
+   /docs/social-trading/copy-settings/ to 0.142 against a 0.1 error budget and
+   turned the CI gate red.
+
+   Measured on the served build: iframe 372px at 1350px wide, 150px at 660px.
+   400px carries the desktop case with headroom for the sign-in prompt
+   wrapping. If giscus changes its empty-state layout, re-measure — do not
+   guess, and do not lower this to close a visual gap. */
 .mount {
-  min-height: 320px;
+  min-height: 400px;
 }
 
 @media (max-width: 700px) {
-  /* The sign-in prompt wraps to more lines in a narrow column. */
+  /* Narrow column renders a much shorter box (150px measured), but the
+     sign-in prompt wraps to more lines, so keep the reservation generous. */
   .mount {
     min-height: 380px;
   }
