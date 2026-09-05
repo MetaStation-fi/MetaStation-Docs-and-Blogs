@@ -18,8 +18,6 @@ entirely** — the withdrawal screen refuses the request.
 
 {/* SCREENSHOT: 2fa-enable | Security page, Google Authenticator card, Enable state | 1440x900 | redact: none */}
 <Screenshot id="2fa-enable" />
-<Screenshot id="2fa-enable" />
-<Screenshot id="2fa-enable" />
 
 **Setup:**
 

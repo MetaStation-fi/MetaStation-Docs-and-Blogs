@@ -27,8 +27,6 @@ Enable 2FA immediately after registration. It protects your account and is requi
 
 {/* SCREENSHOT: deposit-picker | reuse of the fund-account capture | 1440x900 | redact: address */}
 <Screenshot id="deposit-picker" />
-<Screenshot id="deposit-picker" />
-<Screenshot id="deposit-picker" />
 
 Your MetaStation Account accepts deposits from **56 blockchain networks**. Send any supported asset — it is automatically bridged and converted to USDC.
 
@@ -47,8 +45,6 @@ Alternatively, buy crypto with a card via **Transak** (Visa/Mastercard, Apple Pa
 ## Step 3 — Place your first trade
 
 {/* SCREENSHOT: first-trade | trade terminal, order ticket filled but NOT submitted | 1440x900 | redact: balance */}
-<Screenshot id="first-trade" />
-<Screenshot id="first-trade" />
 <Screenshot id="first-trade" />
 
 1. Open the **Trade** tab

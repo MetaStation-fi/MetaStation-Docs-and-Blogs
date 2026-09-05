@@ -59,11 +59,7 @@ Your first MetaStation Account slot is automatically created and includes all au
 
 {/* SCREENSHOT: slots-overview | Trading Slots table with mixed slot types | 1440x900 | redact: account ids */}
 <Screenshot id="slots-overview" />
-<Screenshot id="slots-overview" />
-<Screenshot id="slots-overview" />
 {/* SCREENSHOT: store-slots | Store slot purchase screen | 1440x900 | redact: none */}
-<Screenshot id="store-slots" />
-<Screenshot id="store-slots" />
 <Screenshot id="store-slots" />
 
 Open **Account Management** in the sidebar

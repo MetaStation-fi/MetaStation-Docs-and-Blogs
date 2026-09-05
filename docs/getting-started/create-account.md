@@ -10,8 +10,6 @@ sidebar_label: Create Account
 
 {/* SCREENSHOT: register-form | /register filled to just-before-submit | 1440x900 | redact: email */}
 <Screenshot id="register-form" />
-<Screenshot id="register-form" />
-<Screenshot id="register-form" />
 
 1. Go to [metastation.fi/register](https://metastation.fi/register) — or click **Sign Up Now** on the [home page](https://metastation.fi)
 2. Enter a valid email address and a strong password (min. 8 characters, mixed case + numbers)
@@ -42,16 +40,12 @@ manage gas or sign every order — execution is gasless. See
 
 {/* SCREENSHOT: verify-email | post-registration verification-pending state | 1440x900 | redact: email */}
 <Screenshot id="verify-email" />
-<Screenshot id="verify-email" />
-<Screenshot id="verify-email" />
 
 ---
 
 ## Google Sign-In
 
 {/* SCREENSHOT: google-signin | login page, Continue with Google button | 1440x900 | redact: none */}
-<Screenshot id="google-signin" />
-<Screenshot id="google-signin" />
 <Screenshot id="google-signin" />
 
 You can also register and log in with your Google account. Click **Continue with Google** on the

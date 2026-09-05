@@ -29,11 +29,7 @@ lists your slots; **Add Slots** adds a new one.
 
 {/* SCREENSHOT: account-management | Account Management -> Trading Slots table | 1440x900 | redact: account ids */}
 <Screenshot id="account-management" />
-<Screenshot id="account-management" />
-<Screenshot id="account-management" />
 {/* SCREENSHOT: add-slots | Add Slots dialog | 1440x900 | redact: none */}
-<Screenshot id="add-slots" />
-<Screenshot id="add-slots" />
 <Screenshot id="add-slots" />
 {/* SCREENSHOT: api-key-form | per-exchange API key form | 1440x900 | redact: key, secret, passphrase */}
 

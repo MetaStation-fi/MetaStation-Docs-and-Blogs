@@ -97,7 +97,25 @@ if (!DRY) {
 console.log(`screenshots.json: ${Object.keys(data).length} ids`);
 
 // ---- 2. rewrite markers ----------------------------------------------------
-const MARKER = /^([ \t]*)\{\/\*\s*SCREENSHOT:\s*([a-z0-9-]+)\s*\|([^*]*)\*\/\}[ \t]*$/gim;
+/**
+ * The marker line, PLUS any <Screenshot> embeds already sitting under it.
+ *
+ * THIS SCRIPT IS RE-RUN EVERY TIME A CAPTURE SET IS PUBLISHED, and the marker
+ * is deliberately kept in the file afterwards — it is the only written record
+ * of the intended framing and redaction. So on a second run the marker matched
+ * again and a SECOND embed was appended below the first. It ran three times
+ * and shipped every screenshot on the site three times over, stacked.
+ *
+ * Consuming the existing embeds as part of the match is what makes the rewrite
+ * idempotent: however many are there, exactly one comes back. It is also what
+ * repaired the 44 duplicate lines already committed, rather than needing a
+ * separate one-shot cleanup nobody would have kept.
+ *
+ * Anchored to embeds on the lines IMMEDIATELY following the marker, so a
+ * second, deliberate embed of the same id elsewhere in the page is untouched.
+ */
+const MARKER =
+  /^([ \t]*)\{\/\*\s*SCREENSHOT:\s*([a-z0-9-]+)\s*\|([^*]*)\*\/\}[ \t]*$(?:\r?\n[ \t]*<Screenshot\s+id="[^"]*"[^>]*\/>[ \t]*$)*/gim;
 
 const files = [];
 (function walk(dir) {
@@ -126,11 +144,16 @@ for (const file of files) {
       return whole;
     }
     wired++;
-    changed = true;
+    // `whole` now includes any embeds already under the marker, so the marker
+    // itself is only its first line. Taking whole.trim() here is what would
+    // re-emit the duplicates it just consumed.
+    const markerLine = whole.split('\n')[0].trim();
+    const rebuilt = `${indent}${markerLine}\n${indent}<Screenshot id="${id}" />`;
+    if (rebuilt !== whole) changed = true;
     // Keep the marker as a comment above the embed. It records the intended
     // framing and redaction, which is the only place that intent is written
     // down once the register is satisfied.
-    return `${indent}${whole.trim()}\n${indent}<Screenshot id="${id}" />`;
+    return rebuilt;
   });
 
   if (changed && !DRY) {

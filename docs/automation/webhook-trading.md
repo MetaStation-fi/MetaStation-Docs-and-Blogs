@@ -35,11 +35,7 @@ its **Your Webhook URLs** section lists one webhook URL per account slot you can
 
 {/* SCREENSHOT: webhook-urls | Webhook Management -> Your Webhook URLs | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
 <Screenshot id="webhook-urls" />
-<Screenshot id="webhook-urls" />
-<Screenshot id="webhook-urls" />
 {/* SCREENSHOT: regenerate-secret | Regenerate Secret confirm state | 1440x900 | redact: webhook token */}
-<Screenshot id="regenerate-secret" />
-<Screenshot id="regenerate-secret" />
 <Screenshot id="regenerate-secret" />
 :::tip[Build the payload instead of writing it]
 The **[Webhook Payload Builder](/docs/developer/payload-builder)** generates a valid JSON payload,
@@ -90,8 +86,6 @@ Send POST requests to your webhook URL in [JSON format](/docs/developer/json-for
 Open **Webhook Management** to see all received signals, their parsed content, execution status, and any errors.
 
 {/* SCREENSHOT: webhook-history | received-signal log with parse results | 1440x900 | redact: account ids */}
-<Screenshot id="webhook-history" />
-<Screenshot id="webhook-history" />
 <Screenshot id="webhook-history" />
 
 ---
