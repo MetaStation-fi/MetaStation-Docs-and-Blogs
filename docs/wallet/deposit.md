@@ -6,71 +6,89 @@ sidebar_label: Deposit
 
 # Deposit
 
-MetaStation supports crypto deposits from 56 blockchain networks and, through Buy Crypto, swaps
-and fiat purchases.
+Every **MetaStation Account** has two wallets you can deposit into, and the Deposit page names the
+one you are sending to before it shows an address:
 
----
+| Wallet | Takes | When |
+|---|---|---|
+| **Funding Wallet** | **USDC on Arbitrum One** — sent by hand, or bridged from another network for you | Always |
+| **Trading Account** | **BTC, ETH, SOL and more**, each on its own network | After your first deposit has activated the account |
 
-## Deposit to MetaStation Account (bridge)
-
-The MetaStation Account is a **Web3 account by default**. It accepts deposits from virtually any
-chain: funds bridge into your **Funding Wallet** and are converted to USDC automatically.
-
-**Supported networks include:**
-Ethereum · Arbitrum · Optimism · Base · Polygon · BNB Smart Chain · Avalanche · Solana · TRON · TON · and 25+ more
-
-**Steps:**
+Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit)).
 
 {/* SCREENSHOT: deposit-flow | Deposit screen with MetaStation Account as destination | 1440x900 | redact: address */}
 <Screenshot id="deposit-flow" />
 
-1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
-2. Select **MetaStation Account** as the destination
-3. Choose your source network and token
-4. Review the bridge route and estimated received USDC amount
-5. Confirm and approve the transaction from your connected wallet
-6. USDC is credited to your account once the bridge completes (typically 1–10 minutes depending on network)
+---
 
-:::tip
-The estimated received amount shown already accounts for bridge fees, so it is what actually
-lands in your Funding Wallet.
-:::
+## Your first deposit
 
-### What the Funding Wallet is
+A new MetaStation Account starts with its **Funding Wallet** only. The first deposit:
 
-| | |
-|---|---|
-| Type | A smart-contract wallet on Arbitrum, created for you on first use |
-| Holds | The USDC backing your MetaStation Account |
-| Keys | Managed for you — there is no seed phrase to store |
-| Gas | Trading and settlement are gasless; you only pay gas on the source chain when you bridge in |
+1. Pays the **one-time activation fee**, shown on the Deposit page as *"Activation fee · one-time,
+   taken from your first deposit"*
+2. Must be at least the **minimum shown** on the page
+3. Activates the account — the rest of the deposit moves into your trading balance automatically
 
-Its address is shown on the **Deposit** screen. Anything you bridge to it credits your
-MetaStation Account.
+You accept the activation fee once, in the **Review deposit** dialog. When the deposit lands the
+page says *"Deposit received. Your account is activated."*
 
 ---
 
-## Deposit to platform wallet (direct crypto)
+## Deposit to the Funding Wallet
 
-For standard wallet deposits (USDT, BTC, ETH, SOL, TRX, TON):
+### Send manually (USDC on Arbitrum One)
 
-1. Open **Deposit** in the sidebar
-2. Select the asset and network
-3. Copy the deposit address
-4. Send from your external wallet to that address
-5. Balance updates after network confirmation
+From any wallet or exchange, no connection needed.
 
-**Supported assets for direct deposit:**
-- USDT (TRC20, ERC20, BEP20)
-- BTC (Bitcoin)
-- ETH (Ethereum)
-- SOL (Solana)
-- TRX (Tron)
-- TON (The Open Network)
+1. Step 1 **Deposit to**: pick the account, and **Funding Wallet**
+2. Step 2 **Send from**: pick **Send manually**
+3. Copy the **Destination address (Funding Wallet)**
+4. Send **USDC on Arbitrum One** to it from your wallet or exchange
+5. The page updates when the deposit arrives — you can leave and come back
 
-:::warning
-Always verify the network matches before sending. Sending USDT on ERC20 to a TRC20 address will result in lost funds.
+:::danger[USDC on Arbitrum One only]
+The Funding Wallet address accepts **USDC on Arbitrum One** and nothing else. Any other token, or
+USDC on any other network, sent to that address is **lost**. To deposit from another network, use
+**Connect a wallet** below.
 :::
+
+### Connect a wallet (any other network)
+
+Send from another network and MetaStation bridges it to your Funding Wallet for you.
+
+1. Step 1 **Deposit to**: pick the account, and **Funding Wallet**
+2. Step 2 **Send from**: pick **Connect a wallet**
+3. Pick the **Network you are sending from** and the coin
+4. Connect your wallet — an EVM wallet, a Solana wallet such as Phantom, or a TON wallet
+5. Enter the amount. MetaStation quotes the route and shows what reaches your Funding Wallet
+6. **Review deposit**, confirm, and approve the transaction in your wallet
+
+The network fee on the source chain is *"Paid in your wallet's gas"*. If the price moves before you
+approve, the page asks you to check the new figures and confirm again.
+
+→ The full list of source networks: [Cross-Chain Deposits](/docs/wallet/cross-chain-exchange)
+
+---
+
+## Deposit to the Trading Account (other coins)
+
+Once the account is activated, you can deposit coins straight into its trading balance.
+
+1. Step 1 **Deposit to**: pick the account, and the **Trading Account** (it may read **Unified
+   Trading Account**)
+2. Step 2 **Choose a coin**: pick the coin. Each one lists its own network
+3. Copy the address shown and send **that coin on that network** from any wallet or exchange
+4. Amounts below the minimum shown for the coin are not credited
+
+---
+
+## Deposit to a connected exchange account
+
+When the selected account is a connected **Binance, ByBit or KuCoin** slot, the Deposit page shows
+that exchange's own deposit address for the coin and network you pick. The deposit lands on your
+exchange account, not in MetaStation. If KuCoin has no address yet for a network, press **Create
+deposit address**.
 
 ---
 
@@ -79,21 +97,19 @@ Always verify the network matches before sending. Sending USDT on ERC20 to a TRC
 Swap between supported crypto assets, or pay with a supported fiat currency, without leaving
 MetaStation.
 
+{/* SCREENSHOT: buy-crypto | Buy Crypto / Crypto Swap entry screen | 1440x900 | redact: none */}
+
 1. Click **Buy Crypto** in the top navigation ([metastation.fi/exchangeswap](https://metastation.fi/exchangeswap))
-2. Select your input asset and output asset
+2. Select what you send and what you receive
 3. Enter the amount
-4. Review the rate — no hidden fees
+4. Review the rate and the destination address
 5. Confirm the swap
 
 ---
 
-## Deposit confirmation times
+## Where your deposit shows up
 
-| Network | Typical time |
-|---|---|
-| Arbitrum | 1–2 minutes |
-| Ethereum | 5–15 minutes |
-| Solana | Under 1 minute |
-| BNB Smart Chain | 1–3 minutes |
-| TRON | 1–2 minutes |
-| Bitcoin | 10–60 minutes |
+- **History → Deposit** lists every deposit with its status and explorer link
+- A notification arrives in the bell when a deposit is credited
+- Bridged deposits appear under **Deposits in progress** on the Deposit page. One that is delayed
+  on the network can be sent back to your wallet with **Refund delayed deposit**

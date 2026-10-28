@@ -157,7 +157,7 @@ const sidebars = {
         type: 'generated-index',
         title: 'Wallet — Deposits and Withdrawals',
         description:
-          'Fund your Funding Wallet from 56 blockchain networks and withdraw back out, plus the full cross-chain network list.',
+          'Fund your MetaStation Account by hand or from a connected wallet on an EVM network, Solana or TON, and withdraw back out.',
         slug: '/wallet',
         keywords: ['crypto deposit', 'crypto withdrawal', 'funding wallet'],
       },
@@ -171,7 +171,7 @@ const sidebars = {
         type: 'generated-index',
         title: 'Account Security',
         description:
-          'Two-factor authentication, how withdrawals are gated, exchange API key handling, and how account access works.',
+          'Two-factor authentication, how withdrawals are confirmed, exchange API key handling, account access and the dead man’s switch.',
         slug: '/security',
         keywords: ['2fa', 'account security', 'api key security', 'withdrawal security'],
       },
@@ -180,6 +180,7 @@ const sidebars = {
         'security/withdrawal-whitelist',
         'security/api-key-management',
         'security/session-management',
+        'security/dead-mans-switch',
       ],
     },
     {
