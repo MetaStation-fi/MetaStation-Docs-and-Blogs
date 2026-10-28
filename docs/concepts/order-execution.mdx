@@ -96,8 +96,9 @@ Take a long from $45,000:
 Price reaching $48,000 closes 30% and leaves the rest running. If it then reverses, TP2 and TP3
 stay open — they are not cancelled, and they are not "missed". They simply have not triggered.
 Slices are set in the terminal as a token amount, a USD value or a percentage. Over the webhook
-API they must be **token amounts**, and their total must not exceed the order quantity — see
-[JSON Format](/docs/developer/json-format#multiple-take-profits).
+API they must be **token amounts**, and their total should not exceed the order quantity — see
+[JSON Format](/docs/developer/json-format#multiple-take-profits). Each level must also be at least
+the market's minimum order size, so a small position supports fewer levels.
 
 **A ladder changes the shape of your outcome, not your edge.** It converts one binary result into
 a distribution: you give up some of the best case in exchange for banking part of the move
@@ -119,8 +120,10 @@ Distance is fixed or a percentage, and trailing starts at an activation price.
 - `follow_tp` — after each TP fills, the stop moves up to the previous TP level, locking in each
   step of the ladder as it completes.
 
-SLX also has a `callback_rate` mode that trails by a percentage from the peak, which is the same
-idea as a trailing stop expressed in the automation payload.
+SLX also has a `callback_rate` mode that trails by a percentage from the peak.
+
+Trailing stops and SLX are set on the **order ticket**. A webhook signal carries a plain stop loss
+and take-profits; its SLX and trailing fields are not placed yet.
 
 → [Advanced Orders](/docs/trading/advanced-orders) · [Risk-Free Trade with SLX](/docs/guides/risk-free-trade-with-slx)
 
@@ -152,7 +155,7 @@ arrive while you are asleep — isolated is the mode that lets you state your wo
     {
       question: 'How many take profit levels can one position have?',
       answer:
-        'Up to 10. Each level is an independent order against a slice of the position, and levels that have not triggered stay open after earlier ones fill. Over the webhook API each level needs a price and an amount in base tokens, and the total of those amounts must not exceed the order quantity.',
+        'Up to 10 in the terminal, each at least the market’s minimum order size. Each level is an independent order against a slice of the position, and levels that have not triggered stay open after earlier ones fill. Over the webhook API each level needs a price and an amount in base tokens, and the total of those amounts should not exceed the order quantity.',
     },
     {
       question: 'What is the difference between isolated and cross margin?',

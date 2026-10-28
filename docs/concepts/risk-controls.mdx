@@ -87,7 +87,7 @@ it.
 
 | Limit | What happens |
 |---|---|
-| **Stale signals** | A signal older than **90 seconds** when it arrives is refused, not traded |
+| **Stale signals** | An opening signal more than **90 seconds** old when it arrives is refused, not traded. Closes are never refused for age |
 | **Duplicates** | The same request repeated within **60 seconds** runs once |
 | **Rate limits** | Per IP and per slot. Above them the webhook answers `429` with a `Retry-After` |
 
@@ -196,7 +196,7 @@ the expensive order to do it in.
     {
       question: 'Are old or repeated signals executed?',
       answer:
-        'No. A signal older than 90 seconds when it arrives is refused, and the same request repeated within 60 seconds runs once. Both are always on.',
+        'No. An opening signal more than 90 seconds old when it arrives is refused (a close is never refused for age), and the same request repeated within 60 seconds runs once. Both are always on.',
     },
     {
       question: 'How do I limit losses when copying a provider?',

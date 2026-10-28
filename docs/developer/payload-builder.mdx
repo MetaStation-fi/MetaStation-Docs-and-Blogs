@@ -50,9 +50,10 @@ export METASTATION_WEBHOOK_URL="https://metastation.fi/metastationapi/socialTrad
 ```
 
 :::danger[Your webhook URL is a bearer credential]
-The token in it is the entire credential — anyone holding the URL can trade that slot. Never paste
-it into a public script, a screenshot, or a shared chat. If it is exposed, press **Regenerate
-Secret** in Webhook Management immediately.
+On **URL only**, the secret in it is the entire credential — anyone holding the URL can trade that
+slot. Never paste it into a public script, a screenshot, or a shared chat. If it is exposed, press
+**Regenerate Secret** on the Automation page immediately, and consider switching the slot to
+**Signed requests** or the **Source-address check**.
 
 → [Secure Your Webhook](/docs/guides/secure-your-webhook)
 :::
@@ -90,8 +91,8 @@ that are legal but expensive when a position runs unattended:
 | No stop loss | An automated position without one has no defined worst case |
 | Cross margin | The whole slot balance backs the position, not just its margin |
 | Leverage above 10x | Turns a wrong signal into a liquidation rather than a loss |
-| A TP level has a price but no `amount` | The validator rejects the signal with "TPn missing price or amount" |
-| TP amounts total more than the order quantity | Rejected with "Total TP amount exceeds order amount" |
+| A TP level has a price but no `amount` | The validator rejects the signal with "TPn has invalid price or amount" |
+| TP amounts total more than the order quantity | The ladder would close more than the position holds |
 
 → [Risk Controls](/docs/concepts/risk-controls) · [How Orders Execute](/docs/concepts/order-execution)
 
@@ -99,9 +100,14 @@ that are legal but expensive when a position runs unattended:
 
 ## Test it before you trust it
 
-Send one signal at a size you do not mind being wrong about, then open **Webhook Management** and
-confirm it appears with a successful parse and the position you expected. Only then point a live
-strategy at it.
+First send it with `?dryRun=1` on the URL: the response shows what would be placed, and nothing is.
+Then send one real signal at a size you do not mind being wrong about, open **History → Signal
+History**, and confirm it executed with the position you expected. Only then point a live strategy
+at it.
+
+The builder offers **open** and **close** with a simple stop loss. SLX, trailing and break-even stops
+are set on the order ticket; for a strategy that reverses, use the
+[target template](/docs/developer/tradingview-templates#strategy-alerts--the-target-template-recommended).
 
 → [Full walkthrough: TradingView → Binance](/docs/guides/tradingview-webhook-to-binance)
 → [Try requests interactively: API Reference](/docs/api/metastation-webhook-api)
@@ -121,7 +127,7 @@ strategy at it.
     {
       question: 'Why does my webhook alert fire but no trade appears?',
       answer:
-        'Most often the alert message is not valid JSON, so it is logged with a parse error and nothing executes. Check the Webhook Management log: if the signal is not listed at all it never arrived, if it shows a parse error the body was malformed, and if it parsed but did not execute then a risk control such as a leverage cap or symbol whitelist blocked it.',
+        'Most often the alert message is not valid JSON, so it is refused with a 400 and nothing executes. Check History → Signal History: if the signal is not listed at all it never arrived (or the slot’s verification mode refused it), and if it is listed but did not execute, its Reason says why — a missing size, an old signal, or a cap in the slot’s Trade Setting.',
     },
     {
       question: 'Do I need to include a stop loss in the webhook payload?',

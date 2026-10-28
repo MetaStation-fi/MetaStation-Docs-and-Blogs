@@ -33,7 +33,7 @@ loss fields instead. → [Supported Actions](/docs/developer/supported-actions#o
 | Format | Example | Notes |
 |---|---|---|
 | Token amount | `0.001 BTC` | Precise token control |
-| USD value | `300 USD` (JSON: `$300`) | Consistent dollar risk per trade. In a plain-text signal write `300 USD` — `$300` is read as a token amount |
+| USD value | `300 USD` | Consistent dollar risk per trade. Write `300 USD`, never `$300` — in JSON `$300` is rejected, and in a plain-text signal it is read as a token amount |
 | Wallet percentage | `2%` | Portfolio-based sizing |
 
 ---

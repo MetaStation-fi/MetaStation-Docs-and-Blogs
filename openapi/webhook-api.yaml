@@ -2,9 +2,14 @@ openapi: 3.0.3
 info:
   title: MetaStation Webhook API
   description: |
-    Execute trades on your MetaStation account via HTTP POST webhooks.
+    Execute trades on one of your MetaStation account slots via HTTP POST webhooks.
     Signals can be sent in JSON or natural language format.
-  version: "1.0"
+
+    Every slot has its own webhook URL. Its verification mode (Automation page)
+    decides what else a request must carry: nothing (URL only), an
+    X-MetaStation-Signature header (Signed requests), or a TradingView source
+    address (Source-address check).
+  version: "2.0"
   contact:
     name: MetaStation Support
     url: https://metastation.fi
@@ -17,31 +22,55 @@ servers:
   - url: https://metastation.fi
     description: Production
 
-security: []
+security:
+  - {}
+  - signedRequest: []
 
 paths:
-  /metastationapi/socialTrade/webhook/{accountId}:
+  /metastationapi/socialTrade/webhook/{webhookSecret}:
     post:
       summary: Execute a trade signal
       description: |
-        Send a trading signal to execute on the account slot associated with the
-        webhook secret in the URL. Accepts JSON or natural language in the body.
+        Send a trading signal to execute on the account slot that owns the
+        webhook secret in the URL. Accepts JSON, or natural language as
+        text/plain (or inside a {"message": "..."} wrapper).
 
-        Copy the exact URL from Webhook Management -> Webhook URLs rather than
+        Copy the exact URL from Automation -> Your Webhook URLs rather than
         assembling it by hand.
 
         A 200 means the signal was accepted and QUEUED, not that the order
-        filled. Confirm real state from your positions or the signal log.
+        filled. Confirm real state from your positions or History -> Signal
+        History. The same request repeated within 60 seconds runs once and is
+        answered with "replay": true.
+
+        Add ?dryRun=1 (or an X-Dry-Run: 1 header, or "dryRun": true) to get
+        the orders the signal would place without placing anything.
       operationId: executeWebhook
       tags:
         - Webhook
       parameters:
-        - name: accountId
+        - name: webhookSecret
           in: path
           required: true
-          description: The account slot's webhook secret. This is a bearer credential
+          description: >-
+            The account slot's webhook secret — the last part of its Webhook URL.
+            On the URL only mode this is a bearer credential.
           schema:
             type: string
+        - name: dryRun
+          in: query
+          required: false
+          description: 1 or true to return what would be placed and place nothing.
+          schema:
+            type: string
+            enum: ["1", "true"]
+        - name: X-Dry-Run
+          in: header
+          required: false
+          description: 1 or true — the same as the dryRun query parameter.
+          schema:
+            type: string
+            enum: ["1", "true"]
       requestBody:
         required: true
         content:
@@ -53,7 +82,7 @@ paths:
                 summary: Open a long position
                 value:
                   action: open
-                  symbol: BTCUSDC
+                  symbol: BTCUSDT
                   side: buy
                   orderType: market
                   quantity: "2%"
@@ -71,71 +100,133 @@ paths:
                 summary: Close a position
                 value:
                   action: close
-                  symbol: BTCUSDC
-                  side: sell
+                  symbol: BTCUSDT
+              targetShort:
+                summary: Hold a short position (flips a long)
+                value:
+                  action: target
+                  symbol: BTCUSDT
+                  position: short
+                  position_size: 0.01
+          text/plain:
+            schema:
+              type: string
+            examples:
+              naturalLanguage:
+                summary: A natural-language signal
+                value: |
+                  Buy BTCUSDT at market
+                  Size: 2%
+                  Leverage: 10x
+                  SL: 40000
+                  TP: 50000
       responses:
         '200':
-          description: Signal received and processed
+          description: Signal received and queued (or a repeat of one already received)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Bad request — parse error or trading error
+          description: >-
+            The body could not be read — invalid JSON, a missing required field,
+            or a natural-language message that could not be parsed. A parse
+            failure adds error, extractedFields, missingFields and confidence.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
-          description: Invalid or revoked webhook token
+          description: >-
+            Refused by the slot's verification mode — a missing, wrong, expired
+            or replayed signature, or a source address that is not allowed.
+            Always "This webhook request was not accepted."
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
-          description: IP not whitelisted or automation not enabled
+          description: >-
+            Automation is not allowed on this slot (code AUTOMATION_NOT_ALLOWED,
+            with a reason) — typically an exchange slot with no active plan — or
+            the provider is not active.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No slot has this webhook secret ("Account not found. Please connect it first.")
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '429':
-          description: Rate limit exceeded
+          description: >-
+            Rate limit reached — 300 requests a minute per source IP, 120 per
+            slot. Carries a Retry-After header and a retryAfter field.
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+              description: Seconds to wait before retrying
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Something failed on our side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The webhook is temporarily unavailable. Carries a Retry-After header.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
 components:
+  securitySchemes:
+    signedRequest:
+      type: apiKey
+      in: header
+      name: X-MetaStation-Signature
+      description: >-
+        Required when the slot uses Signed requests. Format
+        t=UNIX_SECONDS,v1=HEX, where HEX is the HMAC-SHA256 of the unix
+        time, a dot and the raw body, with the slot's signing key. t must be within 300
+        seconds of now, and a signature is accepted once.
+
   schemas:
     WebhookSignal:
       type: object
       required:
-        - action
         - symbol
       properties:
         action:
           type: string
-          enum: [open, close, update]
+          enum: [open, close, target, cancel, update]
           description: >-
-            Trade action to execute. reverse is NOT accepted - it is rejected with
-            "Invalid action: reverse. Must be one of: open, close, update, cancel".
-            To flip a position, send a close followed by an open. cancel passes
-            validation but has no handler, so it is not a usable action.
+            open opens or adds to a position; close closes what the slot holds
+            in that market; target brings the position to long, short or flat;
+            cancel withdraws followers' copy entries that have not filled.
+            update does not modify an open position's protection — do not use
+            it to move a stop. reverse is not accepted. action may be omitted
+            when position, market_position or sentiment is sent (a target).
         symbol:
           type: string
-          example: BTCUSDC
+          example: BTCUSDT
           description: Trading pair symbol
         side:
           type: string
           enum: [buy, sell]
-          description: Required for open and close actions
+          description: Required for open. A close needs no side.
         orderType:
           type: string
           enum: [market, limit]
           default: market
-          description: >-
-            Only market and limit are accepted. Any other value is rejected with
-            "Invalid order type ... Supported types: market, limit".
+          description: Only market and limit are accepted.
         price:
           type: number
           description: Required for limit orders
@@ -147,24 +238,25 @@ components:
                 ("0.001 BTC"). A bare "$300" is NOT accepted - write "300 USD".
             - type: number
               description: Token amount as a number
+          description: >-
+            With no quantity, the slot's Trade Setting default size is used; a
+            close with no quantity closes the whole position.
         leverage:
-          type: number
-          minimum: 1
-          maximum: 125
+          type: integer
+          description: Capped by the slot's Trade Setting leverage.
         marginMode:
           type: string
           enum: [isolated, cross]
-          default: isolated
+          description: With none, the account's current setting for the market is kept.
         takeProfit:
           type: number
           description: Single take profit price
         takeProfits:
           type: array
-          maxItems: 10
           description: >-
-            Each level closes part of the position. The sum of all amounts must
-            not exceed the order quantity, or the signal is rejected with
-            "Total TP amount exceeds order amount".
+            Each level closes part of the position and must be at least the
+            market's minimum order size. Keep the total of the amounts at or
+            below the order quantity.
           items:
             type: object
             required: [price, amount]
@@ -176,57 +268,97 @@ components:
                 description: >-
                   Quantity to close at this level, in base tokens. Must be a
                   positive number - percentage strings and keywords such as
-                  "remainder" are rejected with "TPn missing price or amount".
+                  "remainder" are rejected with "TPn has invalid price or amount".
+              label:
+                type: string
+                description: Optional name for the level, such as "TP1"
         stopLoss:
-          type: number
-          description: >-
-            Simple stop loss price. Used with the update action; for futures
-            orders prefer futurestopLoss, which is what the platform emits.
+          oneOf:
+            - type: number
+              description: A simple stop-loss price
+            - $ref: '#/components/schemas/StopLossObject'
         futurestopLoss:
-          type: object
-          description: Futures stop loss configuration.
-          required: [slType, stopLossPrice]
-          properties:
-            slType:
-              type: string
-              enum: [market, limit]
-            stopLossPrice:
-              type: number
-            stopLimitPrice:
-              type: number
-              description: Required when slType is limit.
-            priceType:
-              type: string
-              enum: [mark, last, index]
-              default: mark
+          $ref: '#/components/schemas/StopLossObject'
         stopLossX:
           $ref: '#/components/schemas/SLXConfig'
+        position:
+          type: string
+          enum: [long, short, flat]
+          description: >-
+            A target position. Also accepted as market_position, or as
+            sentiment (bullish / bearish / flat).
+        position_size:
+          type: number
+          description: Size for a target's new position. Also market_position_size.
+        reduceOnly:
+          type: boolean
+          default: false
+        timeInForce:
+          type: string
+          enum: [GTC, IOC, FOK]
+          default: GTC
+        timestamp:
+          oneOf:
+            - type: number
+            - type: string
+          description: >-
+            When the signal was sent — milliseconds, seconds or ISO. An opening
+            signal more than 90 seconds old when it arrives is refused; a close
+            never is. TradingView: "{{timenow}}".
+        dryRun:
+          type: boolean
+          description: Return what would be placed and place nothing.
+        comment:
+          type: string
+        metadata:
+          type: object
+          description: Your own data, stored with the signal.
+
+    StopLossObject:
+      type: object
+      required: [slType, stopLossPrice]
+      properties:
+        slType:
+          type: string
+          enum: [market, limit]
+        stopLossPrice:
+          type: number
+        stopLimitPrice:
+          type: number
+          description: Required when slType is limit.
+        priceType:
+          type: string
+          enum: [mark, last, index]
+          default: mark
 
     SLXConfig:
       type: object
-      required:
-        - slxMode
+      description: >-
+        SLX settings. Accepted, but not placed for webhook signals yet — set SLX
+        on the order ticket.
       properties:
         slxMode:
           type: string
           enum: [callback_rate, trailing_profits]
+          default: callback_rate
         activationPrice:
           type: number
-          description: Required for callback_rate mode
+          description: For callback_rate mode
         callbackRate:
           type: number
-          description: Trail percentage — required for callback_rate mode
+          description: Trail percentage — for callback_rate mode
         triggerBy:
           type: string
           enum: [mark_price, last_price, index_price]
           default: mark_price
         activationPoint:
           type: string
-          description: "TP level to activate SLX — required for trailing_profits (e.g., \"TP1\")"
+          default: TP1
+          description: TP level that activates SLX in trailing_profits mode
         trailingType:
           type: string
           enum: [breakeven, follow_tp]
-          description: Required for trailing_profits mode
+          default: breakeven
 
     SuccessResponse:
       type: object
@@ -234,11 +366,15 @@ components:
         success:
           type: boolean
           example: true
-        result:
-          type: object
         message:
           type: string
-          example: Order placed successfully
+          example: Webhook received and queued for processing
+        signalId:
+          type: string
+          example: 6512c0f1e4b0a1c2d3e4f5a6
+        replay:
+          type: boolean
+          description: Present and true when this request repeats one received in the last 60 seconds; it runs once.
 
     ErrorResponse:
       type: object
@@ -252,7 +388,4 @@ components:
           example: null
         message:
           type: string
-          example: Insufficient balance
-        code:
-          type: string
-          example: INSUFFICIENT_BALANCE
+          example: Account not found. Please connect it first.

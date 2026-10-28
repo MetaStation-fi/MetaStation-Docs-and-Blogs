@@ -23,8 +23,8 @@ Binance account — sized, leveraged and protected — with nobody watching the 
 **Time:** about 15 minutes. **You need:** a TradingView plan that includes webhooks (any paid
 tier), a Binance account, and a MetaStation account.
 
-:::info[Binance needs a paid slot; the native account does not]
-Webhook automation on a connected Binance, ByBit or KuCoin slot requires a slot subscription from
+:::info[Binance needs a plan; the native account does not]
+Webhook automation on a connected Binance, ByBit or KuCoin slot requires a plan for that slot from
 the Store. It is **free on your MetaStation Account slot**. If you are here to test whether
 webhook automation suits you, run this guide against the MetaStation Account first — every step is
 identical except the slot you pick — and connect Binance once you know you want it.
@@ -43,48 +43,46 @@ fields, then return here.
 
 ## Step 2 — Unlock automation on the slot
 
-Open **Account Management** → **Trading Slots**
-([metastation.fi/social-trade/account-management](https://metastation.fi/social-trade/account-management)).
+Open **Store** in the sidebar ([metastation.fi/store](https://metastation.fi/store)), pick the
+Binance **Slot**, pay with a MetaStation Account (the Store charges USDC), and confirm. Tick **Renew
+automatically** if you want it to continue.
 
-Your Binance slot appears as a free manual slot. Automation is added from the **Store** as a slot
-subscription — monthly, quarterly or annual.
+Until this is done, the slot's row on the Automation page reads **Not purchased**, and its webhook
+answers `403`.
 
-Until this is done the slot has no webhook URL, which is the usual reason Step 3 appears to be
-missing.
+## Step 3 — Copy the webhook URL and lock it to TradingView
 
-## Step 3 — Copy the webhook URL
+Open **Automation** → **Signal sources**
+([metastation.fi/social-trade/automation](https://metastation.fi/social-trade/automation)).
 
-Open **Webhook Management** → **Webhook URLs** tab
-([metastation.fi/social-trade/webhook-management](https://metastation.fi/social-trade/webhook-management)).
-
-Under **Your Webhook URLs**, find the Binance slot and copy its URL:
+Under **Your Webhook URLs**, find the Binance slot, press **Show the webhook URL** and copy it:
 
 ```
 https://metastation.fi/metastationapi/socialTrade/webhook/{your-webhook-secret}
 ```
 
-{/* SCREENSHOT: guide-tv-webhook-url | Webhook Management, Your Webhook URLs, Binance slot row | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
+{/* SCREENSHOT: guide-tv-webhook-url | Automation, Your Webhook URLs, Binance slot row | 1440x900 | redact: WEBHOOK TOKEN (mandatory) */}
 <Screenshot id="webhook-urls" />
 
-:::danger[This URL is a password]
-Anyone holding it can trade this slot. There is no second credential. Do not paste it into a
-public TradingView script, a screenshot, or a shared chat. If it leaks, press **Regenerate
-Secret** — the old URL stops working immediately.
+Then set the slot's verification mode to **Source-address check**. Requests are then accepted only
+from TradingView's published addresses, so a leaked URL is useless to anyone else.
+
+:::danger[Treat the URL as a password anyway]
+Do not paste it into a public TradingView script, a screenshot, or a shared chat. If it leaks,
+press **Regenerate Secret** — the old URL stops working immediately.
 :::
 
-## Step 4 — Set your risk limits first
+## Step 4 — Set the slot's Trade Setting first
 
-Do this **before** the first alert fires, not after. On the slot, set:
+Do this **before** the first alert fires, not after. Press **Trade Setting** on the slot:
 
 | Control | Suggested first value |
 |---|---|
-| Max leverage | 3x–5x |
-| Position size | Fixed USD, 1–2% of balance |
-| Symbol whitelist | Only the pairs this strategy trades |
-| Max open positions | 3 |
+| Leverage | 3x–5x |
+| USD in Value, or Percentage of Balance | 1–2% of balance |
+| Use this as maximum risk setting | On |
 
-The last one is what contains a strategy that repaints or an alert that fires repeatedly — it
-opens one position instead of forty.
+A signal asking for more is cut down to these caps. A signal with no size uses them as its size.
 
 → [Risk Controls](/docs/concepts/risk-controls)
 
@@ -124,67 +122,52 @@ Three things about this payload are deliberate:
 - **The stop loss is in the payload**, not added by hand afterwards. Anything you plan to add
   manually depends on you being awake.
 - **Take-profit `amount` values are token quantities** and total exactly the order quantity.
-  Percentages and keywords are rejected by the API, and amounts summing above `quantity` are too.
+  Percentages and keywords are rejected by the API.
 
 ### Making it follow the chart
 
-Hardcoded prices only suit a fixed level. TradingView placeholders let one alert serve every
-signal:
+For a strategy, one alert can do everything. Send the position the strategy **wants to hold**:
 
-```json
+```
 {
-  "action": "open",
   "symbol": "{{ticker}}",
-  "side": "buy",
-  "orderType": "market",
-  "quantity": "2%",
-  "leverage": 5,
-  "marginMode": "isolated"
+  "market_position": "{{strategy.market_position}}",
+  "position_size": {{strategy.market_position_size}},
+  "timestamp": "{{timenow}}"
 }
 ```
 
-For a strategy that goes both ways, `{{strategy.order.action}}` resolves to `buy` or `sell`:
-
-```json
-{
-  "action": "open",
-  "symbol": "{{ticker}}",
-  "side": "{{strategy.order.action}}",
-  "orderType": "market",
-  "quantity": "2%",
-  "leverage": 5,
-  "marginMode": "isolated"
-}
-```
+`long`, `short` and `flat` open, flip and close the position. Because it says what to *hold*, an
+alert that fires twice does nothing the second time, and a missed alert heals on the next one.
 
 → More patterns in [TradingView Templates](/docs/developer/tradingview-templates)
 
 ## Step 6 — Test before you trust it
 
-Send one signal yourself, at a size you do not mind being wrong about:
+First a dry run — it shows what would be placed and places nothing:
 
 ```bash
-curl -X POST https://metastation.fi/metastationapi/socialTrade/webhook/YOUR_SECRET \
-  -H "Content-Type: application/json" \
-  -d '{"action":"open","symbol":"BTCUSDT","side":"buy","orderType":"market","quantity":"1%","leverage":3,"marginMode":"isolated"}'
+curl -X POST "$METASTATION_WEBHOOK_URL?dryRun=1"   -H "Content-Type: application/json"   -d '{"action":"open","symbol":"BTCUSDT","side":"buy","orderType":"market","quantity":"1%","leverage":3,"marginMode":"isolated"}'
 ```
 
-Then check **Webhook Management** — the signal should appear with its parse result and execution
-status. Confirm the position exists on Binance, at the size and leverage you expected, then close
-it.
+If the slot is on the Source-address check, run the dry run before switching it on, or fire the
+alert from TradingView instead.
+
+Then fire one real alert at a size you do not mind being wrong about, and check **History → Signal
+History** — the signal should appear with its **Processing Status**. Confirm the position exists on
+Binance, at the size and leverage you expected — **including its stop-loss order** — then close it.
 
 Only after that should you let the strategy run live.
 
 ## Step 7 — Close the loop
 
-An entry alert without an exit alert leaves positions open indefinitely. Create a second alert on
-your exit condition with:
+An entry alert without an exit leaves positions open indefinitely. With the target template above,
+`flat` closes the position. With separate alerts, create an exit alert with:
 
 ```json
 {
   "action": "close",
-  "symbol": "{{ticker}}",
-  "side": "sell"
+  "symbol": "{{ticker}}"
 }
 ```
 
@@ -196,11 +179,12 @@ Omitting `quantity` closes the whole position. Include `"quantity": "50%"` to sc
 
 | Symptom | Cause |
 |---|---|
-| No webhook URL on the slot | The Store subscription has not been purchased — Step 2 |
-| Signal missing from the log entirely | It never arrived. Check the URL in the alert, and any IP whitelist |
-| Signal logged with a parse error | The alert message is not valid JSON. TradingView comments and stray text break it |
-| Parsed but not executed | A risk control blocked it — leverage cap, whitelist, or max open positions |
-| Executed at an unexpected size | Check which size form the payload used against the slot's position-size setting |
+| The alert gets `403` | The slot has no active plan — Step 2 |
+| The alert gets `401` | The Source-address check refused it — it did not come from TradingView |
+| The alert gets `404` | The URL is out of date — the secret was regenerated |
+| The alert gets `400` | The message is not valid JSON. TradingView comments and stray text break it |
+| Listed in Signal History but not executed | Its **Reason** says why — a late signal, no size, or the exchange refused it |
+| Executed at an unexpected size | Check which size form the payload used, and the slot's Trade Setting caps |
 
 The order of that table matches the [signal pipeline](/docs/concepts/signal-pipeline) — the first
 row that matches is your answer.
@@ -210,12 +194,12 @@ row that matches is your answer.
     {
       question: 'How do I connect TradingView alerts to Binance?',
       answer:
-        'Connect your Binance API keys to a MetaStation slot, add a slot subscription to unlock automation, then copy that slot’s webhook URL from Webhook Management. In TradingView, create an alert, tick "Webhook URL", paste the URL, and put a JSON payload in the alert message specifying the action, symbol, side, size and protection. TradingView webhooks require a paid TradingView plan.',
+        'Connect your Binance API keys to a MetaStation slot, buy a Store plan for it to unlock automation, then copy that slot’s webhook URL from the Automation page and set its verification mode to Source-address check. In TradingView, create an alert, tick "Webhook URL", paste the URL, and put a JSON payload in the alert message specifying the action, symbol, side, size and protection. TradingView webhooks require a paid TradingView plan.',
     },
     {
       question: 'Do I need a paid TradingView plan to automate alerts?',
       answer:
-        'Yes. Webhook alerts are a paid TradingView feature and are not available on the free tier. Any paid tier includes them. On the MetaStation side, webhook automation is free on your MetaStation Account slot but requires a Store slot subscription on a connected Binance, ByBit or KuCoin slot.',
+        'Yes. Webhook alerts are a paid TradingView feature and are not available on the free tier. Any paid tier includes them. On the MetaStation side, webhook automation is free on your MetaStation Account slot but requires a Store plan on a connected Binance, ByBit or KuCoin slot.',
     },
     {
       question: 'Can one TradingView alert trade whichever symbol the chart is on?',
@@ -230,7 +214,7 @@ row that matches is your answer.
     {
       question: 'What happens if my TradingView strategy fires the same alert repeatedly?',
       answer:
-        'Without limits it would open a position each time. Set a maximum open positions limit on the slot so further signals stop executing once you hold that many, and add a webhook rate limit to cap signals per minute. Configure both before the first live alert rather than after a repeating one.',
+        'The same request repeated within 60 seconds runs once. Beyond that, use the target template: it says which position to hold, so a repeated alert finds the position already there and does nothing. Cap leverage and size in the slot’s Trade Setting before the first live alert.',
     },
   ]}
 />
