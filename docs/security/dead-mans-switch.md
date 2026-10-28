@@ -15,6 +15,8 @@ resting order** on that account.
 It lives on the **Security** page ([metastation.fi/security](https://metastation.fi/security)),
 under **Dead man's switch**, with one **Turn on / Turn off** button per account.
 
+<Screenshot id="security-page" />
+
 ---
 
 ## What it does, and what it does not

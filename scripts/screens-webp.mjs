@@ -40,7 +40,9 @@ if (!pngs.length) {
   process.exit(0);
 }
 
-const browser = await chromium.launch({ headless: true, channel: 'chrome' });
+// SCREENS_CHANNEL='' uses Playwright's bundled Chromium (the official Playwright image has no Chrome).
+const channel = process.env.SCREENS_CHANNEL ?? 'chrome';
+const browser = await chromium.launch({ headless: true, ...(channel ? { channel } : {}) });
 const ctx = await browser.newContext();
 const page = await ctx.newPage();
 await page.setContent('<canvas id="c"></canvas>');

@@ -91,7 +91,7 @@ const config = {
     // pinned to its own tag so captures can be reshot without moving brand
     // artwork. <Screenshot> resolves every embed through this, so publishing a
     // new capture set is: copy to brand-assets, cut docs-v<n+1>, bump this line.
-    screensCdn: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@docs-v1/docs/screens',
+    screensCdn: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@docs-v2/docs/screens',
   },
 
   headTags: [

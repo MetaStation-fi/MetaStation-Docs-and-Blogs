@@ -13,6 +13,7 @@ build/
 Thumbs.db
 
 # Env
+temp_auto_push.bat
 .env
 .env.local
 
@@ -28,3 +29,5 @@ static/img/screens/
 # and uploaded to temporary public storage; keeping them in git would add a
 # few hundred KB of noise per run and tell a reader nothing the gate does not.
 .lighthouseci/
+.gitignore
+branch_structure.json

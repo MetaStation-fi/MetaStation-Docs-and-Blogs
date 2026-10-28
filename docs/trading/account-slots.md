@@ -80,7 +80,7 @@ separate strategies in parallel, each with its own balance and webhook URL.
 Open **Account Management** in the sidebar
 ([metastation.fi/social-trade/account-management](https://metastation.fi/social-trade/account-management)) to:
 - View all your slots
-- Add a slot with **Add Trading Slot** — pick the exchange and give it a nickname
+- Add a slot with **Add Slots** — pick the exchange and give it a nickname
 - Add, or remove, a slot's API keys
 - Delete a slot
 

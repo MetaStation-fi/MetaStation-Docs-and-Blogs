@@ -326,3 +326,81 @@ export const shots = [
     note: 'QR plus manual secret. Deliberately not automated: capturing a real TOTP seed writes a working second factor into a public image. Shoot against a throwaway account by hand.',
   },
 ];
+
+// ---- v2: the upgraded platform (2026-10-28) --------------------------------
+// The shots below were recaptured against the upgraded UI for the docs-v2 set.
+// Their v1 annotations named text the new screens no longer have, and a
+// missing annotation target fails the whole shot, so each carries only targets
+// read from the new frontend's source. Every other shot keeps its v1 entry.
+const V2 = {
+  'google-signin': {
+    url: '/login',
+    annotate: [
+      { at: 'text=Continue with Google', label: 'Signs in with Google — no separate password' },
+      { at: 'text=Continue with Telegram', label: 'Your Telegram account, or your Telegram wallet' },
+    ],
+    note: 'Login page with Google and Telegram sign-in.',
+  },
+  'register-form': { url: '/register', annotate: [], note: 'Register form, captured empty.' },
+  'deposit-picker': {
+    url: '/deposit',
+    annotate: {
+      desktop: [
+        { at: 'text=Send manually', label: 'USDC on Arbitrum One only, from any wallet or exchange' },
+        { at: 'text=Connect a wallet', label: 'Any other network: MetaStation bridges it for you' },
+      ],
+      // At 390px both choices sit under the bottom navigation bar.
+      mobile: [],
+    },
+    note: 'Deposit page: Funding Wallet, Send from.',
+  },
+  'deposit-flow': { url: '/deposit', annotate: [], note: 'Deposit page with the MetaStation Account as destination.' },
+  'funding-wallet-status': { url: '/deposit', annotate: [], note: 'Funding Wallet address on the Deposit page.' },
+  'buy-crypto': {
+    url: '/exchangeswap',
+    annotate: [{ at: 'text=Crypto Swap', label: 'Swap, or pay in a supported fiat currency, through SimpleSwap' }],
+    note: 'Buy Crypto: the Crypto Swap page.',
+  },
+  'withdraw-form': { url: '/withdraw', annotate: [], note: 'Withdraw page.' },
+  '2fa-enable': {
+    url: '/security',
+    annotate: [{ at: 'text=Google Authenticator', label: 'Once on, every sign-in and every withdrawal asks for its code' }],
+    note: 'Security page, Google Authenticator card.',
+  },
+  'security-page': {
+    url: '/security',
+    annotate: [{ at: 'text=Sign out everywhere', label: 'Ends every session on every device, this one included' }],
+    note: 'Security page.',
+  },
+  'webhook-urls': {
+    url: '/social-trade/automation',
+    annotate: [{ at: 'text=Your Webhook URLs', label: 'One URL per slot. It stays hidden until you press Show' }],
+    note: 'Automation, Signal sources, Your Webhook URLs.',
+  },
+  'account-management': { url: '/social-trade/account-management', annotate: [], note: 'Account Management.' },
+  'slots-overview': { url: '/social-trade/account-management', annotate: [], note: 'Account Management with the slots.' },
+  'store-slots': {
+    url: '/store',
+    annotate: [{ at: 'text=Purchase Additional Slots', label: 'Plans are paid in USDC from a MetaStation Account' }],
+    note: 'Store.',
+  },
+  'marketplace-grid': { url: '/social-trade/providers', annotate: [], note: 'Social Trade, Providers.' },
+  'provider-onboarding': { url: '/social-trade/provider/onboard', annotate: [], note: 'Become a Provider, step 1.' },
+  'provider-dashboard': { url: '/social-trade/provider', annotate: [], note: 'Provider hub.' },
+};
+for (const shot of shots) {
+  if (V2[shot.id]) Object.assign(shot, { mode: 'auto', prep: undefined }, V2[shot.id]);
+}
+shots.push(
+  {
+    id: 'indexes-catalog', section: 'social-trading', doc: 'indexes.mdx',
+    url: '/social-trade/indexes', mode: 'auto', annotate: [],
+    note: 'Social Trade, Indexes.',
+  },
+  {
+    id: 'scoring-methodology', section: 'social-trading', doc: 'scoring.mdx',
+    url: '/social-trade/methodology', mode: 'auto', annotate: [],
+    note: 'How the score works.',
+  },
+);
+export const V2_IDS = [...Object.keys(V2), 'indexes-catalog', 'scoring-methodology'];

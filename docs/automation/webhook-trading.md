@@ -113,7 +113,6 @@ its **Processing Status**, and the **Reason** when it did not execute as sent. T
 the Automation page also shows its **Total Signals**.
 
 {/* SCREENSHOT: webhook-history | History -> Signal History | 1440x900 | redact: account ids */}
-<Screenshot id="webhook-history" />
 
 ---
 
