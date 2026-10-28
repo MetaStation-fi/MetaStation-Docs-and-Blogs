@@ -32,7 +32,7 @@ const CARDS = [
   {
     Icon: IconRocket,
     title: 'Getting Started',
-    desc: 'Create your account, fund it from 56 networks, and place your first trade in minutes.',
+    desc: 'Create your account, fund it from any chain, and place your first trade in minutes.',
     link: '/docs/getting-started/quick-start',
     cta: 'Start here',
   },
@@ -60,7 +60,7 @@ const CARDS = [
   {
     Icon: IconWallet,
     title: 'Wallet',
-    desc: 'Bridge into your Funding Wallet from 56 networks or buy with a card. Withdraw with 2FA.',
+    desc: 'Fund your Funding Wallet by hand or from a connected wallet. Withdraw with a 6-digit code.',
     link: '/docs/wallet/deposit',
     cta: 'Manage wallet',
   },

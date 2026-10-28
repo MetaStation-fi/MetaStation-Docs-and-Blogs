@@ -22,14 +22,30 @@ keeps you logged in between page loads.
 | Scope | The browser you signed in on. Signing in elsewhere creates a separate session |
 | Expiry | Automatic. Once it lapses you are returned to the login screen |
 | Ending it early | **Logout** — in the account menu on desktop, in the drawer on mobile |
+| Ending all of them | **Security → Sign out everywhere** |
 
-:::note[No session dashboard yet]
-MetaStation does **not** currently provide a list of active sessions, per-device revocation, or a
-configurable timeout. The 72-hour expiry is fixed and applies to every session.
+{/* SCREENSHOT: security-page | Security page, all cards | 1440x900 | redact: email */}
+<Screenshot id="security-page" />
 
-That changes what "secure my account" means in practice: the reliable lever is your
-**password**, not a revoke button. See the recovery steps below.
+### Sign out everywhere
+
+**Security → Sign out everywhere** ends every session on every device and browser signed in to your
+account — including the one you are using. You sign in again on each of them afterwards.
+
+Changing your password does the same for every *other* device: the browser you changed it on stays
+signed in.
+
+:::note[What there is not]
+MetaStation does not show a list of active sessions, and the 72-hour lifetime is fixed. To end one
+particular session, sign out everywhere.
 :::
+
+---
+
+## Wrong passwords
+
+Five wrong passwords in a row **block sign-in for 2 hours**. This protects your account from
+password guessing; wait, or reset your password with **Forgot password** on the sign-in page.
 
 ---
 
@@ -39,8 +55,8 @@ That changes what "secure my account" means in practice: the reliable lever is y
   stays valid for the rest of its 72 hours
 - **Use one browser profile you control.** Sessions do not follow you between devices, so there
   is no benefit to signing in on machines you do not own
-- **Keep 2FA on.** It is the control that stops a stolen password from becoming a withdrawal —
-  see [Two-Factor Authentication](/docs/security/two-factor-auth)
+- **Turn on an authenticator app.** With it, every sign-in needs a code from your phone, and every
+  withdrawal is confirmed by it — see [Two-Factor Authentication](/docs/security/two-factor-auth)
 
 ---
 
@@ -48,16 +64,21 @@ That changes what "secure my account" means in practice: the reliable lever is y
 
 Do these in order. Speed matters more than thoroughness here.
 
-1. **Change your password** — **Security → Password → Change**. This is the step that matters most: it invalidates the credential an attacker has
-2. **Enable 2FA if it is off** — **Security → Google Authenticator → Enable**. Without it, withdrawals are impossible for an attacker; this is your hard stop
-3. **Check History** — review deposits, withdrawals and trades for anything you did not do
-4. **Rotate exchange API keys** — delete the keys at Binance / ByBit / KuCoin and issue new ones. See [API Key Management](/docs/security/api-key-management)
-5. **Review your automation** — check **Webhook Management** and press **Regenerate Secret** on any webhook URL that may have leaked
-6. **Contact support** with times, amounts and transaction hashes
+1. **Change your password** — **Security → Password → Change**. This invalidates the credential an
+   attacker has and signs out every other device
+2. **Sign out everywhere** — **Security → Sign out everywhere**, then sign back in
+3. **Turn on 2FA if it is off** — **Security → Google Authenticator → Enable**. From then on every
+   sign-in and every withdrawal needs a code from your phone
+4. **Check History** — review deposits, withdrawals and trades for anything you did not do
+5. **Rotate exchange API keys** — delete the keys at Binance / ByBit / KuCoin and issue new ones.
+   See [API Key Management](/docs/security/api-key-management)
+6. **Review your automation** — open **Automation** and press **Regenerate Secret** on any webhook
+   URL that may have leaked
+7. **Contact support** with times, amounts and transaction hashes
 
 :::warning
-MetaStation support will never ask for your password, your Google Authenticator code, or the
-email verification code sent for a withdrawal. Anyone who asks is attacking you.
+MetaStation support will never ask for your password, your authenticator code, or the
+confirmation code sent for a withdrawal. Anyone who asks is attacking you.
 :::
 
 ---
@@ -67,3 +88,4 @@ email verification code sent for a withdrawal. Anyone who asks is attacking you.
 - [Two-Factor Authentication](/docs/security/two-factor-auth)
 - [Withdrawal Security](/docs/security/withdrawal-whitelist)
 - [API Key Management](/docs/security/api-key-management)
+- [Dead Man's Switch](/docs/security/dead-mans-switch)

@@ -32,12 +32,13 @@ It combines professional trading tools, social copy trading, and full automation
 | Capability | What it means |
 |---|---|
 | **Native MetaStation Account** | A ready-to-trade account created automatically when you register. **Web3 by default** — it settles on-chain in USDC. No exchange setup needed. |
-| **Fund from 56 Networks** | Bridge assets from 56 blockchain networks into your **Funding Wallet** — automatically converted and credited. |
+| **Fund from Any Chain** | Send USDC on Arbitrum One, or connect a wallet on an EVM network, Solana or TON — MetaStation bridges it into your **Funding Wallet**. |
 | **Multi-Exchange Trading** | Connect Binance, ByBit, and KuCoin via API keys and trade them from one terminal. |
-| **Social Trading** | Follow top traders and copy their positions automatically. |
+| **Social Trading** | Copy signal providers, fund managers, tracked strategies and MetaStation indexes into **your own account**, with your own risk limits. |
 | **Webhook Automation** | Execute trades from TradingView alerts or any HTTP signal source. |
 | **Telegram-to-Trade** | Parse Telegram channel signals and execute them instantly. |
-| **Advanced Orders** | Up to 10 Take Profits, trailing stops, and Stop Loss X (SLX). |
+| **Advanced Orders** | Take-profit ladders, trailing stops, and Stop Loss X (SLX). |
+| **Telegram** | Sign in with Telegram and use MetaStation inside Telegram through our bot. |
 
 ---
 
@@ -49,7 +50,7 @@ It combines professional trading tools, social copy trading, and full automation
 
 **Algo traders and developers** — Automate strategies via webhook or Telegram signals with JSON or natural language inputs.
 
-**Signal providers** — Monetize your trading skills by publishing to the marketplace and earning subscription revenue.
+**Signal providers and fund managers** — Publish your trading and earn from followers: a monthly subscription price, or a share of their profits.
 
 ---
 
@@ -80,12 +81,12 @@ minute and needs no KYC to start.
     {
       question: 'Is MetaStation free to use?',
       answer:
-        'Your MetaStation Account is free and includes webhook automation, Telegram-to-Trade, copy trading and advanced orders at no cost. Each connected exchange also gets one free manual slot. Paid slot subscriptions from the Store unlock automation on those connected exchange slots, and additional MetaStation Account slots are also available there.',
+        'Every MetaStation Account is free to open and includes webhook automation, Telegram-to-Trade, copy trading and advanced orders at no cost; its first deposit pays a one-time activation fee, shown on the Deposit page. Connected exchange slots are free for manual trading and for following providers, and a plan from the Store unlocks automation on them.',
     },
     {
       question: 'Does MetaStation require KYC?',
       answer:
-        'Creating an account and starting to trade does not require KYC. Registration takes about a minute, and a MetaStation Account is available immediately afterwards.',
+        'Creating an account and starting to trade on metastation.fi does not require KYC. Registration takes about a minute, and a MetaStation Account is ready to fund immediately afterwards.',
     },
     {
       question: 'Which exchanges does MetaStation support?',
@@ -95,7 +96,7 @@ minute and needs no KYC to start.
     {
       question: 'Can I automate TradingView alerts with MetaStation?',
       answer:
-        'Yes. Each trading slot has a webhook URL you paste into a TradingView alert, and the alert message carries a JSON or plain-language payload describing the trade. Webhook automation is free on the MetaStation Account slot and requires a slot subscription on connected exchange slots.',
+        'Yes. Each trading slot has a webhook URL you paste into a TradingView alert, and the alert message carries a JSON or plain-language payload describing the trade. Webhook automation is free on every MetaStation Account slot and needs a Store plan on connected exchange slots.',
     },
   ]}
 />

@@ -1,8 +1,8 @@
 ---
 id: cross-chain-exchange
-title: Cross-Chain Deposits — Fund From 56 Blockchain Networks
+title: Cross-Chain Deposits — Fund From EVM Networks, Solana and TON
 sidebar_label: Cross-Chain Exchange
-description: Deposit from any supported Web3 wallet across 56 blockchain networks straight into the Funding Wallet of your MetaStation Web3 Account. Send from Ethereum, Bitcoin, Solana, BNB Chain, Polygon, Arbitrum, Base, Tron, TON or XRP Ledger and it arrives as USDC trading margin.
+description: Connect your Web3 wallet on Ethereum, an Ethereum Layer 2, an EVM chain, Solana or TON and deposit straight into the Funding Wallet of your MetaStation Account. MetaStation bridges it and it arrives as USDC.
 keywords:
   [
     cross-chain exchange,
@@ -12,9 +12,7 @@ keywords:
     blockchain interoperability,
     EVM compatible networks,
     ethereum layer 2,
-    bitcoin bridge,
     solana cross-chain swaps,
-    tron cross-chain transfers,
     ton cross-chain transfers,
     multi-chain crypto exchange,
   ]
@@ -24,38 +22,37 @@ import ArticleSchema from '@site/src/components/ArticleSchema';
 import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
-  headline="Cross-Chain Deposits — Fund a MetaStation Account From 56 Blockchain Networks"
-  description="Deposit from any supported Web3 wallet across 56 EVM and non-EVM networks directly into your Funding Wallet as USDC."
+  headline="Cross-Chain Deposits — Fund a MetaStation Account From EVM Networks, Solana and TON"
+  description="Deposit from a connected Web3 wallet on dozens of EVM networks, Solana or TON directly into your Funding Wallet as USDC."
   section="Wallet"
 />
 
 # Cross-Chain Deposits
 
-MetaStation brings **cross-chain routing and blockchain interoperability** directly into the
-funding experience. You connect the Web3 wallet you already use, on whichever chain your assets
-already sit, and deposit **straight into the Funding Wallet of your MetaStation Web3 Account** —
-without opening a separate bridge or exchange first.
+MetaStation brings **cross-chain routing** directly into the funding experience. You connect the
+Web3 wallet you already use, on the chain your assets already sit on, and deposit **straight into
+the Funding Wallet of your MetaStation Account** — without opening a separate bridge or exchange
+first.
 
-MetaStation accepts **cross-chain deposits from 56 blockchain networks**, covering major Layer 1
-chains, Ethereum Layer 2 networks, EVM-compatible chains, the Bitcoin ecosystem, and leading
-non-EVM ecosystems.
+Cross-chain deposits work from **Ethereum and its Layer 2s, EVM-compatible chains, Solana and TON**.
 
 :::info[What this page covers]
-This is the **funding path: any supported chain → your Funding Wallet**. The cross-chain swap
-happens as part of the deposit, and the result is always **USDC margin in your MetaStation
-Account**.
+This is the **funding path: a connected wallet on a supported chain → your Funding Wallet**. The
+cross-chain swap happens as part of the deposit, and the result is always **USDC in your Funding
+Wallet**.
 
-It is **not** a general chain-to-chain swap desk — MetaStation does not route Bitcoin to a token
-on Solana for you, or move assets between two external wallets. The destination is always your
-own account.
-
-**Withdrawals are a separate, narrower flow.** They cover a specific asset set (USDT, BTC, ETH,
-SOL, TRX, TON), not all 56 networks. → [Withdraw](/docs/wallet/withdraw)
+- **Sending by hand?** The Funding Wallet address accepts **USDC on Arbitrum One only**. Anything
+  else sent to it by hand is lost. Use a connected wallet for every other network.
+- **Bitcoin and other non-EVM chains** (Bitcoin, Litecoin, Dogecoin, XRP Ledger, Tron and similar)
+  **cannot** be deposited through the Funding Wallet. Once your account is activated, BTC can be
+  deposited straight into the **Trading Account** on its own network — see
+  [Deposit](/docs/wallet/deposit#deposit-to-the-trading-account-other-coins).
+- It is **not** a general chain-to-chain swap desk. The destination is always your own account.
 :::
 
 ---
 
-## Connect any Web3 wallet, on any supported chain
+## Connect your Web3 wallet, on a supported chain
 
 The step this removes is the one that usually comes first everywhere else: acquiring a specific
 token on a specific chain, bridging it yourself, and holding a gas token on the destination
@@ -63,108 +60,50 @@ network before you can trade at all.
 
 Instead:
 
-1. Connect the wallet you already use.
-2. Pick the network your assets are already on, and the asset you hold.
-3. Send. It is routed cross-chain, converted, and credited as **USDC** trading margin.
-
-So a deposit from **Ethereum, Arbitrum, Base, Polygon, BNB Chain, Solana, Bitcoin, TON, Tron** or
-**XRP Ledger** all arrive at the same place, in the same form, ready to trade.
+1. On **Deposit**, pick **Funding Wallet**, then **Send from → Connect a wallet**.
+2. Pick the network your assets are already on, and the coin you hold.
+3. Connect your wallet: an **EVM wallet** for Ethereum-style networks, a **Solana wallet** such as
+   Phantom, or a **TON wallet**.
+4. Review the quote and approve. It is routed cross-chain, converted, and credited as **USDC**.
 
 :::note[Coverage is not uniform]
-Supported routes, tokens, liquidity, fees, minimums, maximums and settlement times **vary by
-source network**. A network being supported does not mean every asset on it is routable. The
-deposit screen shows what is actually available for the pairing you select.
+Supported routes, tokens, liquidity, fees, minimums and settlement times **vary by source network**.
+A network being supported does not mean every coin on it can be routed. The deposit screen shows
+what is actually available for the pairing you select.
 :::
 
 → [Fund Your Account from Any Chain](/docs/guides/fund-from-any-chain)
 
 ---
 
-## EVM and non-EVM blockchain support
-
-The cross-chain infrastructure spans both **EVM-compatible and non-EVM blockchain ecosystems**, so
-funding is not limited to Ethereum-style chains.
+## Supported ecosystems
 
 | Ecosystem | Networks include |
 |---|---|
 | **Ethereum and Layer 2** | Ethereum, Arbitrum One, Base, Optimism, Linea, Scroll, Taiko, Mode, Mantle, Unichain, Soneium, Manta, Metis, Boba Ethereum, Fraxtal |
 | **zk rollups** | ZkSync Era, Polygon zkEVM, Cronos zkEVM, ZkLink |
 | **EVM Layer 1** | BNB, opBNB, Polygon, Avalanche, Gnosis, Cronos, Sonic, Telos, Berachain, Monad, Katana, Gravity, Morph, Sei v2, Plasma, Abstract, ApeChain |
-| **Bitcoin ecosystem** | Bitcoin, Merlin, Rootstock, Citrea, Goat, Bitcoin Cash |
-| **Non-EVM Layer 1** | Solana, TON, Tron, XRP Ledger, Litecoin, Dogecoin, Monero, Zcash |
+| **EVM chains in the Bitcoin ecosystem** | Merlin, Rootstock, Citrea, Goat |
+| **Non-EVM** | Solana, TON |
 
-This is what makes MetaStation a **multi-chain crypto exchange** rather than a single-ecosystem
-one: **Bitcoin bridge** deposits, **Solana cross-chain swaps**, **Tron cross-chain transfers** and
-**TON cross-chain transfers** all fund the same account through the same interface as every EVM
-network.
-
----
-
-## Supported blockchain networks
-
-Cross-chain deposits are supported from the following networks. Names match what appears in the
-deposit network picker.
-
-| # | Network | # | Network |
-|---|---|---|---|
-| 1 | Abstract | 29 | Mode |
-| 2 | ApeChain | 30 | Monad |
-| 3 | Arbitrum One | 31 | Monero |
-| 4 | Avalanche | 32 | Morph |
-| 5 | Base | 33 | opBNB |
-| 6 | Berachain | 34 | Optimism |
-| 7 | Bitcoin | 35 | Plasma |
-| 8 | Bitcoin Cash | 36 | Polygon |
-| 9 | BNB | 37 | Polygon zkEVM |
-| 10 | Boba Ethereum | 38 | Quai |
-| 11 | Citrea | 39 | Robinhood |
-| 12 | Cronos | 40 | Rootstock |
-| 13 | Cronos zkEVM | 41 | Scroll |
-| 14 | Dogecoin | 42 | Sei v2 |
-| 15 | Ethereum | 43 | Solana |
-| 16 | Fraxtal | 44 | Soneium |
-| 17 | Gnosis | 45 | Sonic |
-| 18 | Goat | 46 | Stable |
-| 19 | Gravity | 47 | Taiko |
-| 20 | HyperEVM | 48 | Telos |
-| 21 | Katana | 49 | Tempo |
-| 22 | Lighter | 50 | TON |
-| 23 | Linea | 51 | Tron |
-| 24 | Litecoin | 52 | Unichain |
-| 25 | Manta | 53 | XRP Ledger |
-| 26 | Mantle | 54 | Zcash |
-| 27 | Merlin | 55 | ZkLink |
-| 28 | Metis | 56 | ZkSync Era |
-
----
-
-## Network availability changes
-
-The set of available networks and assets **changes as MetaStation expands or updates its
-cross-chain infrastructure**. Networks are added, and occasionally retired.
-
-The networks, assets, routes and liquidity shown **in the MetaStation app at the time of your
-transaction** are authoritative. This page reflects the integration as documented and is not a
-guarantee that a particular network remains available indefinitely.
-
-If a network you expect is missing from the picker, it is currently unavailable rather than
-hidden.
+The **network picker in the app is the live list**. Networks are added and occasionally retired as
+routes change; if a network you expect is missing from the picker, it is currently unavailable
+rather than hidden.
 
 ---
 
 ## How a cross-chain deposit works
 
-1. Open **Deposit** and make sure your **MetaStation Account slot** is selected.
-2. Select your **source network** and **asset**.
-3. Send from your Web3 wallet or exchange to the address shown.
-4. The asset is routed cross-chain into your **Funding Wallet** — a smart-contract wallet on
-   Arbitrum — and converted to USDC.
-5. The USDC credits your MetaStation Account and is immediately available as trading margin.
+1. Open **Deposit** and pick your **MetaStation Account** and its **Funding Wallet**.
+2. Under **Send from**, pick **Connect a wallet**, then your **source network** and **coin**.
+3. Connect your wallet, enter the amount, and press **Review deposit**.
+4. Confirm, then approve the transaction in your wallet. The network fee is paid in your wallet's
+   gas token on the source chain.
+5. The deposit is routed cross-chain into your **Funding Wallet** on Arbitrum One and converted to
+   USDC. On your first deposit, the one-time activation fee is taken and the account is activated.
 
-The waiting step is confirmation on the **source** chain, which is why an Ethereum deposit takes
-longer than one from Arbitrum or Base.
-
-You never need a gas token on the destination side: gas on your trades is abstracted away.
+Bridged deposits appear under **Deposits in progress** on the Deposit page until they land. One that
+is delayed on the network can be sent back to your wallet with **Refund delayed deposit**.
 
 → [Funding and Settlement](/docs/concepts/funding-and-settlement) · [Deposit](/docs/wallet/deposit)
 
@@ -176,40 +115,40 @@ or sending a large sum.
 
 :::note[Connected exchange slots do not use this]
 A connected Binance, ByBit or KuCoin slot has **no Funding Wallet** — its balance is your balance
-at that exchange, so you fund it there. Cross-chain deposits fund a MetaStation Account slot.
+at that exchange. The Deposit page shows that exchange's own deposit address instead.
 :::
 
 <FAQ
   items={[
     {
-      question: 'How many blockchain networks can I deposit from on MetaStation?',
+      question: 'Which blockchain networks can I deposit from on MetaStation?',
       answer:
-        'Cross-chain deposits are supported from 56 blockchain networks, spanning Ethereum and its Layer 2s, zk rollups, EVM Layer 1 chains, the Bitcoin ecosystem, and non-EVM networks including Solana, TON, Tron, XRP Ledger, Litecoin, Dogecoin, Monero and Zcash. The set changes over time as networks are added or retired, and the network picker in the app is authoritative at the time of a transaction.',
+        'From a connected wallet: Ethereum and its Layer 2s, zk rollups, EVM Layer 1 chains, EVM chains in the Bitcoin ecosystem, Solana and TON. Sent by hand, the Funding Wallet accepts USDC on Arbitrum One only. The network picker in the app is the live list at the time of a transaction.',
     },
     {
-      question: 'Can I deposit into MetaStation from any Web3 wallet?',
+      question: 'Can I deposit Bitcoin?',
       answer:
-        'Yes. Connect the wallet you already use, on whichever supported chain your assets already sit, and deposit directly into the Funding Wallet of your MetaStation Web3 Account. The cross-chain routing and the conversion to USDC happen as part of the deposit, so you do not bridge or swap manually beforehand.',
+        'Not through the Funding Wallet. Once your MetaStation Account is activated by its first deposit, BTC can be sent on the Bitcoin network straight into the Trading Account, using the address the Deposit page shows for BTC.',
     },
     {
       question: 'Does MetaStation let me swap between two external blockchains?',
       answer:
-        'No. Cross-chain routing on MetaStation is a funding path, not a general swap desk — the destination is always the Funding Wallet of your own MetaStation Account, where the deposit arrives as USDC trading margin. It does not move assets between two external wallets or chains on your behalf.',
+        'No. Cross-chain routing on MetaStation is a funding path, not a general swap desk. The destination is always the Funding Wallet of your own MetaStation Account, where the deposit arrives as USDC.',
     },
     {
       question: 'Do I need to bridge my crypto before depositing to MetaStation?',
       answer:
-        'No. The cross-chain swap happens as part of the deposit, so you send from the network your funds already sit on. You also do not need a gas token on the destination network, because gas on your trades is abstracted away.',
+        'No. Connect your wallet on the network your funds already sit on; the cross-chain route and the conversion to USDC happen as part of the deposit. You pay the network fee in your own gas token on the source chain.',
     },
     {
-      question: 'Can I withdraw to all 56 networks as well?',
+      question: 'Can I withdraw to all of these networks as well?',
       answer:
-        'No. Withdrawals are a separate and narrower flow covering a specific asset set — USDT, BTC, ETH, SOL, TRX and TON — rather than every network deposits support. Every withdrawal also requires both your Google Authenticator code and a code emailed to your registered address.',
+        'Withdrawals are a separate flow. USDC can be withdrawn to many networks, and BTC, ETH, SOL, AVAX and a few other coins to their own network. Every withdrawal is confirmed with a 6-digit code. See the Withdraw page for the full rules.',
     },
     {
       question: 'Does every supported network support every asset?',
       answer:
-        'No. Supported routes, tokens, liquidity, fees, minimums, maximums and settlement times vary by source network. A network being supported does not mean every asset on it can be routed, so check the deposit screen for the specific pairing you intend to use.',
+        'No. Supported routes, tokens, liquidity, fees, minimums and settlement times vary by source network, so check the deposit screen for the specific pairing you intend to use.',
     },
   ]}
 />

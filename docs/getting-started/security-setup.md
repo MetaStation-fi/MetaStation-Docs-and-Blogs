@@ -6,15 +6,20 @@ sidebar_label: Security Setup
 
 # Security Setup
 
-Two things to do before you trade. The first is required to withdraw at all; the second is what
-stops a leaked password from mattering.
+Three things to do before you trade with real money.
 
 ---
 
 ## 1. Two-Factor Authentication (2FA)
 
-MetaStation uses **Google Authenticator** (TOTP). Without it enabled, **withdrawals are blocked
-entirely** — the withdrawal screen refuses the request.
+MetaStation uses an **authenticator app** (TOTP — Google Authenticator, Authy or any compatible
+app). Once it is on:
+
+- every **sign-in** asks for the 6-digit code after your password
+- every **withdrawal** is confirmed with your authenticator code, with no daily cap
+
+Without it, withdrawals are confirmed by a code sent by e-mail and are capped at **$1,000 in 24
+hours**.
 
 {/* SCREENSHOT: 2fa-enable | Security page, Google Authenticator card, Enable state | 1440x900 | redact: none */}
 <Screenshot id="2fa-enable" />
@@ -23,16 +28,16 @@ entirely** — the withdrawal screen refuses the request.
 
 1. Open **Security** in the sidebar — [metastation.fi/security](https://metastation.fi/security)
 2. On the **Google Authenticator** card, click **Enable**
-3. Scan the QR code with your authenticator app (Google Authenticator, Authy, or any TOTP app).
-   Cannot scan? The same screen shows the secret key to type in manually
+3. Scan the QR code with your authenticator app. Cannot scan? The same screen shows the secret key
+   to type in manually
 4. Enter the 6-digit code to confirm
 
 {/* SCREENSHOT: 2fa-qr | QR + manual secret screen | 1440x900 | redact: QR CODE AND SECRET, both mandatory */}
 
 :::danger[Save the secret key]
 MetaStation does **not** issue backup codes. The **secret key** shown during setup is your only
-self-service recovery path — copy it into a password manager before you finish. Without it, a
-lost phone means a manual support recovery that takes days.
+self-service recovery path — copy it into a password manager before you finish. Without it, a lost
+phone means a support reset, after which withdrawals pause for 24 hours.
 :::
 
 :::warning
@@ -44,26 +49,34 @@ them.
 
 ## 2. A strong, unique password
 
-Your password is the credential that matters most, because MetaStation has no session-revocation
-dashboard — changing the password is the primary way to lock an attacker out.
-
-- Minimum 8 characters
-- Mix uppercase, lowercase, numbers and symbols
+- 8 to 16 characters, with upper case, lower case, a number and a special character
 - Never reuse a password from another service
 - Use a password manager
 
-Change it any time at **Security → Password → Change**.
+Change it any time at **Security → Password → Change**. Changing it signs you out on every other
+device. Five wrong passwords in a row block sign-in for 2 hours.
+
+---
+
+## 3. Know your emergency controls
+
+| Control | Where | What it does |
+|---|---|---|
+| **Sign out everywhere** | Security | Ends every session on every device, this one included |
+| **Dead man's switch** | Security | Opt-in, per account: the exchange cancels your resting orders if MetaStation loses contact for 5 minutes |
+| **Regenerate Secret** | Automation | Invalidates a webhook URL that may have leaked |
+
+→ [Account Access & Sessions](/docs/security/session-management) · [Dead Man's Switch](/docs/security/dead-mans-switch)
 
 ---
 
 ## What is *not* available
 
-Worth knowing so you do not go looking for it:
-
 | Feature | Status |
 |---|---|
 | Withdrawal address whitelist | Not available. Verify addresses yourself — see [Withdrawal Security](/docs/security/withdrawal-whitelist) |
-| Active-session list / remote logout | Not available. Sessions expire on their own after 72 hours — see [Account Access](/docs/security/session-management) |
+| Active-session list | Not available. Use **Sign out everywhere** to end every session at once |
+| Backup codes | Not issued. Save the secret key |
 
 ---
 

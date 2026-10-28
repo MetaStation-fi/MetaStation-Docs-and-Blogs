@@ -16,14 +16,14 @@ import styles from './styles.module.css';
  * different product:
  *
  *   - There is no "position size multiplier". There are three COPY MODES —
- *     Copy Trader (mirror the size exactly), Fixed Ratio (a PERCENTAGE of the
- *     provider's size) and Fixed Amount (a flat USDT figure per trade).
+ *     the same size as the provider, a share of each trade (a PERCENTAGE of
+ *     the provider's size) and a fixed amount per trade (USD of the coin).
  *   - Fixed Ratio is capped at 100%. A "2.0x — copy double the provider's
  *     size" setting is not merely unavailable, it fails validation.
  *   - Copy mode cannot be changed after the subscription exists; the form
  *     ignores the change (`if (isUpdate && name === 'copyMode') return`).
- *   - Fixed Amount is bounded by the PROVIDER's own minCopyAmount and
- *     maxCopyAmount, defaulting to 100 and 10,000 USDT.
+ *   - A fixed amount is at least 1 USD and at most the PROVIDER's own
+ *     maximum, 10,000 by default.
  *
  * A calculator that computed a multiplier the platform rejects would be worse
  * than no calculator, which is why this one refuses sizes the platform would
@@ -43,28 +43,26 @@ import styles from './styles.module.css';
  * outside a handler.
  */
 
+// Labels as the copy page words them (metastation-frontend src/lib/providerCopy.js
+// COPY_MODES). Since the stack upgrade a fixed amount is DOLLARS of the coin per
+// copy — copyTradingService.calculatePositionSize divides it by the price — and
+// its floor is $1; the ceiling is the provider's own maximum (10,000 by default).
 const COPY_MODES = [
   {
-    value: 'copy_trader',
-    label: 'Copy Trader',
-    hint: "Mirror the provider's size exactly",
-  },
-  {
     value: 'fixed_ratio',
-    label: 'Fixed Ratio',
-    hint: "A percentage of the provider's size, 0.01–100",
+    label: 'A share of each trade',
+    hint: "A percentage of the provider's order size, 0.01–100",
   },
   {
     value: 'fixed_amount',
-    label: 'Fixed Amount',
-    hint: 'A flat position size per trade',
+    label: 'A fixed amount per trade',
+    hint: "This many dollars of the coin on every copy",
   },
-];
-
-const PERIODS = [
-  { value: 1, label: 'Monthly' },
-  { value: 3, label: 'Quarterly' },
-  { value: 12, label: 'Annual' },
+  {
+    value: 'copy_trader',
+    label: 'The same size as the provider',
+    hint: "The provider's own order size",
+  },
 ];
 
 function num(v) {
@@ -87,10 +85,8 @@ export default function CopyCalculator() {
   const [copyAmount, setCopyAmount] = useState('40');
   const [leverage, setLeverage] = useState('10');
   const [balance, setBalance] = useState('5000');
-  const [minCopyAmount, setMinCopyAmount] = useState('100');
   const [maxCopyAmount, setMaxCopyAmount] = useState('10000');
   const [subCost, setSubCost] = useState('49');
-  const [months, setMonths] = useState(1);
   const [tradesPerMonth, setTradesPerMonth] = useState('20');
 
   const model = useMemo(() => {
@@ -99,7 +95,6 @@ export default function CopyCalculator() {
     const amount = num(copyAmount);
     const lev = num(leverage) || 1;
     const bal = num(balance);
-    const minAmt = num(minCopyAmount);
     const maxAmt = num(maxCopyAmount);
 
     const errors = [];
@@ -121,11 +116,11 @@ export default function CopyCalculator() {
 
     if (copyMode === 'copy_trader') {
       yourSize = pSize;
-      sizeNote = "Copy Trader mirrors the provider's size, whatever it is.";
+      sizeNote = "The same size as the provider, whatever it is.";
     } else if (copyMode === 'fixed_ratio') {
       if (amount === null || amount < 0.01 || amount > 100) {
         errors.push(
-          'Fixed Ratio takes 0.01–100. Above 100 fails validation: you cannot ' +
+          'A share of each trade takes 0.01–100. Above 100 is refused: you cannot ' +
             "copy more than the provider's own size.",
         );
       } else if (pSize !== null) {
@@ -133,19 +128,13 @@ export default function CopyCalculator() {
         sizeNote = `${fmt(amount, 2)}% of the provider's ${fmt(pSize, 4)}.`;
       }
     } else if (copyMode === 'fixed_amount') {
-      if (amount === null || amount <= 0) {
-        errors.push('Fixed Amount must be greater than zero.');
-      } else {
-        yourSize = amount;
-        sizeNote = 'Fixed Amount uses the figure you set as the position size.';
-        if (minAmt !== null && amount < minAmt) {
-          errors.push(
-            `Below this provider's minimum of ${fmt(minAmt)}. The settings form ` +
-              'rejects it before it reaches the API.',
-          );
-        }
+      if (amount === null || amount < 1) {
+        errors.push('A fixed amount per trade is at least 1 USD.');
+      } else if (px !== null && px > 0) {
+        yourSize = amount / px;
+        sizeNote = `${fmt(amount)} USD of the coin, rounded down to the venue's size step.`;
         if (maxAmt !== null && amount > maxAmt) {
-          errors.push(`Above this provider's maximum of ${fmt(maxAmt)}.`);
+          errors.push(`Above this provider's maximum of ${fmt(maxAmt)} USD.`);
         }
       }
     }
@@ -172,11 +161,12 @@ export default function CopyCalculator() {
       }
     }
 
-    /* Subscription economics. The cost is per PERIOD and does not scale with
-       size, so the smaller the allocation the larger the hurdle. */
+    /* Subscription economics. A signal provider's price is MONTHLY, prepaid,
+       and does not scale with size, so the smaller the allocation the larger
+       the hurdle. */
     const cost = num(subCost);
     const trades = num(tradesPerMonth);
-    const perMonth = cost !== null && months ? cost / months : null;
+    const perMonth = cost;
     const costPerTrade =
       perMonth !== null && trades !== null && trades > 0 ? perMonth / trades : null;
     const breakEvenPct =
@@ -206,17 +196,15 @@ export default function CopyCalculator() {
     copyAmount,
     leverage,
     balance,
-    minCopyAmount,
     maxCopyAmount,
     subCost,
-    months,
     tradesPerMonth,
   ]);
 
   const amountLabel =
     copyMode === 'fixed_ratio'
-      ? 'Copy amount (% of provider)'
-      : 'Copy amount (position size)';
+      ? 'Share of each trade (%)'
+      : 'Amount per trade (USD)';
 
   return (
     <div className={styles.calculator}>
@@ -272,7 +260,7 @@ export default function CopyCalculator() {
               <small>
                 {copyMode === 'fixed_ratio'
                   ? '0.01 to 100 — never above the provider'
-                  : `Between this provider's minimum and maximum`}
+                  : `At least 1, up to this provider's maximum`}
               </small>
             </label>
           )}
@@ -301,28 +289,16 @@ export default function CopyCalculator() {
           </label>
 
           {copyMode === 'fixed_amount' && (
-            <>
-              <label className={styles.field}>
-                <span>Provider minimum</span>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  value={minCopyAmount}
-                  onChange={(e) => setMinCopyAmount(e.target.value)}
-                />
-                <small>Set by the provider; 100 by default</small>
-              </label>
-              <label className={styles.field}>
-                <span>Provider maximum</span>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  value={maxCopyAmount}
-                  onChange={(e) => setMaxCopyAmount(e.target.value)}
-                />
-                <small>Set by the provider; 10,000 by default</small>
-              </label>
-            </>
+            <label className={styles.field}>
+              <span>Provider maximum (USD)</span>
+              <input
+                type="number"
+                inputMode="decimal"
+                value={maxCopyAmount}
+                onChange={(e) => setMaxCopyAmount(e.target.value)}
+              />
+              <small>Set by the provider; 10,000 by default</small>
+            </label>
           )}
         </div>
       </fieldset>
@@ -331,23 +307,14 @@ export default function CopyCalculator() {
         <legend>What the subscription costs</legend>
         <div className={styles.grid}>
           <label className={styles.field}>
-            <span>Subscription price</span>
+            <span>Monthly price</span>
             <input
               type="number"
               inputMode="decimal"
               value={subCost}
               onChange={(e) => setSubCost(e.target.value)}
             />
-          </label>
-          <label className={styles.field}>
-            <span>Billing period</span>
-            <select value={months} onChange={(e) => setMonths(Number(e.target.value))}>
-              {PERIODS.map((p) => (
-                <option key={p.value} value={p.value}>
-                  {p.label}
-                </option>
-              ))}
-            </select>
+            <small>A signal provider&rsquo;s price, prepaid each month</small>
           </label>
           <label className={styles.field}>
             <span>Trades per month</span>

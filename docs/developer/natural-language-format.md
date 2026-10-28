@@ -6,54 +6,54 @@ sidebar_label: Natural Language Format
 
 # Natural Language Format
 
-MetaStation's parser accepts human-readable text signals in addition to JSON. This is ideal for TradingView alerts and manual Telegram signal channels.
+MetaStation's parser accepts human-readable text signals in addition to JSON — the kind Telegram
+channels post. Send them as `text/plain`, or inside a JSON `{ "message": "…" }` wrapper.
+
+:::tip[Test before you trust it]
+Send any message with `?dryRun=1` on the URL and the response shows what it was read as — and what
+would be traded — without placing anything.
+:::
 
 ---
 
 ## Basic format
 
 ```
-Buy BTCUSDC at market
-Size: 2% of wallet
-Leverage: 10x Isolated
-Take Profit: 50000
-Stop Loss: 40000
+Buy BTCUSDT at market
+Size: 2%
+Leverage: 10x
+Isolated Margin
+TP: 50000
+SL: 40000
 ```
 
 ---
 
 ## Supported signal patterns
 
-### Open long (buy)
-
-```
-Buy BTCUSDC at market
-Size: 2%
-Leverage: 10x
-SL: 40000
-TP: 50000
-```
+### Open long
 
 ```
 Long BTC/USDT
 Entry: Market
-Size: $300
+Size: 300 USD
 TP1: 48000
 TP2: 51000
 SL: 41000
 ```
 
 ```
-LONG ETHUSDC 5x Isolated
-2% of wallet
+Buy ETHUSDT
+Size: 2%
+Cross 5x
 Stop: 2800
 Target: 3500
 ```
 
-### Open short (sell)
+### Open short
 
 ```
-Short BTCUSDC at market
+Short BTCUSDT at market
 Size: 1%
 Leverage: 5x
 SL: 47000
@@ -63,47 +63,47 @@ TP: 42000
 ### Close position
 
 ```
-Close BTC long
+Close BTCUSDT
 ```
 
-```
-Close all ETHUSDC positions
-```
+A close closes the **whole** position in that market.
+
+### Cancel resting copy entries
 
 ```
-Close 50% of BTCUSDC long
-```
-
-### Update TP/SL
-
-```
-Update BTC
-New TP: 51000
-New SL: 44000
+Cancel BTCUSDT
 ```
 
 ---
 
 ## Recognized keywords
 
-**Actions:** `Buy`, `Sell`, `Long`, `Short`, `Close`, `Update`, `Reverse`
+| What | Words |
+|---|---|
+| **Action** | `open`, `close`, `cancel`. A message with no action word but a side is an **open** |
+| **Side** | `Buy`, `Long`, `Sell`, `Short`, `Enter long`, `Enter short` |
+| **Size** | A number after `Size`, `Qty`, `Quantity` or `Amount` — with `%`, `USD`, or a token symbol |
+| **Leverage** | `Leverage 10`, `Lev 10`, `10x` or `x10` |
+| **Margin mode** | `Isolated` or `Cross` **followed by** `Margin` or a leverage (`Cross 5x`) |
+| **Entry price** | `at`, `@`, `Entry`, `Entry price`, `Price` — a range (`Entry: 120-121`) is accepted |
+| **Take profit** | `TP`, `Target`, `Take Profit`, `TP1` … `TP10`, `Target 1:` |
+| **Stop loss** | `SL`, `Stop Loss`, `Stop`, `Stoploss` |
+| **Time in force** | `TIF: GTC`, `IOC`, `FOK`, `Post-Only` |
+| **Market** | `spot`, `futures` |
 
-**Size:** `Size`, `Quantity`, `Amount`, `Position Size`, or just a number with `%`, `USD`, `$`, or token symbol
-
-**Leverage:** `Leverage`, `Lev`, or a number followed by `x` (e.g., `10x`)
-
-**Margin mode:** `Isolated`, `Cross`
-
-**Take Profit:** `TP`, `Take Profit`, `Target`, `TP1`, `TP2`, ..., `TP10`
-
-**Stop Loss:** `SL`, `Stop Loss`, `Stop`, `Stop Price`
+:::warning[Sizes that look right and are not]
+- **`$300` is read as 300 tokens**, not dollars. Write `Size: 300 USD`.
+- A size needs its word. `2% of wallet` on its own line carries **no size** — write `Size: 2%`.
+  With no size, the slot's Trade Setting default size is used.
+- `Close 50% of BTCUSDT` closes the **whole** position — partial closes need JSON.
+:::
 
 ---
 
-## Multiple Take Profits in natural language
+## Multiple take profits
 
 ```
-Buy BTCUSDC market
+Buy BTCUSDT market
 Size: 2%
 Leverage: 10x
 TP1: 48000 (30%)
@@ -112,26 +112,30 @@ TP3: 52000 (30%)
 SL: 41000
 ```
 
+The percentages are shares of the position and **must add up to 100%**. A take-profit's share needs
+its `%` sign.
+
 ---
 
-## Parser behavior
+## Parser behaviour
 
 - **Case insensitive** — `buy`, `BUY`, `Buy` all work
-- **Symbol formats** — `BTCUSDC`, `BTC/USDT`, `BTC-USDT` are all accepted
-- **Missing fields** — If a required field (action, symbol, side) cannot be parsed, the signal is rejected and logged as a parse error. No trade is executed.
-- **Ambiguous signals** — The parser does not guess. If the signal is unclear, it fails safely.
+- **Symbol formats** — `BTCUSDT`, `BTC/USDT`, `BTC-USDT`, `#BTCUSDT`. A bare coin needs its quote
+  currency or a side word next to it
+- **Missing fields** — if the symbol or the side of an opening cannot be read, the signal is
+  rejected with a `400` that lists what was found and what is missing. No trade is executed
+- **No guessing** — an ambiguous message fails safely
+- **Trigger orders** — a post written as a stop or trigger entry is refused
 
 ---
 
 ## Limitations vs JSON
 
-Natural language is convenient but less precise. For complex configurations — multiple TPs with specific sizes, SLX, stop limit orders — use the [JSON format](/docs/developer/json-format) for reliability.
+Natural language is convenient but less precise. Use [JSON](/docs/developer/json-format) for:
 
-Use natural language for:
-- Simple long/short signals from TradingView text alerts
-- Telegram channel signals in text form
-
-Use JSON for:
-- Programmatic bots
-- Strategies with multi-TP and SLX
+- Partial closes, and target positions
+- Take-profit ladders with exact token amounts
+- Stop-limit stops
 - Any automated system that generates signals
+
+Use natural language for simple long/short signals and Telegram channel posts.

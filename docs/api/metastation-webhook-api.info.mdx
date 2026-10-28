@@ -1,7 +1,7 @@
 ---
 id: metastation-webhook-api
 title: "MetaStation Webhook API"
-description: "Execute trades on your MetaStation account via HTTP POST webhooks."
+description: "Execute trades on one of your MetaStation account slots via HTTP POST webhooks."
 sidebar_label: Introduction
 sidebar_position: 0
 hide_title: true
@@ -16,7 +16,7 @@ import Export from "@theme/ApiExplorer/Export";
 
 <span
   className={"theme-doc-version-badge badge badge--secondary"}
-  children={"Version: 1.0"}
+  children={"Version: 2.0"}
 >
 </span>
 
@@ -29,11 +29,57 @@ import Export from "@theme/ApiExplorer/Export";
 
 
 
-Execute trades on your MetaStation account via HTTP POST webhooks.
+Execute trades on one of your MetaStation account slots via HTTP POST webhooks.
 Signals can be sent in JSON or natural language format.
+
+Every slot has its own webhook URL. Its verification mode (Automation page)
+decides what else a request must carry: nothing (URL only), an
+X-MetaStation-Signature header (Signed requests), or a TradingView source
+address (Source-address check).
 
 
 <div
+  style={{"marginBottom":"2rem"}}
+>
+  <Heading
+    id={"authentication"}
+    as={"h2"}
+    className={"openapi-tabs__heading"}
+    children={"Authentication"}
+  >
+  </Heading><SchemaTabs
+    className={"openapi-tabs__security-schemes"}
+  >
+    <TabItem
+      label={"API Key: signedRequest"}
+      value={"signedRequest"}
+    >
+      
+      
+      Required when the slot uses Signed requests. Format t=UNIX_SECONDS,v1=HEX, where HEX is the HMAC-SHA256 of the unix time, a dot and the raw body, with the slot's signing key. t must be within 300 seconds of now, and a signature is accepted once.
+      
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              <th>
+                Security Scheme Type:
+              </th><td>
+                apiKey
+              </td>
+            </tr><tr>
+              <th>
+                Header parameter name:
+              </th><td>
+                X-MetaStation-Signature
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </TabItem>
+  </SchemaTabs>
+</div><div
   style={{"display":"flex","flexDirection":"column","marginBottom":"var(--ifm-paragraph-margin-bottom)"}}
 >
   <h3

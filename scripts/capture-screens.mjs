@@ -108,7 +108,9 @@ if (dry) {
 }
 
 const results = [];
-const browser = await chromium.launch({ headless: true, channel: 'chrome' });
+// SCREENS_CHANNEL='' uses Playwright's bundled Chromium (the official Playwright image has no Chrome).
+const channel = process.env.SCREENS_CHANNEL ?? 'chrome';
+const browser = await chromium.launch({ headless: true, ...(channel ? { channel } : {}) });
 
 // The AppKit init failure on a localhost origin is racy: the same route lands
 // on the error boundary on one run and renders fine on the next. One retry
@@ -169,7 +171,11 @@ for (const shot of auto) {
 
     const pathname = new URL(req.url()).pathname;
     const last = pathname.split('/').filter(Boolean).pop() || '';
-    const isRead = READ_LIKE.test(last) || READ_NOUNS.test(last);
+    // Reads that a name test cannot recognise, listed by path. Each is read-only on the
+    // server: deposit/options returns the account's deposit choices and writes nothing.
+    const READ_PATHS = [/\/hyperliquid\/deposit\/options$/];
+    const isRead =
+      READ_LIKE.test(last) || READ_NOUNS.test(last) || READ_PATHS.some((re) => re.test(pathname));
     // Explicit denies win over a read-looking name, for the verbs that cost
     // something irreversible.
     const isMutation = /(create|regenerate|delete|remove|cancel|place|submit|transfer|withdraw|deposit|update|enable|disable|activate|buy|sell|pay)/i.test(last)

@@ -2,7 +2,7 @@
 id: risk-free-trade-with-slx
 title: Make a Trade Risk-Free with SLX
 sidebar_label: Risk-Free Trade with SLX
-description: Move your stop loss to breakeven automatically once the first take profit fills, then walk it up behind each level — configured once, in the UI or in the payload.
+description: Move your stop loss to breakeven automatically once the first take profit fills, then walk it up behind each level — configured once, on the order ticket.
 keywords: [stop loss to breakeven, automatic breakeven stop, trailing stop loss crypto, slx stop loss, lock in profits automatically]
 ---
 
@@ -35,6 +35,12 @@ does not work at 4am, which is when it matters.
 
 **SLX (Stop Loss X)** does it automatically, and it is what distinguishes it from a plain trailing
 stop: a trailing stop follows *price*, SLX follows *your take-profit events*.
+
+:::warning[Set SLX on the order ticket]
+SLX is set in the trading terminal's order ticket. The `stopLossX` objects below show its settings,
+but a **webhook** signal's SLX is accepted and not placed yet — over the webhook, send a plain stop
+loss with the signal and add SLX on the ticket.
+:::
 
 ---
 
@@ -121,7 +127,9 @@ every print, including the single-wick outliers a smoothed price exists to ignor
 
 ## The complete automated entry
 
-Everything together — entry, ladder, stop, and SLX — in one payload:
+Everything together — entry, ladder, stop, and SLX — as one configuration. Until webhook signals
+place SLX, enter this on the order ticket; the same payload over the webhook places the entry, the
+ladder and the stop:
 
 ```json
 {

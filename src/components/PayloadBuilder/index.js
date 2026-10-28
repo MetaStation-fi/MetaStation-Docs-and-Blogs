@@ -36,10 +36,12 @@ import styles from './styles.module.css';
  * during the static build, so nothing here may touch window outside a handler.
  */
 
+// `update` is not offered: on the upgraded platform it does not modify an open
+// position's protection (it reaches no amend path on any venue), so a builder
+// that emitted it would hand readers a payload that does not do what it says.
 const ACTIONS = [
   {value: 'open', label: 'Open a position'},
   {value: 'close', label: 'Close a position'},
-  {value: 'update', label: 'Update TP / SL'},
 ];
 
 const SIZE_TYPES = [
@@ -48,12 +50,13 @@ const SIZE_TYPES = [
   {value: 'percentage', label: '% of balance', hint: 'Compounds as the account grows'},
 ];
 
+// SLX, the trailing stop and the break-even stop are configured on the order
+// ticket. The webhook parser accepts their fields but no venue path places them
+// for a webhook signal yet, so they are not offered here; the code that emits
+// them is kept for the day they are.
 const SL_STRATEGIES = [
   {value: 'none', label: 'None'},
   {value: 'simple', label: 'Simple stop loss'},
-  {value: 'slx', label: 'SLX — stop loss with activation'},
-  {value: 'trailing', label: 'Trailing stop loss'},
-  {value: 'breakeven', label: 'Break-even stop'},
 ];
 
 function n(v) {

@@ -2,8 +2,8 @@
 id: funding-and-settlement
 title: Funding and Settlement
 sidebar_label: Funding & Settlement
-description: Where money goes when you deposit — bridging, the Funding Wallet, USDC as margin, how profit and loss settle, and why withdrawals are gated harder than anything else.
-keywords: [crypto bridge deposit, usdc margin, gasless trading, smart contract wallet, cross chain deposit]
+description: Where money goes when you deposit — the Funding Wallet, activation, USDC as margin, how profit and loss settle, what transfers cost, and how withdrawals are confirmed.
+keywords: [crypto bridge deposit, usdc margin, funding wallet, cross chain deposit, crypto withdrawal security]
 ---
 
 import ArticleSchema from '@site/src/components/ArticleSchema';
@@ -11,107 +11,112 @@ import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
   headline="Funding and Settlement on MetaStation"
-  description="Bridging, the Funding Wallet, USDC as margin, how profit and loss settle, and why withdrawals are gated hardest."
+  description="The Funding Wallet, activation, USDC as margin, how profit and loss settle, transfer costs, and how withdrawals are confirmed."
   section="Concepts"
 />
 
 # Funding and Settlement
 
-Money entering a MetaStation Account takes one path regardless of which chain or asset it started
-as. Following it end to end explains both the convenience and the one place where waiting is
-normal.
+Money entering a MetaStation Account follows one of two paths, and the Deposit page always names
+which wallet you are sending to. Following them end to end explains both the convenience and the
+one place where waiting is normal.
 
 ```mermaid
 graph LR
-  A["Asset on any of 56 networks"] --> B["Cross-chain routing"]
-  B --> C["Funding Wallet on Arbitrum"]
-  C --> D["Converted to USDC"]
-  D --> E["Trading margin"]
-  E --> F["PnL settles in USDC"]
-  F --> G["Withdraw — 2FA + email code"]
+  A["USDC on Arbitrum One, sent by hand"] --> C["Funding Wallet"]
+  B["A coin on an EVM network, Solana or TON, from a connected wallet"] --> R["Cross-chain route"] --> C
+  C --> D["Trading balance (USDC margin)"]
+  N["BTC, ETH, SOL… on their own network"] --> T["Trading Account (after activation)"]
+  D --> W["Withdraw — one 6-digit code"]
+  T --> W
 ```
 
 ---
 
-## One destination, many origins
+## Two wallets per account
 
-You can send from **56 blockchain networks** — Ethereum, Arbitrum, Optimism, Base, Polygon, BNB Smart
-Chain, Avalanche, Solana, TRON, TON and more, both EVM and non-EVM — holding whatever asset you
-already have. Bridging and conversion happen for you, and the result is USDC in your Funding
-Wallet.
+| Wallet | What it is | What it takes |
+|---|---|---|
+| **Funding Wallet** | A wallet on Arbitrum One that MetaStation creates with your account. No seed phrase to store | USDC on Arbitrum One sent by hand, or a bridged deposit from a connected wallet |
+| **Trading Account** | The balance you trade from — USDC margin, plus spot coins | After activation: BTC, ETH, SOL and other coins straight on their own network |
 
-The practical consequence is that you do not need to acquire a specific asset on a specific chain
-before you can start. Whatever you hold, wherever it is, is fundable.
+You move money between them, and between your own accounts, with **Transfer** on the Wallet page.
 
-→ [Cross-Chain Exchange — all 56 networks](/docs/wallet/cross-chain-exchange) · [Fund Your Account](/docs/getting-started/fund-account)
+→ [Deposit](/docs/wallet/deposit) · [Cross-Chain Deposits](/docs/wallet/cross-chain-exchange)
 
 ---
 
-## The Funding Wallet
+## Activation: the first deposit
 
-A smart-contract wallet on Arbitrum, created with your MetaStation Account. It holds the USDC
-that backs your trading.
+A new MetaStation Account is activated by its **first deposit into the Funding Wallet**. That
+deposit:
 
-Three properties follow from it being a smart-contract wallet rather than a key you manage:
+- must meet the **minimum** shown on the Deposit page
+- pays a **one-time activation fee**, also shown there before you send
+- moves the rest into your trading balance automatically
 
-- **No seed phrase.** Access is tied to your MetaStation login, so account security *is* wallet
-  security. This is precisely why 2FA is not optional for withdrawals.
-- **No gas token.** Gas on your trades is abstracted away — you never hold ETH just to place an
-  order, and a trade cannot fail because you were short of gas.
-- **Not pooled.** Your balance sits in a wallet associated with your account rather than in one
-  omnibus balance shared across all users.
+After that, press **Enable Trading** on the account once, and you can trade. Both steps are once
+per account, never per trade.
 
 ---
 
 ## USDC as the unit of account
 
-Everything settles in USDC. Margin is USDC, profit and loss are USDC, fees are USDC.
+Margin is USDC, profit and loss on perpetual futures are USDC, and fees are USDC. A position closed
+at +$180 adds $180 to the balance.
 
-That single choice removes a whole category of confusion. There is no separate collateral asset
-whose price movement quietly changes your margin health while a position is open, and no
-conversion step between closing a trade and knowing what it made. A position closed at +$180 adds
-$180 to the balance.
+Spot is the exception by nature: buying BTC on spot, or depositing BTC into the Trading Account,
+leaves you holding BTC.
 
 For perpetual futures, funding payments also settle in USDC and accrue against the position while
-it is open — a cost of holding, independent of whether price moved your way.
+it is open — a cost of holding, independent of whether price moved your way. **History → Funding
+Payments** lists them, and the futures header shows the predicted funding for the next hour.
+
+---
+
+## What moving money costs
+
+| Movement | Cost |
+|---|---|
+| **Placing and cancelling orders** | No network gas. You never hold a gas token to trade |
+| **Activation** | The one-time fee, taken from the first deposit |
+| **Transfers** between wallets and accounts | A small network fee in USDC, shown before you confirm |
+| **Withdrawals** | A flat withdrawal fee plus a network fee, shown on the quote |
+| **Bridged deposits** | The route's cost is in the quote; the source chain's gas is paid from your own wallet |
 
 ---
 
 ## Deposits take as long as the chain does
 
-The step that takes time is the bridge, and the variable is the source network, not MetaStation.
-A deposit is not lost while it is in transit; it is confirming.
+The step that takes time is confirmation on the **source** network, not MetaStation. A deposit is
+not lost while it is in transit; it is confirming.
 
 If a deposit has not appeared:
 
 1. Confirm the transaction is finalised on the **source** chain — that is where the wait is.
-2. Confirm you sent the asset and network you selected in the deposit screen. Sending a different
-   asset, or the right asset on a different chain, is the common cause of a deposit that never
-   arrives.
-3. Check the deposit screen for status before contacting support.
+2. If you sent by hand, confirm it was **USDC on Arbitrum One**. Anything else sent by hand to the
+   Funding Wallet address is lost.
+3. Look under **Deposits in progress** on the Deposit page. A bridged deposit delayed on the network
+   can be sent back with **Refund delayed deposit**.
 
 ---
 
-## Withdrawals are gated hardest, on purpose
+## Withdrawals are confirmed by a code
 
-A withdrawal is the only action that moves value off the platform irreversibly, so it requires
-**two independent codes from two separate channels**:
+A withdrawal is the only action that moves value off the platform irreversibly, so every one is
+confirmed with a **6-digit code**, tied to that withdrawal's destination and amount, valid for 5
+minutes and usable once.
 
-1. Your **Google Authenticator** code — something generated on your device.
-2. A code emailed to your **registered address** — something delivered to an account you control.
-
-An attacker with your password alone has neither. One with your password *and* your phone still
-needs your email.
-
-This also means 2FA must be set up before your first withdrawal — not as a recommendation, but as
-a hard requirement. Setting it up when you are already trying to withdraw is the worst time.
+The code comes from your **authenticator app** if you have one turned on. Otherwise it is sent by
+**e-mail** (or by our **Telegram bot**, for an account with no e-mail), and sent codes cover at most
+**$1,000 of withdrawals in 24 hours**. Five wrong codes lock withdrawals for 15 minutes.
 
 → [Withdrawal Security](/docs/security/withdrawal-whitelist) · [Two-Factor Authentication](/docs/security/two-factor-auth)
 
 :::note[Connected exchange slots work differently]
-Everything above describes a MetaStation Account slot. A connected Binance, ByBit or KuCoin slot
-has no Funding Wallet — the funds are your balance at that exchange, and deposits and withdrawals
-for it happen there, under that exchange's own rules.
+Everything above describes a MetaStation Account. A connected Binance, ByBit or KuCoin slot has no
+Funding Wallet — the funds are your balance at that exchange. The Deposit page shows the
+exchange's own deposit address; withdrawals are made on the exchange itself.
 :::
 
 <FAQ
@@ -119,27 +124,27 @@ for it happen there, under that exchange's own rules.
     {
       question: 'Which blockchains can I deposit from on MetaStation?',
       answer:
-        '56 blockchain networks, both EVM and non-EVM — including Ethereum, Arbitrum, Optimism, Base, Polygon, BNB Chain, Avalanche, Solana, Bitcoin, Tron, TON and XRP Ledger. Whatever asset you send is bridged and converted to USDC and credited to your Funding Wallet automatically, so you do not need to acquire a specific token on a specific chain first.',
+        'By hand, USDC on Arbitrum One into the Funding Wallet. From a connected wallet, coins on Ethereum and its Layer 2s, EVM chains, Solana and TON, bridged to the Funding Wallet as USDC. After activation, BTC, ETH, SOL and some other coins straight into the Trading Account on their own network.',
     },
     {
       question: 'Do I need ETH for gas to trade on MetaStation?',
       answer:
-        'No. The MetaStation Account is gasless by design — gas on your orders is abstracted away, so you never hold a separate gas token and a trade cannot fail because you were short of it.',
+        'No. Placing and cancelling orders costs no network gas, so you never hold a separate gas token to trade. Moving money between wallets, or withdrawing, carries a small network fee in USDC that is shown before you confirm.',
     },
     {
-      question: 'Why has my deposit not arrived yet?',
+      question: 'Is there a fee to open a MetaStation Account?',
       answer:
-        'The waiting step is the source chain, not MetaStation. Confirm the transaction is finalised on the network you sent from, and confirm you sent the asset and network you selected on the deposit screen — sending the right asset on a different chain is the most common cause of a deposit that does not appear.',
+        'The account is free to create. It is activated by its first deposit, which pays a one-time activation fee shown on the Deposit page before you send.',
     },
     {
       question: 'What do I need to withdraw funds from MetaStation?',
       answer:
-        'Two independent codes: your Google Authenticator code and a code emailed to your registered address. Both are required for every withdrawal, which means two-factor authentication must be set up before your first one — it is a hard requirement rather than a recommendation.',
+        'One 6-digit code per withdrawal: from your authenticator app if you have one, otherwise a code sent by e-mail. Codes sent by e-mail cover at most $1,000 of withdrawals in 24 hours, so turning on an authenticator app is the way to withdraw larger amounts.',
     },
     {
       question: 'Do I get a seed phrase for my MetaStation Funding Wallet?',
       answer:
-        'No. The Funding Wallet is a smart-contract wallet on Arbitrum tied to your MetaStation account rather than to a phrase you store, so there is nothing to write down or lose. The trade-off is that your account security is your wallet security, which is why two-factor authentication is required to withdraw.',
+        'No. The Funding Wallet is created for you with your MetaStation account, so there is no phrase to write down or lose. The trade-off is that your account security is your wallet security, which is why every withdrawal is confirmed with a code.',
     },
   ]}
 />

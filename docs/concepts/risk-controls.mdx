@@ -3,7 +3,7 @@ id: risk-controls
 title: Risk Controls — Every Limit That Can Stop a Trade
 sidebar_label: Risk Controls
 description: The complete set of limits that sit between a signal and a fill, which layer each one lives on, and how to decide what to set before automating anything.
-keywords: [automated trading risk management, leverage cap, symbol whitelist, max open positions, trading bot safety]
+keywords: [automated trading risk management, leverage cap, copy trading stop loss, webhook signature, trading bot safety]
 ---
 
 import ArticleSchema from '@site/src/components/ArticleSchema';
@@ -21,56 +21,92 @@ Automation removes the pause where a human would have said "that looks wrong". T
 are what replace it. They are the only thing standing between a malformed signal at 3am and your
 balance.
 
-**Every one of them is off, or unlimited, until you set it.**
+**Most of them are off until you set them.** The few that are always on are marked.
 
 ---
 
 ## The layers
 
-Limits live at four levels, and they compose — a trade must pass all of them.
+Limits live at five levels, and they compose — a trade must pass all of them.
 
 | Layer | Controls | Applies to |
 |---|---|---|
-| **Account** | 2FA, withdrawal gating | Everything |
-| **Slot** | Leverage defaults, margin mode, automation entitlement | Every trade on that slot |
-| **Channel / source** | Position size, max leverage, symbol whitelist, max open positions | Signals from that source |
+| **Account** | Authenticator, withdrawal confirmation code, dead man's switch | Everything |
+| **Slot** | **Trade Setting**: leverage cap, size cap, default size | Every signal the slot executes — webhook and Telegram |
+| **Signal source** | Webhook verification mode; Telegram sender filter; platform limits | Signals from that source |
+| **Copy subscription** | Loss stops, daily loss limit, markets and direction, position caps, take-profit and stop-loss overrides | Trades copied from one provider |
 | **Position** | Stop loss, take-profit ladder, SLX | One trade |
-
-The important consequence: a limit set on a Telegram channel does not constrain trades arriving
-by webhook on the same slot. Each source is configured separately.
 
 ---
 
-## Source-level controls
+## Slot level: Trade Setting
 
-These are the ones that matter most for automation, because they bound what an untrusted signal
-can do.
+Open **Automation → Your Webhook URLs**, and press **Trade Setting** on the slot. It caps what any
+signal on that slot can do:
 
-### Maximum leverage
+| Setting | Range | What it does |
+|---|---|---|
+| **Leverage** | 0–100× | A signal asking for more is executed **at the cap**, not rejected |
+| **Percentage of Balance (%)** | 0–100 | A signal sized above it is cut down to it |
+| **USD in Value** | 0 or more | A signal sized above it in USD is cut down to it |
+| **Use this as maximum risk setting** | On / off | Turns the caps on |
 
-Caps leverage regardless of what the signal asks for. A channel capped at 5x executes a `20x`
-signal at 5x rather than rejecting it.
+When a signal names **no size**, the slot's percentage or USD value is used as its size. A **close**
+that names no size closes the whole position.
 
-This is the highest-value single setting available. Leverage is what turns a wrong signal into a
+Leverage is the highest-value single setting available: it is what turns a wrong signal into a
 liquidation instead of a loss.
 
-### Position size
+---
 
-Fixed USD amount or percentage of wallet per signal, overriding whatever size the signal carried.
-Set this whenever the signal source is someone else's — a Telegram channel that occasionally
-posts an oversized "high conviction" call should not be able to act on that conviction with your
-balance.
+## Signal-source level
 
-### Symbol whitelist
+### Webhook verification mode
 
-Only listed pairs execute; everything else is skipped. Narrow, liquid, and deliberate beats
-broad: it protects against both a compromised source and a provider drifting into illiquid
-markets where slippage does the damage.
+Each slot's webhook URL has one of three checks, set in **Automation**:
 
-### Maximum open positions
+| Mode | What it accepts |
+|---|---|
+| **URL only** | Anyone who has the URL. Works with every sender |
+| **Signed requests** | Only requests signed with your signing key (`X-MetaStation-Signature`). Unsigned requests are refused |
+| **Source-address check** | Only requests from the published addresses of the charting alert service. For TradingView alerts, which cannot sign |
 
-Stops new signals executing once you already hold N. This is the control that contains a
-malfunctioning source — a stuck alert firing repeatedly opens one position, not forty.
+**Regenerate Secret** invalidates the old URL immediately (at most once every 24 hours). Use it the
+moment a URL has been pasted anywhere you would not paste a password.
+
+→ [Secure Your Webhook](/docs/guides/secure-your-webhook)
+
+### Telegram sender filter
+
+Each connected channel has **Who can trigger trades**: anyone who posts, channel admins only, bots
+only, or pinned messages only. Narrowing it to admins or pinned messages stops a stray reply from
+being read as a signal. A channel can also be **paused** — new signals are ignored until you resume
+it.
+
+### Always on: platform limits
+
+| Limit | What happens |
+|---|---|
+| **Stale signals** | An opening signal more than **90 seconds** old when it arrives is refused, not traded. Closes are never refused for age |
+| **Duplicates** | The same request repeated within **60 seconds** runs once |
+| **Rate limits** | Per IP and per slot. Above them the webhook answers `429` with a `Retry-After` |
+
+---
+
+## Copy-subscription level
+
+When you copy a provider, the copy settings are the controls between their trades and your
+balance:
+
+- **Stop after a loss** in USD, or a **trailing stop** on the copy's value — with a choice of what
+  happens to open positions: close them, keep them, or close them with the provider
+- A **daily loss limit**
+- **Only these / all but these** markets, and **long only / short only**
+- Caps on **open positions**, **margin per market** and **total margin**
+- **Take profit and stop loss** in ROI % or USD, applied to every copied trade
+- **Copy only trades with a stop-loss**
+
+→ [Copy Settings](/docs/social-trading/copy-settings)
 
 ---
 
@@ -106,23 +142,21 @@ hand afterwards. Anything added manually depends on you being awake:
 `marginMode: "isolated"` belongs in that payload for the same reason: it bounds the loss to the
 position rather than the account.
 
+When a signal's entry is a resting limit order, its stop and take-profits are placed **when the
+entry fills**, sized to the fill. If a stop cannot be placed, the position is closed rather than
+left unprotected.
+
 → [Order Execution](/docs/concepts/order-execution)
 
 ---
 
-## Credential controls
+## Account level: the dead man's switch
 
-The webhook URL is a bearer credential — holding it is sufficient to trade the slot. Two controls
-reduce what a leaked one is worth:
+Opt-in, per account: if MetaStation loses contact with the exchange for 5 minutes, the exchange
+cancels every resting order on the account. It protects against orders filling while we are
+unreachable — and it removes your stop-losses too.
 
-- **IP whitelist** — accept signals only from the addresses your source actually sends from. This
-  turns a leaked URL from a working key into a useless string for anyone else.
-- **Rate limit** — cap signals per minute, so a runaway or replayed sender cannot flood the slot.
-
-And one recovery: **Regenerate Secret** invalidates the old URL immediately. Use it the moment a
-URL has been pasted anywhere you would not paste a password.
-
-→ [Secure Your Webhook](/docs/guides/secure-your-webhook)
+→ [Dead Man's Switch](/docs/security/dead-mans-switch)
 
 ---
 
@@ -132,13 +166,12 @@ For a signal source you have not yet verified with real money:
 
 | Control | Starting value | Why |
 |---|---|---|
-| Max leverage | 3x–5x | Survive being wrong |
-| Position size | Fixed USD, 1–2% of balance | Constant risk, no compounding into a bad run |
-| Symbol whitelist | The 2–3 pairs you actually want | Bounds both compromise and drift |
-| Max open positions | 3 | Contains a stuck or looping source |
+| Leverage cap | 3x–5x | Survive being wrong |
+| Size cap | 1–2% of balance, or a fixed USD value | Constant risk, no compounding into a bad run |
+| Webhook mode | Signed requests, or Source-address check for TradingView | A leaked URL stops being usable |
+| Telegram sender | Channel admins only | A reply is not a signal |
 | Margin mode | Isolated | Worst case is knowable in advance |
 | Stop loss | In every payload | A position without one has no defined worst case |
-| IP whitelist | Your source's addresses | A leaked URL stops being usable |
 
 Loosen these once a source has proven itself over a real sample. Tightening them after a loss is
 the expensive order to do it in.
@@ -148,27 +181,27 @@ the expensive order to do it in.
     {
       question: 'What risk controls should I set before automating a trading strategy?',
       answer:
-        'At minimum: a maximum leverage cap, a fixed position size rather than a percentage, a symbol whitelist limited to pairs you actually want, a maximum open positions limit, isolated margin mode, and a stop loss in every signal payload. All of these are unset or unlimited by default, so an unconfigured slot places no bound on what an incoming signal can do.',
+        'At minimum: a leverage cap and a size cap in the slot’s Trade Setting, a signed or source-checked webhook, isolated margin mode, and a stop loss in every signal payload. For Telegram, limit who can trigger trades to channel admins or pinned messages.',
     },
     {
       question: 'Does a leverage cap reject a signal or reduce it?',
       answer:
-        'It reduces it. A source capped at 5x that sends a 20x signal executes at 5x rather than being rejected. A symbol whitelist behaves differently — a symbol outside the list is skipped entirely rather than executed at a smaller size.',
+        'It reduces it. A slot capped at 5x that receives a 20x signal executes at 5x rather than rejecting it. The size caps behave the same way: a signal sized above the cap is cut down to it.',
     },
     {
       question: 'What happens if someone gets my MetaStation webhook URL?',
       answer:
-        'They can execute trades on the slot that URL belongs to, because the token in the URL is the entire credential. Regenerate the secret immediately, which invalidates the old URL. An IP whitelist limits the damage in advance by making the URL unusable from any address your signal source does not send from.',
+        'With the URL only mode, they can execute trades on that slot. Regenerate the secret immediately, which invalidates the old URL. Switching the slot to Signed requests, or to the Source-address check for TradingView alerts, makes a leaked URL useless on its own.',
     },
     {
-      question: 'Do risk limits on a Telegram channel also apply to webhook signals?',
+      question: 'Are old or repeated signals executed?',
       answer:
-        'No. Limits are configured per signal source, so a cap set on a Telegram channel does not constrain webhook signals arriving on the same trading slot. Each source needs its own configuration.',
+        'No. An opening signal more than 90 seconds old when it arrives is refused (a close is never refused for age), and the same request repeated within 60 seconds runs once. Both are always on.',
     },
     {
-      question: 'How do I stop a malfunctioning signal source from opening endless positions?',
+      question: 'How do I limit losses when copying a provider?',
       answer:
-        'Set a maximum open positions limit on that source. Once you hold that many positions, further signals are not executed, so an alert that fires repeatedly opens one position instead of dozens. A rate limit on the webhook adds a second bound on how many signals can arrive per minute.',
+        'Set a stop after a USD loss or a trailing stop on the copy, a daily loss limit, and caps on open positions and margin in the copy settings. You can also restrict which markets and which direction are copied, and copy only trades that carry a stop-loss.',
     },
   ]}
 />

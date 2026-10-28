@@ -58,8 +58,8 @@ Three common shapes, and what each says:
 
 Front-loaded is the conservative default because the first level is the one most likely to fill.
 
-**Over the webhook API, each level needs an `amount` in base tokens**, and the totals must not
-exceed the order quantity — the signal is rejected otherwise. In the terminal you can enter a
+**Over the webhook API, each level needs an `amount` in base tokens**, and the totals should not
+exceed the order quantity. In the terminal you can enter a
 token amount, a USD value or a percentage.
 
 ## Step 3 — Build it in the terminal
@@ -137,23 +137,15 @@ This is the combination most people actually want.
 
 ## Adjusting a live ladder
 
-Send an `update` to change protection on an open position:
-
-```json
-{
-  "action": "update",
-  "symbol": "BTCUSDC",
-  "takeProfit": 51000,
-  "stopLoss": 44000
-}
-```
+Change a live ladder's levels, or move its stop, from the **open orders** on the trade page. Over
+the webhook, `update` does **not** modify an open position's protection — do not rely on it.
 
 <FAQ
   items={[
     {
       question: 'How many take profit levels can I set on one position?',
       answer:
-        'Up to 10. Each level is an independent order against a slice of the position, and levels that have not triggered remain open after earlier ones fill.',
+        'Up to 10 in the terminal, each at least the market’s minimum order size. Each level is an independent order against a slice of the position, and levels that have not triggered remain open after earlier ones fill.',
     },
     {
       question: 'What happens to my other take profit levels after the first one fills?',
@@ -163,7 +155,7 @@ Send an `update` to change protection on an open position:
     {
       question: 'What format do take profit levels use over the MetaStation webhook API?',
       answer:
-        'Each level is an object with a price and an amount, where amount is a number of base tokens — for example { "price": 48000, "amount": 0.003 }. Percentage strings and keywords such as "remainder" are rejected, and the total of all amounts must not exceed the order quantity. The trading terminal is more flexible and also accepts USD values and percentages.',
+        'Each level is an object with a price and an amount, where amount is a number of base tokens — for example { "price": 48000, "amount": 0.003 }. Percentage strings and keywords such as "remainder" are rejected, and the total of all amounts should not exceed the order quantity. The trading terminal is more flexible and also accepts USD values and percentages.',
     },
     {
       question: 'Does scaling out of a position increase profits?',

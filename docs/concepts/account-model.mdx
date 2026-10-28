@@ -2,7 +2,7 @@
 id: account-model
 title: The Account Model — Accounts, Slots and Wallets
 sidebar_label: Account Model
-description: How MetaStation separates the account you log into, the slots that hold trading configurations, and the Funding Wallet that holds money. Three different things that are easy to confuse.
+description: How MetaStation separates the login you sign in with, the slots that hold trading configurations, and the wallets that hold money. Three different things that are easy to confuse.
 keywords: [metastation account, trading slot, funding wallet, web3 trading account, connect binance api]
 ---
 
@@ -11,7 +11,7 @@ import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
   headline="The MetaStation Account Model — Accounts, Slots and Wallets"
-  description="How MetaStation separates the login account, trading slots, and the Funding Wallet that holds funds."
+  description="How MetaStation separates the login account, trading slots, and the wallets that hold funds."
   section="Concepts"
 />
 
@@ -23,19 +23,25 @@ feature is unavailable resolves once the distinction is clear.
 
 | Layer | What it is | How many |
 |---|---|---|
-| **Login account** | Your identity — email, password, 2FA. What you sign in with. | Exactly one |
-| **Trading slot** | One trading configuration: a venue, its balance, its settings, its automation. | One or many |
-| **Funding Wallet** | The smart-contract wallet holding the money behind a MetaStation Account slot. | One per MetaStation Account slot |
+| **Login account** | Your identity — what you sign in with: e-mail and password, Google, or Telegram, plus 2FA | Exactly one |
+| **Trading slot** | One trading configuration: a venue, its balance, its settings, its automation | One or many |
+| **Wallets** | The Funding Wallet and Trading Account behind a MetaStation Account slot | Per MetaStation Account slot |
 
 ---
 
 ## The login account
 
-One email, one password, one 2FA secret. It owns everything below it and is not itself a place
-where money sits. Compromising it compromises every slot underneath, which is why 2FA is
-required before a withdrawal can be made at all.
+It owns everything below it and is not itself a place where money sits. You can sign in with:
 
-→ [Security Setup](/docs/getting-started/security-setup)
+- **E-mail and password**
+- **Google**
+- **Continue with Telegram** — your Telegram account, or your Telegram wallet
+
+An account created with Telegram can add an e-mail and password later, so you can also sign in on
+the web without Telegram. Whatever you sign in with, turning on an **authenticator app** protects
+every sign-in and every withdrawal.
+
+→ [Create an Account](/docs/getting-started/create-account) · [Security Setup](/docs/getting-started/security-setup)
 
 ---
 
@@ -49,24 +55,30 @@ Slots come in two kinds, and the difference decides what a slot can do.
 
 ### MetaStation Account slots
 
-Native to the platform, created for you at registration. **Web3 by default** — the slot settles
-on-chain in USDC against an on-chain order book, with gas abstracted away so you never pay it.
+Native to the platform; your first one is created at registration. **Web3 by default** — it trades
+on-chain in USDC against an on-chain order book.
 
-Your first one is free and carries **every automation tool** at no cost.
+- **Every MetaStation Account slot is free** and carries **every automation tool** at no cost
+- There is no cap on how many you hold. Before you add another, each one you already have must be
+  **activated** — first deposit made, activation fee paid, **Enable Trading** done
 
 ### Connected exchange slots
 
 Binance, ByBit and KuCoin, connected with API keys you generate at that exchange. MetaStation
-holds the keys and places orders; the funds never leave the exchange. You get one free slot per
-exchange, and it is **manual** — terminal trading and copy-trading as a follower, but no
-webhooks and no Telegram-to-Trade until you buy a slot subscription from the Store.
+places orders with the keys; the funds never leave the exchange.
+
+- There is no cap on how many you add. Before you add another slot on the same exchange, every slot
+  you already have there must have **working API keys**
+- Terminal trading and following copy-trading providers work on any slot
+- **Automation** — webhooks and Telegram-to-Trade — needs a **paid plan** for that slot, bought in
+  the **Store**
 
 ```mermaid
 graph TD
-  A["Login account<br/>(email + 2FA)"] --> B["MetaStation Account slot<br/>free · all automation"]
-  A --> C["Binance slot<br/>free · manual only"]
-  A --> D["ByBit slot<br/>free · manual only"]
-  B --> E["Funding Wallet<br/>holds USDC margin"]
+  A["Login account<br/>(e-mail · Google · Telegram, + 2FA)"] --> B["MetaStation Account slot<br/>free · all automation"]
+  A --> C["Binance slot<br/>manual · automation with a plan"]
+  A --> D["ByBit slot<br/>manual · automation with a plan"]
+  B --> E["Funding Wallet + Trading Account"]
   C --> F["Funds stay at Binance"]
   D --> G["Funds stay at ByBit"]
 ```
@@ -79,23 +91,20 @@ and do not want a subscription, the MetaStation Account slot is the answer.
 
 ---
 
-## The Funding Wallet
+## The wallets behind a MetaStation Account
 
-Behind every MetaStation Account slot is a **Funding Wallet** — a smart-contract wallet created
-for you on Arbitrum. It is where deposited value lands and where your USDC trading margin lives.
+| Wallet | What it holds |
+|---|---|
+| **Funding Wallet** | Where deposits land — USDC on Arbitrum One. Created for you; no seed phrase |
+| **Trading Account** | The balance you trade from: USDC margin and spot coins |
 
-What that buys you:
+The account's **first deposit** into the Funding Wallet activates it: a one-time activation fee is
+taken and the rest moves into the trading balance. After that, **Enable Trading** once and the
+account is ready. Funds are never pooled with other users'.
 
-- **No seed phrase.** The wallet is tied to your account rather than to a phrase you must store.
-- **No gas token.** Gas on your trades is abstracted away, so you never hold ETH just to trade.
-- **Not an omnibus balance.** Your funds sit in a wallet associated with you, not pooled into one
-  exchange-wide account.
-
-Deposits from other chains are bridged into it and converted to USDC automatically, so from your
-side there is one destination regardless of what you sent or where you sent it from.
-
-Connected exchange slots have **no** Funding Wallet. Their balance is your balance at that
-exchange, and deposits and withdrawals for it happen at the exchange, not here.
+Connected exchange slots have **no** MetaStation wallets. Their balance is your balance at that
+exchange; the Deposit page shows the exchange's own address, and withdrawals are made on the
+exchange.
 
 → [Funding & Settlement](/docs/concepts/funding-and-settlement)
 
@@ -107,32 +116,34 @@ Nearly every "why can't I do this?" traces back to which slot is selected:
 
 | Symptom | Cause |
 |---|---|
-| No webhook URL for a slot | It is a free manual exchange slot. Automation needs a Store subscription |
+| No webhook URL for a slot | It is an exchange slot with no plan. Automation needs a Store plan |
 | Telegram tab shows no slot to map | Same — the target slot has no automation entitlement |
-| Deposit screen shows no address | A connected exchange slot is selected. Deposit at the exchange instead |
-| Withdrawal blocked | 2FA is not set up. It is required, not optional |
+| Orders refused on a new MetaStation Account | It is not activated or trading is not enabled yet |
+| Cannot add another MetaStation Account | An existing one is not activated yet |
+| Cannot add another exchange slot | An existing slot on that exchange has no working API keys |
+| Withdraw shows an exchange notice | Funds on a connected exchange are withdrawn on the exchange itself |
 
 <FAQ
   items={[
     {
       question: 'What is the difference between a MetaStation Account and a trading slot?',
       answer:
-        'A MetaStation Account is one type of trading slot — the native, Web3 one created for you at registration. "Slot" is the general term for any single trading configuration, which may also be a connected Binance, ByBit or KuCoin account. Your login account can hold several slots of both kinds at once.',
+        'A MetaStation Account is one type of trading slot — the native, Web3 one; your first is created at registration. "Slot" is the general term for any single trading configuration, which may also be a connected Binance, ByBit or KuCoin account. Your login account can hold several slots of both kinds at once.',
     },
     {
       question: 'Do I need my own crypto wallet to use MetaStation?',
       answer:
-        'No. A MetaStation Account slot comes with a Funding Wallet — a smart-contract wallet created for you automatically. There is no seed phrase to record and no gas token to hold, because gas on your trades is abstracted away.',
+        'No. A MetaStation Account comes with a Funding Wallet created for you, with no seed phrase to record. You only need a wallet of your own to bridge from another network, and you can also send USDC on Arbitrum One to the Funding Wallet from any exchange.',
     },
     {
       question: 'Is webhook automation free on MetaStation?',
       answer:
-        'It is free on your MetaStation Account slot, along with Telegram-to-Trade, copy trading and advanced orders. On a connected Binance, ByBit or KuCoin slot, automation requires a paid slot subscription from the Store; those slots are free for manual trading and for following copy-trading providers.',
+        'It is free on every MetaStation Account slot, along with Telegram-to-Trade, copy trading and advanced orders. On a connected Binance, ByBit or KuCoin slot, automation needs a paid plan for that slot from the Store; those slots are free for manual trading and for following copy-trading providers.',
     },
     {
       question: 'Where do my funds sit when I connect Binance to MetaStation?',
       answer:
-        'They stay at Binance. Connecting an exchange means giving MetaStation API keys that let it place orders on your behalf — no funds move to MetaStation. Deposits and withdrawals for that slot are done at the exchange itself.',
+        'They stay at Binance. Connecting an exchange means giving MetaStation API keys that let it place orders on your behalf — no funds move to MetaStation. Withdrawals for that slot are made on the exchange itself.',
     },
     {
       question: 'Can one webhook signal trade on several accounts at once?',

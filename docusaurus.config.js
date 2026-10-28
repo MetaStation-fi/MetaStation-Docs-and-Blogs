@@ -91,7 +91,7 @@ const config = {
     // pinned to its own tag so captures can be reshot without moving brand
     // artwork. <Screenshot> resolves every embed through this, so publishing a
     // new capture set is: copy to brand-assets, cut docs-v<n+1>, bump this line.
-    screensCdn: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@docs-v1/docs/screens',
+    screensCdn: 'https://cdn.jsdelivr.net/gh/MetaStation-fi/brand-assets@docs-v2/docs/screens',
   },
 
   headTags: [
@@ -233,23 +233,23 @@ const config = {
         '@type': 'SoftwareApplication',
         name: 'MetaStation',
         applicationCategory: 'FinanceApplication',
-        operatingSystem: 'Web, iOS, Android',
+        operatingSystem: 'Web, Telegram',
         url: 'https://metastation.fi',
         description:
           'Trade spot and perpetual futures from one account. Automate TradingView alerts over webhooks, execute Telegram channel signals, and copy trade providers automatically.',
         featureList: [
           'Webhook trading from TradingView or any HTTP signal source',
           'Telegram-to-Trade signal execution',
-          'Copy trading marketplace',
-          'Up to 10 take-profit levels, trailing stops and SLX',
-          'Cross-chain deposits from 56 blockchain networks',
+          'Copy trading of signal providers, fund managers, tracked strategies and indexes',
+          'Take-profit ladders, trailing stops and SLX',
+          'Cross-chain deposits from EVM networks, Solana and TON',
         ],
         offers: {
           '@type': 'Offer',
           price: '0',
           priceCurrency: 'USD',
           description:
-            'Free MetaStation Account including every automation tool. Paid slot subscriptions unlock automation on connected exchange accounts.',
+            'Free MetaStation Account including every automation tool; a one-time activation fee is taken from its first deposit. Store plans unlock automation on connected exchange accounts.',
         },
       }),
     },
@@ -574,9 +574,9 @@ const config = {
         {
           title: 'Legal',
           items: [
-            { label: 'Terms of Service', href: 'https://metastation.fi/terms' },
+            { label: 'Terms of Service', href: 'https://metastation.fi/termsofservice' },
             { label: 'Privacy Policy', href: 'https://metastation.fi/privacy' },
-            { label: 'Risk Disclaimer', href: 'https://metastation.fi/disclaimer' },
+            { label: 'Risk Disclaimer', href: 'https://metastation.fi/risk-disclosure' },
           ],
         },
       ],
