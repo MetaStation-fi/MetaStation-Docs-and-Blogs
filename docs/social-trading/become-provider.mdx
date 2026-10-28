@@ -2,8 +2,8 @@
 id: become-provider
 title: Become a Provider
 sidebar_label: Become a Provider
-description: The two kinds of provider you can register as, what each one gets at signup, and the settings that decide who can follow you and on what terms.
-keywords: [become a signal provider, become a crypto fund manager, copy trading provider, sell trading signals, provider marketplace]
+description: The two kinds of provider you can register as, the three signup steps, how you are paid, the tiers that set your follower and fee limits, and the provider hub where you run your product.
+keywords: [become a signal provider, become a crypto fund manager, copy trading provider, sell trading signals, copy trading profit share]
 ---
 
 import ArticleSchema from '@site/src/components/ArticleSchema';
@@ -11,101 +11,144 @@ import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
   headline="Become a Provider on MetaStation"
-  description="The two provider types, what each is given at signup, and the settings that govern who can follow you."
+  description="The two provider types, the signup steps, how providers are paid, the tiers, and the provider hub."
   section="Social Trading"
 />
 
 # Become a Provider
 
-Providers are listed in the marketplace and earn from followers who copy their trades. Your trades
-execute normally on your own account; followers' accounts replicate them, sized by rules the
-follower sets.
+Providers are listed in Social Trade and earn from followers who copy their trades. You trade your
+own account; each follower's copies execute in **the follower's own account**, sized and limited by
+the follower's own settings. MetaStation does not manage anyone's funds, and you never have access
+to a follower's account.
 
 ---
 
 ## First decide which kind of provider you are
 
-The signup flow asks this before anything else, because the two branches diverge immediately.
+The signup flow asks this before anything else.
 
 | | **Signal Provider** | **Fund Manager** |
 |---|---|---|
-| **You trade** | An account you already have and connect | **Your own account** — connected exchange keys or a MetaStation Account |
-| **You are paid by** | A subscription fee you set, or nothing | A **profit share**, 10%–30% |
-| **Marketplace badge** | — | **Profit-Sharing** |
-| **Best when** | You want followers to pay a flat fee for your signals | You want to be paid only when your followers make a profit |
+| **Signals come from** | A webhook or a Telegram channel | Your account's trades, copied as you make them |
+| **You trade** | Your own account | **Your own account** — connected exchange keys or a MetaStation Account |
+| **You are paid by** | A **monthly price** you set, after an optional free trial | A **share of the profit** your followers make |
+| **Followers copy into** | A MetaStation Account, or an account on your exchange | A MetaStation Account |
 
-→ [Fund Managers](/docs/social-trading/fund-managers) covers the second branch in detail.
-
-The choice is made at registration and shapes what you are issued, so it is worth being deliberate
-about rather than clicking past.
-
----
-
-## What you need before you start
-
-- A MetaStation account in good standing
-- A **master account** to nominate — the account your trades will be read from
-- A strategy you can describe in a paragraph, because the description is what followers actually
-  read
-
-Your provider profile trades on either a **ByBit** account or a **MetaStation Account**. That
-choice is made at registration alongside the provider type.
+→ [Fund Managers](/docs/social-trading/fund-managers) covers the second kind in detail.
 
 ---
 
 ## Registering
 
-1. Go to **Social Trade → Become a Provider**.
-2. **Choose your provider type** — Signal Provider or Fund Manager.
-3. Fill in the profile: display name, avatar, description, strategy name, trading style, timeframe
-   and risk level, plus any social links you want shown.
-4. Configure the terms — the section below covers what each setting does.
-5. Accept the provider terms and submit.
+{/* SCREENSHOT: provider-onboarding | Become a Provider, step 1 provider type | 1440x900 | redact: none */}
+<Screenshot id="provider-onboarding" />
 
-:::note[Your profile goes live immediately]
-There is no review queue and no waiting period. On submission your provider profile is created
-**active** and appears in the marketplace straight away. Get the description and the terms right
-before you submit rather than planning to fix them during a review that is not going to happen.
-:::
+Open **Social Trade → Provider hub** and choose **Become a provider**
+([metastation.fi/social-trade/provider/onboard](https://metastation.fi/social-trade/provider/onboard)).
+Three steps:
 
-### What each type is issued at signup
+1. **Provider Type** — Signal Provider or Fund Manager
+2. **Profile** — the account your trades are read from, a picture (under 3 MB), a nickname, a
+   description, and your strategy: its name, trading style, time frame and risk level
+3. **Pricing** — what you charge and who can follow:
 
-**Signal providers** are issued a **webhook URL and secret**, which is how your trades reach the
-platform. You can also drive signals from a bound Telegram channel or the API.
+| Setting | Signal Provider | Fund Manager |
+|---|---|---|
+| **Monthly price (USD)** | $0 (free) to $10,000 | — |
+| **Free trial (days)** | 0 to 30 | — |
+| **Performance fee (%)** | — | 0, or a whole 2–99, up to your tier's limit |
+| **Max followers** | Up to your tier's limit | Up to your tier's limit |
+| **Minimum / Maximum allocation** | The range of what a follower may bring | Same |
+| **Leverage range** | The range you tell followers you trade in | Same |
+| **Telegram Group Link** | Where you post signals | — |
+| **Master Trading Account** | — | The account you trade from |
 
-→ [Webhook Trading](/docs/automation/webhook-trading)
+Accept the terms and press **Create my provider profile**. There is no review queue: you see
+*"You're listed."* and followers can find you in the browse straight away.
 
-**Fund managers** pick the account they will trade from during signup — an exchange account
-connected with their own API keys, or a MetaStation Account. MetaStation does not create or run an
-account for you, and it never manages followers' money: each follower's copies execute in the
-follower's own account.
+**The leverage range is descriptive, not enforced.** It tells a follower how leveraged your strategy
+runs. It does not set the leverage on their copies — they set that themselves.
+
+**Your price is locked in for each subscriber.** Changing your price publishes a new version: new
+subscribers take it, and everyone already subscribed keeps the price they started on.
+
+### Invite-only products
+
+A product can be **invite only**. It stays out of the browse, and people subscribe only through an
+invite link you create in the provider hub. You can label each link and withdraw it; people who
+already subscribed through it keep their subscription.
 
 ---
 
-## The settings that govern who follows you
+## Your signals: webhook or Telegram
 
-| Setting | Default | What it does |
-|---|---|---|
-| **Maximum followers** | 100 | Stops new subscriptions once reached |
-| **Accepting followers** | On | Closes your book without delisting your profile |
-| **Minimum copy amount** | 100 | The smallest allocation you want a follower to bring |
-| **Fee type** | Free | `free`, a `fixed` fee, or a `percentage` |
-| **Subscription fee** | 0 | The amount, when fee type is not free |
-| **Leverage band** | 10× – 20× | The range you are telling followers you trade in |
+A Signal Provider's signals reach followers from:
 
-**The leverage band is descriptive, not enforced.** It tells a follower how leveraged your strategy
-runs. It does not clamp the leverage on their copied position — that is set in their own copy
-settings.
+- **Your webhook** — every slot has its own URL on the **Automation** page
+- **A Telegram channel** you connect in **Automation**
 
-**A fee of zero is a legitimate starting position.** A track record on a free profile is worth more
-than a subscription nobody buys, and the fee is editable later.
+:::warning[Real money needs a verified webhook]
+Real-money accounts can copy a product only once its webhook is **signed** or **source-checked**.
+On **URL only**, real-money followers are refused. Switch the webhook to **Signed requests** or the
+**Source-address check** in Automation.
+→ [Secure Your Webhook](/docs/guides/secure-your-webhook)
+:::
+
+---
+
+## Tiers: your follower and fee limits
+
+Every provider has a tier. It sets how many followers you can have and the highest performance fee
+you can charge:
+
+| Tier | What it takes | Followers at most | Performance fee at most |
+|---|---|---|---|
+| **New** | Under 30 days, or not graded yet | 50 | 10% |
+| **Bronze** | Grade D or better, 30+ days, max drawdown at most 50% | 200 | 15% |
+| **Silver** | Grade C or better, 90+ days, 5+ counted followers, median follower return at least 0 | 500 | 20% |
+| **Gold** | Grade B or better, 180+ days, 20+ counted followers, median follower return above 0, $50k+ copied | 1,000 | 30% |
+
+Tiers are re-checked **weekly**. A provider that qualifies higher moves up at once; one that
+qualifies lower keeps its tier for a week's grace first. You see your own tier in the provider hub;
+followers do not.
+
+---
+
+## The provider hub
+
+**Social Trade → Provider hub** ([metastation.fi/social-trade/provider](https://metastation.fi/social-trade/provider)):
+
+{/* SCREENSHOT: provider-dashboard | Provider hub dashboard | 1440x900 | redact: earnings optional */}
+<Screenshot id="provider-dashboard" />
+
+| Tab | What it is for |
+|---|---|
+| **Dashboard** | Your followers and results |
+| **Products** | Your products, and whether each is listed or invite only |
+| **Plans** | Your monthly price and free trial, and every version you have published |
+| **Invites** | Create and withdraw invite links |
+| **Settings** | **What you receive** — the MetaStation account your payments are sent to; and **copy defaults** you suggest to new followers |
+
+**Copy defaults** are suggestions — markets, leverage, position and margin caps, a daily loss limit,
+take-profit and stop-loss, trading hours, *Only trades with a stop-loss*. New followers see them when
+they subscribe and can keep or change each one.
+
+---
+
+## How you are ranked
+
+Providers are ranked by a published **0–100 score**, never by raw return. A record needs at least
+**14 days** before it is ranked. → [How Providers Are Scored](/docs/social-trading/scoring)
+
+Your return, drawdown, trade count, follower count and what your followers made are computed from
+actual trading. None of it is editable.
 
 ---
 
 ## Writing a description followers can act on
 
-The description is the only part of your profile you control that is not a number. Say what you
-trade, on what timeframe, and how you size and exit.
+Say what you trade, on what timeframe, and how you size and exit.
 
 Worth writing:
 
@@ -116,23 +159,6 @@ Not worth writing:
 
 > "I trade crypto and make consistent profits."
 
-The first tells a follower whether the strategy fits their account and their tolerance. The second
-tells them nothing and reads like every profile that has ever been abandoned after a bad month.
-
----
-
-## How you are ranked
-
-Your **rank** is your position among all active providers when they are sorted by **all-time ROI**.
-It is recalculated on a schedule, not live, so a good day shows up in the ranking later than it
-shows up in your metrics.
-
-The marketplace's leaderboards additionally require a **minimum of 10 trades** before a provider is
-eligible, so a new profile does not appear on them on the strength of a single winning trade.
-
-Everything else on your profile — return, win rate, maximum drawdown, trade count, follower count —
-is computed from your actual trading. None of it is editable.
-
 ---
 
 ## Your responsibilities
@@ -141,40 +167,36 @@ is computed from your actual trading. None of it is editable.
 Publishing a strategy is not advice, and your profile should say so. Past performance does not
 predict future results, and followers can and will lose money copying you.
 
-Inflated screenshots, guaranteed-return claims, and coordinated pump-and-dump activity are grounds
-for suspension. A provider's status can be set to inactive or suspended, which removes the profile
-from the marketplace.
+Inflated claims, guaranteed-return promises and coordinated pump-and-dump activity are grounds for
+suspension, which removes the profile from Social Trade. Anyone can report a public profile.
 :::
-
-A subscription is a recurring cost to your followers whether the month goes well or badly. That is
-the thing to keep in mind when deciding what to charge and when to close your book.
 
 <FAQ
   items={[
     {
       question: 'How do I become a copy trading provider on MetaStation?',
       answer:
-        'Go to Social Trade → Become a Provider, choose whether you are registering as a signal provider or a fund manager, complete your profile and terms, and submit. There is no review queue — the profile is created active and appears in the marketplace immediately, so the description and the terms should be right before you submit.',
-    },
-    {
-      question: 'Is there an approval process for becoming a provider?',
-      answer:
-        'No. A provider profile is created active on submission and is listed in the marketplace straight away. There is no waiting period and no manual review step. A provider profile can later be set to inactive or suspended, which removes it from the marketplace.',
+        'Open Social Trade → Provider hub → Become a provider, choose Signal Provider or Fund Manager, complete your profile and pricing, and submit. There is no review queue — the profile is listed immediately.',
     },
     {
       question: 'How much can I charge my followers?',
       answer:
-        'You set a fee type of free, a fixed amount, or a percentage, together with the amount. The default is free with a fee of zero, which is a reasonable starting position while you build a track record — the fee can be changed later. Fund managers are paid differently, through a declared profit share of 10% to 30% instead of a subscription fee.',
+        'A Signal Provider sets a monthly price from free to $10,000, with an optional free trial of up to 30 days; subscribers prepay it in the Store and keep the price they started on. A Fund Manager sets a performance fee of 0 or a whole 2–99%, capped by tier: 10% for New, 15% Bronze, 20% Silver and 30% Gold. It is taken only when a copy exits in profit.',
     },
     {
-      question: 'How are providers ranked in the marketplace?',
+      question: 'How many followers can I have?',
       answer:
-        'Rank is your position among all active providers sorted by all-time ROI, recalculated on a schedule rather than live. The marketplace leaderboards additionally require at least 10 trades before a provider is eligible, so a new profile cannot reach them on a single winning trade.',
+        'Up to your tier’s limit: 50 for a New provider, 200 Bronze, 500 Silver and 1,000 Gold. Tiers are re-checked weekly from your grade, the length of your record, and how your followers have done.',
     },
     {
-      question: 'Can I limit how many people copy my trades?',
+      question: 'Can I limit who copies my trades?',
       answer:
-        'Yes. Maximum followers caps the number of active subscriptions, defaulting to 100, and an accepting-followers switch closes your book to new subscribers without removing your profile from the marketplace. You can also set a minimum copy amount for the allocation you want followers to bring.',
+        'Yes. Set a maximum number of followers, a minimum and maximum allocation, or make the product invite only, so people can subscribe only through invite links you create and can withdraw.',
+    },
+    {
+      question: 'Why are real-money followers refused when they try to copy me?',
+      answer:
+        'Real-money accounts can copy a product only once its webhook is signed or source-checked. Switch your webhook from URL only to Signed requests, or to the Source-address check for TradingView alerts, on the Automation page.',
     },
   ]}
 />

@@ -2,8 +2,8 @@
 id: subscribe-provider
 title: Subscribe to a Provider
 sidebar_label: Subscribe to Provider
-description: What subscribing actually asks you for — the slot, the copy mode and the sizing — plus the prerequisites a MetaStation Web3 slot needs before copying can start.
-keywords: [subscribe copy trading, follow a signal provider, allocate to fund manager, copy trading slot, pause copy trading]
+description: What subscribing asks you for — the plan, the size, the account and the risk limits — plus what a MetaStation account needs before copying can start, and how pausing, stopping and cancelling behave.
+keywords: [subscribe copy trading, follow a signal provider, copy a fund manager, copy trading subscription, pause copy trading]
 ---
 
 import ArticleSchema from '@site/src/components/ArticleSchema';
@@ -11,88 +11,109 @@ import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
   headline="Subscribe to a Copy Trading Provider"
-  description="The slot, the copy mode and the sizing that subscribing asks for, and how pausing and cancelling behave."
+  description="The plan, the size, the account and the risk limits that subscribing asks for, and how pausing, stopping and cancelling behave."
   section="Social Trading"
 />
 
 # Subscribe to a Provider
 
-Subscribing is three decisions: **which slot** executes the copies, **which copy mode** sizes them,
-and **how much** you are putting behind it.
+Subscribing copies a provider's future trades into **your own account**, sized and limited by your
+own settings. MetaStation does not manage your funds, and the provider never has access to your
+account.
 
 ---
 
 ## Before you start
 
-You need a **funded trading slot** for the copies to execute on. If that slot is a
-**MetaStation Web3** account, trading has to be enabled on it first, and the subscription is
-refused with a specific message until it is:
+You need a **funded account** for the copies to execute in, and it must be one the provider can be
+copied into:
 
-| Message | What it means |
+| Provider | Can be copied into |
 |---|---|
-| *Enable trading* | Trading is not yet enabled on that slot. Press **Enable Trading** on the account once |
+| **Signal Provider** | A MetaStation Account, or an account on the provider's own exchange |
+| **Fund Manager** | A MetaStation Account |
 
-It is a one-time action on the account, not a per-subscription step.
+A tracked **Strategy** is not subscribed to: it is copied as its own single-strategy index, once
+that index is open. → [MetaStation Indexes](/docs/social-trading/indexes)
+
+A **MetaStation Account** must have trading enabled first. Until it has, the subscription is
+refused with *"Enable trading on your MetaStation account first"* — press **Enable Trading** on the
+account once. It is a one-time action, not a per-subscription step.
 
 ---
 
 ## Subscribing
 
-1. **Open the provider from the Marketplace** and press the action button — **Subscribe** on a
-   signal provider, **Allocate** on a fund manager. Both open the same copy settings.
-2. **Choose the slot** the copied trades should execute on.
-3. **Choose your copy mode and amount.** Copy Trader, Fixed Ratio (0.01%–100% of the provider's
-   size) or Fixed Amount.
-4. **Set leverage and margin mode** under Advanced Settings.
-5. **Confirm.** Copying starts from the provider's next trade.
+1. **Open the provider** from **Social Trade → Providers** and press **Subscribe** (a Signal
+   Provider) or **Copy** (a Fund Manager)
+2. **Plan** — a paid Signal Provider shows its price first (see below)
+3. **Size** — **Copy** or **Countertrade**, how each copy is sized, and the account to copy into
+4. **Risk** — leverage and margin mode, a loss limit, which markets and direction, caps, take-profit
+   and stop-loss
+5. **Confirm** — read the summary, tick the risk disclosure, and press **Subscribe**
 
-:::warning[The copy mode is permanent]
-Copy mode is fixed at subscription. The settings form ignores a change to it on an existing
-subscription — everything else stays editable. Moving between copy modes means cancelling and
-subscribing again, so it is worth being right the first time.
+You see *"Copying has started."* Copying starts with the provider's **next** trade.
+
+→ [Copy Settings](/docs/social-trading/copy-settings) explains every setting.
+
+:::warning[Fixed when you subscribe]
+**Copy or countertrade**, the **sizing mode** and the **account** cannot be changed afterwards.
+Everything else stays editable from **My copies**. To change one of the three, cancel and subscribe
+again.
 :::
 
-→ [Copy Settings](/docs/social-trading/copy-settings) covers the sizing in full.
-
-**Use a slot separate from your manual trading if you can.** Copied and hand-placed positions share
-margin, and separate slots keep the accounting legible.
+**Use an account separate from your manual trading if you can.** Copied and hand-placed positions
+share margin, and separate accounts keep the accounting legible. Your loss limit only ever counts —
+and closes — this subscription's own copies.
 
 ---
 
-## What the provider's terms mean for you
+## Paying a Signal Provider
 
-A provider's commercial terms are shown on their marketplace card and profile:
+A Signal Provider sets a **monthly price**, from free to $10,000, with an optional free trial of up
+to 30 days. The Plan step says exactly what you pay:
 
-- A **signal provider** shows a **Fee** — the subscription fee they set, which may be zero.
-- A **fund manager** shows a **Profit Share** percentage, between 10% and 30%.
+- The month is **paid ahead in the Store**, from a MetaStation Account. Copying starts once the first
+  month is paid (or straight away during a free trial)
+- **Nothing new is copied in a month that is not paid.** My copies shows **Pay in the Store** /
+  **Pay next month** when the next month is due
+- **Your price is locked in.** It stays what it was when you subscribed, even if the provider
+  changes it later
 
-Neither changes how your position is sized. Sizing is entirely your copy mode and your allocation.
+A **Fund Manager** charges no subscription. They are paid a **share of the profit** their followers
+make, taken only when a copy exits in profit, and never while the copy is below its starting value.
 
 → [Fund Managers](/docs/social-trading/fund-managers)
+
+Some products are **invite only** — you can subscribe only through the invite link the provider
+gave you.
 
 ---
 
 ## After it is running
 
-- The provider's trades replicate onto your chosen slot as they happen.
+- The provider's trades replicate onto your chosen account as they happen.
 - Only trades opened **after** you subscribe are copied. Positions the provider already held are
   not backfilled — you join mid-strategy.
-- Copied positions appear alongside your manual ones on that slot, which is the argument for
-  keeping them apart.
+- **My copies → Activity** lists each copy, including the ones that were **not copied** or **made
+  smaller**, with the reason.
 
-A subscription is **active**, **paused** or **cancelled**.
+A subscription is **Running**, **Paused**, **Stopped by your loss limit**, or **Cancelled**.
 
 ---
 
-## Pause and resume
+## Pause, resume and re-arm
 
-From **My Subscriptions**, pause next to the provider, and resume when you want it running again.
+From **My copies** ([metastation.fi/social-trade/portfolio](https://metastation.fi/social-trade/portfolio)):
 
-**Pausing stops new trades being copied. It does not close anything.** Positions already open stay
-open and remain yours to manage or close by hand.
+- **Pause** — new trades from this provider are not copied. Positions already open stay open
+- **Resume** — new trades are copied again
+- **Re-arm** — after your loss limit stopped the subscription, copying starts again and the loss
+  limit counts from now
 
-Pausing is also the only stop that exists. There is no automatic threshold that pauses copying
-after a drawdown, so if a provider is going badly, this is the action — and it is yours to take.
+Your **loss limit** and **trailing stop** stop a subscription automatically; what happens to its
+open positions — closed, kept open, or closed with the provider — is the choice you made when you
+set the limit.
 
 → [How Copy Trading Executes](/docs/concepts/copy-trading-mechanics)
 
@@ -100,42 +121,47 @@ after a drawdown, so if a provider is going badly, this is the action — and it
 
 ## Cancel
 
-Cancel from the same screen. **Existing copied positions remain open after cancellation** and must
-be closed manually — cancelling ends the copying relationship, not your exposure to what it already
-opened.
+**Cancel subscription** from the same screen. No new trades are copied. **Existing copied positions
+stay open** until you close them on the trade page — cancelling ends the copying relationship, not
+your exposure to what it already opened.
 
 ---
 
 ## Following more than one provider
 
-You can hold several subscriptions at once, on the same slot or on different ones.
+You can hold several subscriptions at once, in the same account or in different ones.
 
 Spreading across several providers only diversifies if they are actually trading differently. Check
-whether they take the **same symbols in the same direction** — several subscriptions onto one
-correlated bet is a concentrated position wearing a diversified costume, and it is the failure mode
-that shows up most often.
+whether they take the **same markets in the same direction** — several subscriptions onto one
+correlated bet is a concentrated position wearing a diversified costume. The browse page flags
+providers that trade **the same basket as others**.
 
 <FAQ
   items={[
     {
       question: 'What do I need before I can subscribe to a provider?',
       answer:
-        'A funded trading slot for the copied trades to execute on. If that slot is a MetaStation Web3 account, trading must be enabled on it first (Enable Trading) — the subscription is refused with a specific message until it is. It is a one-time action on the account rather than a per-subscription step.',
+        'A funded account the provider can be copied into: a MetaStation Account, or for a Signal Provider an account on that provider’s own exchange. A MetaStation Account needs Enable Trading done once first.',
     },
     {
-      question: 'Can I change my copy mode after subscribing?',
+      question: 'How do I pay for a signal provider?',
       answer:
-        'No. Copy mode is fixed at subscription, and the settings form ignores a change to it on an existing subscription. Leverage, margin mode and the other settings stay editable. To move between copy modes you cancel the subscription and subscribe again.',
+        'A signal provider’s monthly price is paid ahead in the Store, from a MetaStation Account. Copying starts once the first month is paid, or straight away during a free trial, and nothing new is copied in a month that is not paid. Your price stays what it was when you subscribed.',
     },
     {
-      question: 'What happens to my open positions if I pause copying?',
+      question: 'Can I change my copy settings after subscribing?',
       answer:
-        'Nothing. Pausing stops new trades being copied to your account but does not close positions already open — those remain yours to manage or close by hand. Pausing is also the only stop available, because no automatic threshold pauses copying after a drawdown.',
+        'Yes, from My copies → Edit copy settings: the size, leverage, filters, caps and protection. Copy or countertrade, the sizing mode and the account are fixed; to change those you cancel and subscribe again.',
+    },
+    {
+      question: 'Can copying stop automatically if a provider loses money?',
+      answer:
+        'Yes. Set a loss limit in USD, or a trailing stop, when you subscribe. It counts this subscription’s copies only, and when it is reached copying stops and the open copies are closed, kept, or closed with the provider, as you chose. The subscription stays stopped until you re-arm it.',
     },
     {
       question: 'What happens to my positions when I cancel a subscription?',
       answer:
-        'They stay open. Cancelling ends the copying relationship but does not close the positions it already opened, so those must be closed manually. Cancelling is not an exit from the market exposure you already have.',
+        'They stay open. Cancelling ends the copying relationship but does not close the positions it already opened, so those must be closed on the trade page.',
     },
     {
       question: 'Does subscribing copy the provider’s existing open positions?',

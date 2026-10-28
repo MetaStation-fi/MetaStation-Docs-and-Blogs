@@ -1,0 +1,103 @@
+---
+id: indexes
+title: MetaStation Indexes
+sidebar_label: Indexes
+description: MetaStation indexes copy a basket of scored strategies into your own account by fixed, published rules. What an index is, how to read one, single-strategy indexes, and how allocating works.
+keywords: [copy trading index, crypto strategy index, smart following, copy trading basket, single strategy index]
+---
+
+import FAQ from '@site/src/components/FAQ';
+
+# MetaStation Indexes
+
+An **index** copies a set of scored strategies into **your own account**, by fixed rules that are
+published on the index's page. Instead of choosing one trader, you allocate to the rules.
+
+:::note[What an index is, and is not]
+MetaStation places an index's orders in your account by the rules shown on its page. **It does not
+manage your account.** Whether those orders fit your risk appetite is your decision.
+:::
+
+Browse them at **Social Trade → Indexes** ([metastation.fi/social-trade/indexes](https://metastation.fi/social-trade/indexes)).
+You can read every index signed out.
+
+---
+
+## Reading an index
+
+Each index page shows:
+
+| Section | What it tells you |
+|---|---|
+| **Performance** | The index's record, with **Max drawdown** next to the return |
+| **Composition** | The strategies copied, and **How your capital is split** between them |
+| **Score, risk and protection** | Risk and return figures, and the protection the index applies |
+| **Rules and precautions** | **The rules this index follows**, and **What MetaStation does on every order** |
+| **Roster changes** | When strategies joined or left, and why |
+| **Performance fee** | What is charged, if anything. *No profit, no fee* |
+
+**Compare** puts indexes side by side, and **How the score works** explains how the strategies in
+them were chosen. → [How Providers Are Scored](/docs/social-trading/scoring)
+
+---
+
+## Single-strategy indexes
+
+A tracked **strategy** is copied as its own index — a **single-strategy index**. A strategy opens to
+copying this way once it has finished its time tracked on paper and still passes the checks. Until
+then its profile says *"Not open to copy yet"* and points to the list of single-strategy indexes
+that are open.
+
+---
+
+## Allocating
+
+Allocating copies the index into one of your MetaStation Accounts:
+
+1. Open the index and press **Allocate**
+2. Enter the **Amount (USD)** and pick the account it comes **From**
+3. Choose a **Risk profile**, and adjust the settings if you want
+4. Read the **Preview** — what would be opened, and anything that would not be copied
+5. **Confirm**. You see *"Your allocation is running."*
+
+Each index page says whether allocating is open for it. Where it is not yet, the page says
+*"Allocating to indexes is not open yet."*
+
+### After you allocate
+
+From **My copies → Allocations**:
+
+- **Adjust protection** — tighten or loosen the allocation's protection levels
+- **Stop** — copying stops, by the rules shown on the index page
+
+### Try it on paper first
+
+Where it is offered, **Try on paper** runs an index with paper money — no real orders — so you can
+watch how it behaves before you commit. A paper allocation can later be **converted to real**.
+
+---
+
+## Indexes and your own limits
+
+An index applies your stop-loss, leverage and position-size limits to every copied order. An order
+can be made smaller, or skipped, by those limits; **My copies → Activity** says which, and why.
+
+<FAQ
+  items={[
+    {
+      question: 'Does MetaStation manage my money in an index?',
+      answer:
+        'No. An index places orders in your own account by the fixed rules shown on its page. MetaStation does not manage your account, and whether those orders fit your risk appetite is your decision. Your money stays in your account and you can stop at any time.',
+    },
+    {
+      question: 'What is a single-strategy index?',
+      answer:
+        'The way one tracked strategy is opened to copying. Once a strategy has finished its time tracked on paper and still passes the checks, it is offered as its own index, which you allocate to like any other.',
+    },
+    {
+      question: 'Is there a fee on an index?',
+      answer:
+        'An index may carry a performance fee, shown on its page. It is charged only on profit — no profit, no fee.',
+    },
+  ]}
+/>

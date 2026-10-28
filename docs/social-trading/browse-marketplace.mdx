@@ -1,142 +1,155 @@
 ---
 id: browse-marketplace
-title: Browse the Marketplace
-sidebar_label: Browse Marketplace
-description: The two kinds of provider listed side by side, the filters that actually narrow the list, and how to read a profile past the headline return.
-keywords: [copy trading marketplace, find a signal provider, crypto fund manager list, provider performance metrics, choose a copy trading provider]
+title: Browse Providers and Strategies
+sidebar_label: Browse Providers
+description: How Social Trade lists strategies, fund managers and signal providers, what the score, grades and labels mean, the filters that narrow the list, and how to read a profile past the headline return.
+keywords: [copy trading marketplace, find a signal provider, crypto fund manager list, copy trading leaderboard, choose a copy trading provider]
 ---
 
 import ArticleSchema from '@site/src/components/ArticleSchema';
 import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
-  headline="Browse the Copy Trading Marketplace"
-  description="How the marketplace lists signal providers and fund managers, what the filters do, and how to read a provider profile."
+  headline="Browse Copy Trading Providers and Strategies"
+  description="How Social Trade lists strategies, fund managers and signal providers, what the score and labels mean, the filters, and how to read a profile."
   section="Social Trading"
 />
 
-# Browse the Marketplace
+# Browse Providers and Strategies
 
-The marketplace lists every **active** provider on MetaStation. Two kinds share the same grid, and
-telling them apart is the first thing to do.
+**Social Trade → Providers** ([metastation.fi/social-trade/providers](https://metastation.fi/social-trade/providers))
+lists everyone you can copy, ranked by a published score rather than by raw return. You can browse
+it without signing in; copying asks you to sign in and brings you back.
+
+{/* SCREENSHOT: marketplace-grid | Providers browse, kind chips and sort visible | 1440x900 | redact: none */}
+<Screenshot id="marketplace-grid" />
 
 ---
 
-## The two provider types
+## Three kinds, one list
 
-Three tabs sit above the grid:
+| Kind | Who they are | How they are paid | Copied into |
+|---|---|---|---|
+| **Strategies** | Tracked on-chain trading records MetaStation scores | A performance fee on profit only | A MetaStation Account, as its own single-strategy index |
+| **Fund Managers** | Users who trade their own account and let others copy it | A **share of profit**, only when a copy exits in profit | A MetaStation Account |
+| **Signal Providers** | Users who publish signals from a webhook or a Telegram channel | A **monthly price**, prepaid, or free | A MetaStation Account, or an account on the provider's own exchange |
 
-| Tab | Shows |
+Use the **Kind** chips — **All**, **Strategies**, **Fund Managers**, **Signal Providers** — to narrow
+the list. In every case the trades are copied into **your own account**; MetaStation does not manage
+your funds.
+
+The old **Marketplace** and **Leaderboard** links now open this page.
+
+---
+
+## Sort and rails
+
+| Sort | What it ranks by |
 |---|---|
-| **All Providers** | Both types together |
-| **Signal Providers** | Traders publishing signals from an account they own, charging a subscription fee or nothing |
-| **Fund Managers** | Traders on their own account, paid a share of followers' profits |
+| **Score** | The overall 0–100 score — the default |
+| **Return (risk-adjusted)** | 90-day return against the risk taken to earn it |
+| **Lowest drawdown** | The shallowest losses from a high |
+| **Consistency** | How steady the gains are |
+| **Capacity** | How much capital can copy it before the copies move the market |
+| **Tracked longest** | The longest record |
 
-The quickest tell on a card is the fee stat: a signal provider shows **Fee**, a fund manager shows
-**Profit Share** as a percentage. The action button differs too — **Subscribe** on a signal
-provider, **Allocate** on a fund manager.
+There is no sort by raw return. **Rails** give a quick cut: **Every provider**, **Best for
+subscribers**, **Lowest drawdown**, **Most followed**, **New**.
 
-→ [Fund Managers](/docs/social-trading/fund-managers) explains the second type in full.
+→ [How Providers Are Scored](/docs/social-trading/scoring)
 
 ---
 
-## Narrowing the list
+## Filters
 
-| Control | What it does |
+| Filter | Options |
 |---|---|
-| **Search** | Matches the provider's display name |
-| **Market** | All Markets, **ByBit**, or **MetaStation Web3** — the venue the provider trades |
-| **Provider type tabs** | All Providers, Signal Providers, Fund Managers |
+| **Exchange** | MetaStation Account, or Exchange account |
+| **Fee** | Free or Paid |
+| **Grade** | A or better, B or better, C or better |
+| **Max drawdown at most** | 10%, 20%, 30% |
+| **Trades a week at least** | 1, 5, 20 |
+| **Average trade** | Under a day, 1–7 days, Over a week |
+| **Subscribers at least** | 5, 20 |
+| **Active within** | 7 days, 30 days |
+| **Tracked** | 30 days, 90 days, 180 days, 1 year |
+| **Capacity** | $100k, $1M, $10M |
 
-That is the full set. There is no filter for asset focus, subscription price, or follower count, and
-no ROI or win-rate range filter — those numbers are shown on each card to compare by eye, not to
-filter on.
-
-**The Leaderboard is the other way in.** It ranks providers by performance and is worth opening
-before the grid, because it applies a minimum trade count that the raw grid does not.
-
----
-
-## Reading a provider card
-
-Each card carries:
-
-- **Market badge** — the venue the provider trades
-- **Subscribers** — how many followers are currently copying
-- **Fee** or **Profit Share** — the commercial terms, depending on type
-- **ROI** over 7, 30 and 90 days
-
-A card can also read **Full**, meaning the provider has hit their maximum-followers setting and is
-not accepting new subscriptions, or **Subscribed**, if you already follow them.
+Signed in, you can save a set of filters and come back to it.
 
 ---
 
-## Reading the profile past the return
+## Labels
 
-Open a provider and the headline percentage is the least useful number on the page. Four others
-predict your experience better:
+Cards carry plain labels. The cautionary ones are shown as prominently as the good ones:
 
-| Metric | Why it matters more |
+| Label | Means |
 |---|---|
-| **Maximum drawdown** | The worst peak-to-trough fall — the stretch you would have had to sit through. A 200% return with a 60% drawdown is unfollowable for most people |
-| **Total trades** | Sample size. Twelve trades is a story; three hundred is a distribution |
-| **Track record length** | Three profitable months cannot separate skill from a rising market |
-| **Win rate, read with average win and loss** | A 40% win rate with large winners beats a 90% win rate with one catastrophic loser |
-
-**Strategy description** — written by the provider, and the only part of the profile that is not
-computed. Look for a specific claim about what they trade, on what timeframe, and how they exit.
-
-**Rank** is the provider's position among all active providers sorted by all-time ROI. It is
-recalculated on a schedule rather than live.
-
-:::warning[Signs worth walking away from]
-- A return built on a handful of trades
-- Triple-digit monthly ROI with a drawdown near zero — the combination is the tell, not either number alone
-- No strategy description, or one that describes a feeling rather than a method
-- A sharp climb followed by silence, which usually means the strategy stopped working and the
-  provider stopped trading rather than closing the profile
-:::
-
-**What good tends to look like:** a record spanning several months rather than weeks, a win rate in
-a plausible band, a maximum drawdown you could actually sit through, and a description specific
-enough to be wrong.
+| **High capacity** · **Majors focus** · **Patient** · **Rising** | What kind of record it is |
+| **Earns mostly from funding** | Most of the return is funding payments, not price moves |
+| **Same basket as others** | Trades the same markets, the same way, as other providers — following both is not diversification |
+| **Very short holds** · **High leverage** | Hard or risky to copy |
+| **Returns from a few days** | Most of the return came from a handful of days |
+| **Unusual volume** · **Short history** · **Not copyable** | Read the profile before copying |
+| **Copied on a different market** · **Delayed copy** · **Thin liquidity** | Your copy will differ from the original |
 
 ---
 
-## Before you subscribe
+## Fresh performers
 
-Published performance is the **provider's** result on **their** account. Yours will differ
-structurally — later entries, your own sizing, and the fact that you join mid-strategy.
+A strategy is ranked only once it has **14 days** of tracked record. Newer records with strong early
+results appear separately, as **Fresh performers**, each marked **Tracked N days** — a short record
+is a story, not a distribution.
 
-→ [Subscribe to a Provider](/docs/social-trading/subscribe-provider)
-→ [How Copy Trading Executes](/docs/concepts/copy-trading-mechanics)
+---
+
+## Reading a profile
+
+{/* SCREENSHOT: provider-detail | Provider profile, score, figures and chart | 1440x900 | redact: none */}
+<Screenshot id="provider-detail" />
+
+The profile shows the score and grade, risk-adjusted return, drawdown, consistency, trade
+frequency, how long the record runs, and — for Signal Providers and Fund Managers — their fee and
+what their followers actually made (once at least 5 of them have).
+
+Read the **drawdown before the return**. Check the **trade count**, because twelve trades is a
+story and three hundred is a distribution. Check **how long the record runs** — three profitable
+months cannot separate skill from a rising market.
+
+The action on a profile is **Subscribe** (Signal Provider) or **Copy** (Fund Manager, or a
+strategy whose single-strategy index is open).
+
+---
+
+## Compare, watch and lists
+
+- **Compare** — up to four side by side, from the browse
+- **Watch** — keep a provider in view without copying
+- **My lists** — group the providers you are considering
+- **Baskets** — pick several Signal Providers and Fund Managers and copy them together; preview the
+  basket before anything is created, and stop one leg at a time from **My copies → Baskets**
 
 <FAQ
   items={[
     {
-      question: 'How do I find a copy trading provider on MetaStation?',
+      question: 'What is the difference between a strategy, a fund manager and a signal provider?',
       answer:
-        'Open the marketplace, which lists every active provider. Three tabs separate all providers, signal providers, and fund managers. You can search by provider name and filter by the venue they trade — ByBit or MetaStation Web3 — and the Leaderboard ranks providers by performance with a minimum trade count applied.',
+        'A strategy is a tracked on-chain trading record that MetaStation scores and opens to copying as its own index. A fund manager is a user trading their own account who is paid a share of their followers’ profit. A signal provider is a user publishing signals from a webhook or Telegram channel, paid a monthly price or nothing. All three are copied into your own account.',
     },
     {
-      question: 'What is the difference between the Subscribe and Allocate buttons?',
+      question: 'How are providers ranked?',
       answer:
-        'Subscribe appears on signal providers and Allocate on fund managers. Both lead to the same copy settings, where you choose your copy mode, leverage and margin. The different wording reflects the commercial arrangement — a subscription fee versus a share of profits — not a difference in how trades are copied.',
+        'By a published 0–100 score built from six parts — performance against risk, drawdown control, consistency, copyability, risk posture and longevity — never by raw return. Grades run from S down to D, and below 40 a record is not graded. The full method is on the How the score works page.',
     },
     {
-      question: 'Which provider metrics matter most when choosing who to copy?',
+      question: 'Can I browse Social Trade without an account?',
       answer:
-        'Maximum drawdown, total trades, and track record length predict your experience better than headline return does. Drawdown is the fall you would have had to sit through, trade count tells you whether the record is a sample or a story, and a record spanning months rather than weeks is the minimum needed to separate skill from a favourable market.',
+        'Yes. Discover, the providers list, profiles, indexes and the methodology are readable signed out. Copying, watching and saving filters ask you to sign in, and bring you back to the page.',
     },
     {
-      question: 'Can I filter the marketplace by ROI or win rate?',
+      question: 'Does following two providers diversify my risk?',
       answer:
-        'No. The marketplace filters are search by name, the venue the provider trades, and the provider type tabs. ROI and win rate are displayed on every provider card for comparison by eye rather than offered as range filters. The Leaderboard is the tool for ranking by performance.',
-    },
-    {
-      question: 'What does it mean when a provider shows as Full?',
-      answer:
-        'Every provider sets a maximum number of followers, defaulting to 100. Once that many people are copying them the card reads Full and no new subscriptions are accepted until a follower leaves or the provider raises the limit.',
+        'Only if they trade differently. The browse flags providers that trade the same basket as others; following two of those is one bet, twice.',
     },
   ]}
 />

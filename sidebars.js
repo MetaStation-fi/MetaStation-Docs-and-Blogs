@@ -133,7 +133,7 @@ const sidebars = {
         type: 'generated-index',
         title: 'Social Trading',
         description:
-          'Browse the marketplace, subscribe to signal providers and fund managers, tune how their trades replicate onto your account — or publish your own trades and earn from followers.',
+          'Browse and compare strategies, fund managers and signal providers, copy them or allocate to an index — into your own account, with your own limits — or publish your own trades and earn from followers.',
         slug: '/social-trading',
         keywords: [
           'copy trading',
@@ -144,10 +144,13 @@ const sidebars = {
       },
       items: [
         'social-trading/browse-marketplace',
+        'social-trading/scoring',
         'social-trading/subscribe-provider',
         'social-trading/copy-settings',
+        'social-trading/indexes',
         'social-trading/fund-managers',
         'social-trading/become-provider',
+        'social-trading/trader-profile',
       ],
     },
     {
