@@ -233,7 +233,7 @@ const config = {
         '@type': 'SoftwareApplication',
         name: 'MetaStation',
         applicationCategory: 'FinanceApplication',
-        operatingSystem: 'Web, iOS, Android',
+        operatingSystem: 'Web, Telegram',
         url: 'https://metastation.fi',
         description:
           'Trade spot and perpetual futures from one account. Automate TradingView alerts over webhooks, execute Telegram channel signals, and copy trade providers automatically.',
@@ -574,9 +574,9 @@ const config = {
         {
           title: 'Legal',
           items: [
-            { label: 'Terms of Service', href: 'https://metastation.fi/terms' },
+            { label: 'Terms of Service', href: 'https://metastation.fi/termsofservice' },
             { label: 'Privacy Policy', href: 'https://metastation.fi/privacy' },
-            { label: 'Risk Disclaimer', href: 'https://metastation.fi/disclaimer' },
+            { label: 'Risk Disclaimer', href: 'https://metastation.fi/risk-disclosure' },
           ],
         },
       ],

@@ -60,7 +60,7 @@ Grouped by doc. `id` is the filename stem.
 | `deposit-picker` | fund-account.md | Deposit screen, network + asset picker open | Funding Wallet address |
 | `bridge-quote` | fund-account.md | Quote screen with estimated received amount | address, balance |
 | `funding-wallet-status` | fund-account.md | Funding Wallet address + activation state | address |
-| `buy-crypto` | fund-account.md | Buy Crypto / Transak entry screen | — |
+| `buy-crypto` | fund-account.md | Buy Crypto / Crypto Swap entry screen | — |
 | `first-trade` | quick-start.md | Trade terminal, order ticket filled, not submitted | balance |
 
 ### trading/

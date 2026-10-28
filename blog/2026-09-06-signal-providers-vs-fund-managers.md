@@ -1,14 +1,13 @@
 ---
 slug: signal-providers-vs-fund-managers
 title: "Signal Providers vs Fund Managers: which one are you actually copying?"
-description: MetaStation has two kinds of provider and they are copied through the same machinery. The differences that matter are who funds the account, how the provider gets paid, and which incentive that creates.
+description: MetaStation has two kinds of provider and they are copied through the same machinery. The difference that matters is how the provider gets paid, and which incentive that creates.
 authors: [metastation]
 tags: [copy-trading]
 keywords:
   - signal provider vs fund manager
   - crypto copy trading types
   - profit sharing copy trading
-  - managed crypto account
 ---
 
 The MetaStation marketplace lists two kinds of provider side by side, and most people subscribe
@@ -30,23 +29,16 @@ signal provider's is.
 
 So if you are comparing the two on *how faithfully they replicate*, there is nothing to compare.
 
-## The part that differs: whose account is it?
+## Whose account is it? Their own — in both cases
 
-A **signal provider** trades an account they already own and connect. Its history predates the
-platform, and the account is theirs in every sense.
+A **signal provider** trades an account they already own and connect.
 
-A **fund manager** does not connect an account. At registration, MetaStation **provisions a
-dedicated ByBit sub-account for them**, and issues API keys scoped to it — IP-restricted to the
-platform's own infrastructure, stored encrypted, and carrying no authority over anything else.
+A **fund manager** does too. At signup they pick the account they will trade from — an exchange
+account connected with their own API keys, or a MetaStation Account. MetaStation does not create,
+fund or run that account, and it does not manage anyone's money.
 
-That has a consequence worth understanding: a fund manager's published track record **starts on day
-one**, on an account created for the purpose. There is no pre-platform history to take on trust,
-because there is no pre-platform account.
-
-It also means the managed account is deliberately kept out of the manager's ordinary slot list, so
-it cannot be confused with their personal trading. If you have just registered as a fund manager and
-cannot find the account you were issued, that is why — it is filtered out of the normal picker, not
-missing.
+On both sides, the follower's copies execute in **the follower's own account**. Your balance never
+moves to the provider, and the provider has no access to your account.
 
 ## The part that differs most: how they get paid
 
@@ -109,13 +101,13 @@ three hundred is a distribution. Check how long the record runs — three profit
 separate skill from a rising market. Then read the fee or the profit share and ask what incentive it
 creates for the person on the other side.
 
-The label tells you how they are funded and how they are paid. It does not tell you whether they are
+The label tells you how they are paid. It does not tell you whether they are
 any good.
 
 ---
 
 **Read next:**
 
-- [Fund Managers](/docs/social-trading/fund-managers) — the provisioned account, the terms, and what carries over
+- [Fund Managers](/docs/social-trading/fund-managers) — the account they trade, the terms, and what carries over
 - [How Copy Trading Executes](/docs/concepts/copy-trading-mechanics) — the full path a trade takes to your account
 - [Set Up Copy Trading Safely](/docs/guides/copy-trading-setup) — the three decisions, in order

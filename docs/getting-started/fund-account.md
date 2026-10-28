@@ -57,28 +57,19 @@ Always send a small test amount first when depositing from a new network or wall
 
 ---
 
-## Method 2 — Buy with a card (Transak)
+## Method 2 — Buy Crypto (swap, or pay in fiat)
 
-Buy USDC directly with a Visa, Mastercard, Apple Pay, or Google Pay card — no prior crypto needed.
+**Buy Crypto** in the top navigation opens the **Crypto Swap** page, powered by SimpleSwap. Use it
+to swap one crypto asset for another, or to pay with one of the supported fiat currencies.
 
-{/* SCREENSHOT: buy-crypto | Buy Crypto / Transak entry screen | 1440x900 | redact: none */}
+{/* SCREENSHOT: buy-crypto | Buy Crypto / Crypto Swap entry screen | 1440x900 | redact: none */}
 <Screenshot id="buy-crypto" />
 
-1. Click **Buy Crypto** in the top navigation ([metastation.fi/buy-crypto](https://metastation.fi/buy-crypto))
-2. Select your currency and amount
-3. Complete the Transak payment flow (basic verification may be required)
-4. USDC is credited to your account within minutes
-
----
-
-## Method 3 — Swap assets (SimpleSwap)
-
-Already hold crypto but want a different asset? Use SimpleSwap to convert between assets directly.
-
-1. Click **Buy Crypto** in the top navigation and switch to the swap tab ([metastation.fi/exchangeswap](https://metastation.fi/exchangeswap))
-2. Select input and output assets
-3. Review the rate and confirm
-4. Swapped funds appear in your wallet
+1. Click **Buy Crypto** in the top navigation ([metastation.fi/exchangeswap](https://metastation.fi/exchangeswap))
+2. Choose what you send and what you receive
+3. Review the rate and the destination address, then confirm
+4. Follow SimpleSwap's instructions to complete the payment; the asset is sent to the destination
+   address you gave
 
 ---
 

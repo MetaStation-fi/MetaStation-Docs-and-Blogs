@@ -38,7 +38,7 @@ contain matter as much as the things it does.
 MetaStation has two kinds of provider, and this is the one place the distinction does not apply.
 
 - A **signal provider** trades an account they own and publishes signals from it.
-- A **fund manager** trades a dedicated account the platform provisioned for them.
+- A **fund manager** trades their own account too — connected exchange keys or a MetaStation Account — and is paid a share of profits.
 
 Downstream of the signal, nothing differs. The same copy modes, the same leverage and margin
 controls, the same execution path onto your slot. What differs is how the provider is funded and
@@ -185,7 +185,7 @@ Practical guards, in descending order of usefulness:
     {
       question: 'Is copying a fund manager different from copying a signal provider?',
       answer:
-        'Not in execution. Both types reach your account through the same path, with the same three copy modes and the same leverage and margin controls. The differences are commercial and structural: a fund manager trades a dedicated account the platform provisioned and is paid a share of profits, while a signal provider trades their own account and charges a subscription fee or nothing.',
+        'Not in execution. Both types reach your account through the same path, with the same three copy modes and the same leverage and margin controls. The differences are commercial and structural: a fund manager is paid a share of profits, while a signal provider charges a subscription fee or nothing.',
     },
     {
       question: 'Are my own manual trades affected by copy trading?',

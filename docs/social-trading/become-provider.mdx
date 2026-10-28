@@ -29,10 +29,10 @@ The signup flow asks this before anything else, because the two branches diverge
 
 | | **Signal Provider** | **Fund Manager** |
 |---|---|---|
-| **You trade** | An account you already have and connect | A **dedicated ByBit sub-account the platform provisions for you** |
+| **You trade** | An account you already have and connect | **Your own account** — connected exchange keys or a MetaStation Account |
 | **You are paid by** | A subscription fee you set, or nothing | A **profit share**, 10%–30% |
 | **Marketplace badge** | — | **Profit-Sharing** |
-| **Best when** | You already have a track record on an account you control | You want the record to start clean, on an account created for the purpose |
+| **Best when** | You want followers to pay a flat fee for your signals | You want to be paid only when your followers make a profit |
 
 → [Fund Managers](/docs/social-trading/fund-managers) covers the second branch in detail.
 
@@ -75,9 +75,10 @@ platform. You can also drive signals from a bound Telegram channel or the API.
 
 → [Webhook Trading](/docs/automation/webhook-trading)
 
-**Fund managers** are additionally provisioned a **dedicated ByBit sub-account**, with API keys
-scoped to it, IP-restricted to MetaStation's infrastructure, and stored encrypted. You do not
-create or connect this account — it is created for you as part of registration.
+**Fund managers** pick the account they will trade from during signup — an exchange account
+connected with their own API keys, or a MetaStation Account. MetaStation does not create or run an
+account for you, and it never manages followers' money: each follower's copies execute in the
+follower's own account.
 
 ---
 

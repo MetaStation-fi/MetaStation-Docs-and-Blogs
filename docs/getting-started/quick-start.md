@@ -35,8 +35,8 @@ Your MetaStation Account accepts deposits from **56 blockchain networks**. Send 
 3. MetaStation shows the bridge route and estimated received amount
 4. Confirm and send — funds bridge into your **Funding Wallet** and credit your account automatically
 
-Alternatively, buy crypto with a card via **Transak** (Visa/Mastercard, Apple Pay) under
-**Buy Crypto** in the top navigation.
+No crypto yet? **Buy Crypto** in the top navigation opens the Crypto Swap page, where you can
+swap into a supported asset or pay with a supported fiat currency through SimpleSwap.
 
 → Full guide: [Fund Your Account](/docs/getting-started/fund-account)
 

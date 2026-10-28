@@ -6,7 +6,8 @@ sidebar_label: Deposit
 
 # Deposit
 
-MetaStation supports crypto deposits from 56 blockchain networks, fiat purchases via card, and cross-asset swaps.
+MetaStation supports crypto deposits from 56 blockchain networks and, through Buy Crypto, swaps
+and fiat purchases.
 
 ---
 
@@ -73,24 +74,12 @@ Always verify the network matches before sending. Sending USDT on ERC20 to a TRC
 
 ---
 
-## Buy with card (Transak)
+## Buy Crypto (SimpleSwap)
 
-Buy USDC or other supported assets with a debit or credit card.
+Swap between supported crypto assets, or pay with a supported fiat currency, without leaving
+MetaStation.
 
-1. Click **Buy Crypto** in the top navigation ([metastation.fi/buy-crypto](https://metastation.fi/buy-crypto))
-2. Select amount and currency
-3. Complete the Transak checkout (Visa, Mastercard, Apple Pay, Google Pay)
-4. Funds arrive in your wallet within minutes
-
-Transak may require basic identity verification for larger purchases.
-
----
-
-## Swap assets (SimpleSwap)
-
-Convert between supported crypto assets without leaving MetaStation.
-
-1. Click **Buy Crypto** in the top navigation and switch to the swap tab ([metastation.fi/exchangeswap](https://metastation.fi/exchangeswap))
+1. Click **Buy Crypto** in the top navigation ([metastation.fi/exchangeswap](https://metastation.fi/exchangeswap))
 2. Select your input asset and output asset
 3. Enter the amount
 4. Review the rate — no hidden fees

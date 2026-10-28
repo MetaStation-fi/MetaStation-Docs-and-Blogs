@@ -2,8 +2,8 @@
 id: fund-managers
 title: Fund Managers
 sidebar_label: Fund Managers
-description: The second kind of provider on MetaStation — a manager who trades a dedicated account the platform provisions for them, on profit-sharing terms rather than a subscription fee.
-keywords: [crypto fund manager, profit sharing crypto, managed crypto account, fund manager vs signal provider, copy trading fund manager]
+description: The second kind of provider on MetaStation — a trader who trades their own account and is paid a share of followers' profits rather than a subscription fee.
+keywords: [crypto fund manager, profit sharing crypto, fund manager vs signal provider, copy trading fund manager]
 ---
 
 import ArticleSchema from '@site/src/components/ArticleSchema';
@@ -11,7 +11,7 @@ import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
   headline="Fund Managers on MetaStation"
-  description="How fund managers differ from signal providers, the account the platform provisions for them, and the profit-sharing terms they publish."
+  description="How fund managers differ from signal providers, the account they trade from, and the profit-sharing terms they publish."
   section="Social Trading"
 />
 
@@ -23,7 +23,7 @@ page describes the other one.
 
 | | Signal Provider | Fund Manager |
 |---|---|---|
-| **Trades on** | An account they already had | A **dedicated account the platform provisions** at signup |
+| **Trades on** | Their own account | **Their own account** — exchange keys they connect, or a MetaStation Account |
 | **Signals reach you via** | Webhook, Telegram or API | The same execution path |
 | **Charges** | A subscription fee, or nothing | A **share of profits**, declared as a percentage |
 | **Marketplace badge** | — | **Profit-Sharing** |
@@ -39,32 +39,14 @@ unchanged to both provider types.
 
 ## The account a fund manager trades
 
-This is the part with no equivalent on the signal-provider side.
+A fund manager trades from **an account they choose at signup** — an exchange account they connect
+with their own API keys, or a MetaStation Account. MetaStation does not create, fund or run that
+account, and it does not manage anyone's money: the manager trades their own account, and each
+follower's copies execute in the follower's own account.
 
-When someone registers as a fund manager, MetaStation provisions a **dedicated ByBit sub-account**
-for them and issues API keys scoped to it. The manager does not connect an account they already
-own; they are given one.
-
-The keys the platform issues are:
-
-- **Scoped to that sub-account only** — they carry no authority over any other account
-- **IP-restricted**, so they are unusable from anywhere but MetaStation's own infrastructure
-- **Stored encrypted**, like every other exchange credential on the platform
-
-The permissions cover contract and spot trading, options, transfers within the account structure,
-and exchange history.
-
-:::note[Why it is provisioned rather than connected]
-A signal provider's own account is theirs, and its history predates the platform. A fund manager's
-account is created by MetaStation at signup, so the track record that appears in the marketplace
-begins on day one and belongs entirely to trading you can see.
-:::
-
-:::tip[The managed account is kept out of your normal account list]
-A Fund Manager Account is **filtered out of the standard account picker** so it cannot be confused
-with your own trading slots, and does not appear alongside them by default. It is reached through
-the fund-manager view rather than the ordinary slot list. If you have just registered and cannot
-find the account you were issued, this is why — it is not missing.
+:::note[MetaStation does not manage your funds]
+Following a fund manager copies their trades into **your** account, sized by **your** settings. Your
+balance never moves to the manager, and the manager has no access to your account.
 :::
 
 ---
@@ -131,7 +113,6 @@ Worth being precise about, because the differences are narrower than the two nam
 
 **Different:**
 
-- Where the manager's account came from, and who holds its keys
 - How the manager is paid, and therefore what their incentive is
 - The **Profit-Sharing** badge and the type filter in the marketplace
 
@@ -147,7 +128,7 @@ model is safer than the other. They fail differently.
 ## Becoming a fund manager
 
 The provider signup flow asks which of the two you are registering as before it asks anything else,
-and the fund-manager branch is where the sub-account gets provisioned.
+and a fund manager then picks the account they will trade from.
 
 → [Become a Provider](/docs/social-trading/become-provider)
 
@@ -156,12 +137,12 @@ and the fund-manager branch is where the sub-account gets provisioned.
     {
       question: 'What is the difference between a signal provider and a fund manager on MetaStation?',
       answer:
-        'A signal provider trades an account they already own and typically charges a subscription fee. A fund manager trades a dedicated sub-account that MetaStation provisions for them at signup, and is paid through a declared share of profits — between 10% and 30% — rather than a flat fee. For a follower the copying mechanics are identical: the same three copy modes, the same leverage and margin controls, and the same position sizing.',
+        'A signal provider trades an account they already own and typically charges a subscription fee. A fund manager also trades their own account — exchange keys they connect, or a MetaStation Account — and is paid through a declared share of profits — between 10% and 30% — rather than a flat fee. For a follower the copying mechanics are identical: the same three copy modes, the same leverage and margin controls, and the same position sizing.',
     },
     {
       question: 'Does a fund manager hold my funds?',
       answer:
-        'No. A fund manager trades their own provisioned sub-account, and your copied trades execute on your own slot with your own balance. Following a fund manager replicates their trades onto your account under your sizing rules; it does not transfer your funds to them or give them access to your account.',
+        'No. MetaStation does not manage funds, and neither does the fund manager on your behalf: they trade their own account, and your copied trades execute on your own slot with your own balance. Following a fund manager replicates their trades onto your account under your sizing rules; it does not transfer your funds to them or give them access to your account.',
     },
     {
       question: 'How much do fund managers charge?',
@@ -176,7 +157,7 @@ and the fund-manager branch is where the sub-account gets provisioned.
     {
       question: 'Can I filter the marketplace for fund managers only?',
       answer:
-        'Yes. The marketplace has a provider type filter that separates signal providers from fund managers. Both types are ranked and sorted on the same performance metrics, so the filter is about the commercial terms and the account structure rather than about how the trades are copied.',
+        'Yes. The marketplace has a provider type filter that separates signal providers from fund managers. Both types are ranked and sorted on the same performance metrics, so the filter is about the commercial terms rather than about how the trades are copied.',
     },
   ]}
 />
