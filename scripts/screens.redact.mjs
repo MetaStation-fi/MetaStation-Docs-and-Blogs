@@ -28,6 +28,10 @@ export function redactInPage(config) {
   const PATTERNS = [
     { name: 'email', re: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g },
     { name: 'evm-address', re: /\b0x[a-fA-F0-9]{40}\b/g },
+    // A shortened address as the app displays it (0xc1fd...1e8e, 0xc1fd…1e8e): it still
+    // identifies the wallet, and none of the full-length patterns catch it.
+    // Separators seen in the app: "...", "…", "···" (middle dots) and "⋯".
+    { name: 'short-address', re: /\b0x[a-fA-F0-9]{3,16}\s?(?:\.{2,4}|…|·{2,4}|⋯)\s?[a-fA-F0-9]{3,16}\b/g },
     { name: 'tx-hash', re: /\b0x[a-fA-F0-9]{64}\b/g },
     { name: 'btc-address', re: /\b(bc1[a-z0-9]{25,62}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})\b/g },
     { name: 'solana-address', re: /\b[1-9A-HJ-NP-Za-km-z]{43,44}\b/g },
@@ -108,6 +112,19 @@ export function redactInPage(config) {
     const ctx = ((el.getAttribute('alt') || '') + ' ' + (el.className || '') + ' ' + (el.id || '')).toString().toLowerCase();
     if (/qr|totp|authenticator/.test(ctx)) {
       el.style.filter = 'blur(12px)';
+      report.masked.push('qr');
+    }
+  }
+  // A QR drawn as a bare <svg> (qrcode.react's QRCodeSVG on the Deposit page) carries
+  // no qr hint in its attributes, so recognise it by how it draws: its module paths
+  // carry shape-rendering="crispEdges", which chart sparklines (also long paths) never
+  // do. Hidden outright — a blurred QR of a short address can still decode.
+  for (const el of document.querySelectorAll('svg')) {
+    const crisp = [el, ...el.querySelectorAll('path, rect')].some(
+      (n) => (n.getAttribute('shape-rendering') || '').toLowerCase() === 'crispedges',
+    );
+    if (crisp) {
+      el.style.visibility = 'hidden';
       report.masked.push('qr');
     }
   }

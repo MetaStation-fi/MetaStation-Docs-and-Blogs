@@ -83,10 +83,10 @@ Grouped by doc. `id` is the filename stem.
 
 | id | Doc | Capture | Redact |
 |---|---|---|---|
-| `webhook-urls` | webhook-trading.md | Webhook Management → Your Webhook URLs | **webhook token** |
+| `webhook-urls` | webhook-trading.md | Automation → Your Webhook URLs | **webhook token** |
 | `regenerate-secret` | webhook-trading.md | Regenerate Secret confirm state | webhook token |
 | `tv-alert-dialog` | tradingview-setup.md | TradingView alert dialog with webhook URL pasted | webhook token |
-| `webhook-history` | webhook-trading.md | Received-signal log with parse results | account ids |
+| `webhook-history` | webhook-trading.md | History → Signal History (not yet recaptured; embeds removed) | account ids |
 | `tg-channel-binding` | telegram-to-trade.md | Telegram channel binding screen | channel names optional |
 | `tg-parse-preview` | telegram-to-trade.md | Signal parse preview | — |
 
@@ -99,6 +99,8 @@ Grouped by doc. `id` is the filename stem.
 | `copy-settings` | copy-settings.mdx | Copy settings form, sizing options visible | balance |
 | `provider-onboarding` | become-provider.md | Provider onboarding form | — |
 | `provider-dashboard` | become-provider.md | Provider dashboard | earnings optional |
+| `indexes-catalog` | indexes.mdx | Social Trade → Indexes | — |
+| `scoring-methodology` | scoring.mdx | How the score works | — |
 
 ### wallet/ & security/
 

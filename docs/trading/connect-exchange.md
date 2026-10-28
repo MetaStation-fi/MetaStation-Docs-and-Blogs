@@ -36,8 +36,8 @@ reachable from **Account Management** in the sidebar.
 
 Connecting is two steps:
 
-1. **Add Trading Slot** — pick the exchange under **Select Exchange** and give the slot a
-   **Nickname**
+1. **Add Slots** — in the **Add Trading Slot** dialog, pick the exchange under **Select Exchange**
+   and give the slot a **Nickname**
 2. **Add API Keys** on the new slot — enter the credentials and **Save API Keys**
 
 MetaStation checks the keys with the exchange when you save them. Keys the exchange rejects are
@@ -52,21 +52,21 @@ not saved, and the dialog says why.
 1. Log in to Binance and go to **API Management**
 2. Create a new API key — enable **Futures Trading** and **Spot Trading** permissions. **Do not enable withdrawals.**
 3. Copy the **API Key** and **Secret Key**
-4. In MetaStation: **Add Trading Slot → Binance**, then **Add API Keys** — paste the key and secret
+4. In MetaStation: **Add Slots → Binance**, then **Add API Keys** — paste the key and secret
 
 ### ByBit
 
 1. Log in to ByBit and go to **API** under your profile
 2. Create a new key — enable **Read-Write** for trading. Disable withdrawals.
 3. Copy the **API Key** and **API Secret**, and note your **Bybit User ID** (shown on your ByBit profile)
-4. In MetaStation: **Add Trading Slot → ByBit**, then **Add API Keys** — paste the key, the secret and your **Bybit User ID**
+4. In MetaStation: **Add Slots → ByBit**, then **Add API Keys** — paste the key, the secret and your **Bybit User ID**
 
 ### KuCoin
 
 1. Log in to KuCoin and go to **API Management**
 2. Create a new key with **General** and **Futures** permissions. Set a passphrase.
 3. Copy the **API Key**, **Secret** and **Passphrase**
-4. In MetaStation: **Add Trading Slot → KuCoin**, then **Add API Keys** — enter all three values
+4. In MetaStation: **Add Slots → KuCoin**, then **Add API Keys** — enter all three values
 
 ---
 
