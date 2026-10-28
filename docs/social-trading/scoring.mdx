@@ -1,0 +1,92 @@
+---
+id: scoring
+title: How Providers Are Scored
+sidebar_label: How Scoring Works
+description: Every strategy and provider on MetaStation is scored from 0 to 100 on six parts, never on raw return. The parts, the grades, how a quiet record decays, and the warnings that take points off.
+keywords: [copy trading ranking, trader score, risk adjusted return, copy trading leaderboard methodology, sortino ratio]
+---
+
+import FAQ from '@site/src/components/FAQ';
+
+# How Providers Are Scored
+
+Every strategy MetaStation tracks is scored from **0 to 100** on **six parts**. Each part compares
+its record with every other strategy tracked, so a score says **where it stands**, not how much it
+made.
+
+**Return alone never ranks anything.** Performance counts return only against the risk taken to
+earn it.
+
+The live method — with the exact weights and inputs — is published at **Social Trade → How the score
+works** ([metastation.fi/social-trade/methodology](https://metastation.fi/social-trade/methodology)).
+
+<Screenshot id="scoring-methodology" />
+
+---
+
+## The six parts
+
+| Part | What it measures |
+|---|---|
+| **Performance** | Risk-adjusted return over 90 days, against every strategy tracked |
+| **Drawdown control** | How deep and how long its losses from a high have been |
+| **Consistency** | How steady its gains are from day to day and month to month |
+| **Copyability** | How well a copy can follow it: holding time, order size, market depth |
+| **Risk posture** | How much leverage and concentration it takes |
+| **Longevity** | How long it has a record, and whether it is still active |
+
+A ratio is used only with its sample size. A part with no data counts as **50 of 100** — the middle
+— and is marked as missing rather than guessed.
+
+---
+
+## Grades
+
+| Grade | Score from |
+|---|---|
+| **S** | 85 |
+| **A** | 75 |
+| **B** | 65 |
+| **C** | 55 |
+| **D** | 40 |
+
+Below 40, a strategy is not graded.
+
+---
+
+## A quiet record counts for less
+
+A record that has stopped trading loses weight: after **2 quiet days** the score is scaled down a
+little each day, to at most **half** after about **14 days**.
+
+## Warnings that take points off
+
+| Warning | Effect |
+|---|---|
+| **High leverage** | The risk-posture part is capped |
+| **Trading with itself** | Points are taken off |
+| **Results rest on a few large wins** | The whole score is capped |
+
+The exact sizes are on the methodology page.
+
+---
+
+## When a record is ranked
+
+A record needs at least **14 days** of tracking before it is ranked. Newer records with strong early
+results show separately as **Fresh performers**, each marked **Tracked N days**.
+
+<FAQ
+  items={[
+    {
+      question: 'Why is the highest-return trader not at the top?',
+      answer:
+        'Because nothing on MetaStation ranks on raw return. The score weighs return against the risk taken to earn it, and adds drawdown control, consistency, copyability, risk posture and longevity. A high return earned with deep drawdowns and high leverage scores lower than a steadier one.',
+    },
+    {
+      question: 'What does a grade mean?',
+      answer:
+        'It is a band of the 0–100 score: S from 85, A from 75, B from 65, C from 55 and D from 40. Below 40 a strategy is not graded.',
+    },
+  ]}
+/>

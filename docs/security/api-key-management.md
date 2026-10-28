@@ -12,10 +12,12 @@ This page covers exchange API keys you connect to MetaStation — not MetaStatio
 
 ## How MetaStation handles your exchange API keys
 
-- Keys are **encrypted at rest** using industry-standard encryption
-- Keys are **never stored in plain text**
-- Keys are used only to route orders to your exchange account
-- MetaStation never uses your keys for any action outside of explicit user-initiated trades
+- Keys are **checked with the exchange when you save them** — keys the exchange rejects are not saved
+- What each key is allowed to do is read from the exchange and recorded
+- Keys are **encrypted at rest** and never stored in plain text
+- Keys are used only to place and manage orders and read balances on your exchange account
+- MetaStation never withdraws from an exchange with your keys. Withdrawals from a connected
+  exchange are made on the exchange itself
 
 ---
 
@@ -28,6 +30,9 @@ Only grant the permissions MetaStation needs. Never grant withdrawal permissions
 | Binance | Spot Trading, Futures Trading, Read | Withdrawals, Universal Transfer |
 | ByBit | Read-Write (trading) | Withdrawals |
 | KuCoin | General, Futures | Withdrawal |
+
+ByBit also asks for your **Bybit User ID**; KuCoin asks for the **API Passphrase** you set when
+creating the key.
 
 ---
 
@@ -42,19 +47,20 @@ Only grant the permissions MetaStation needs. Never grant withdrawal permissions
 If you suspect your API keys have been compromised:
 
 1. Go to your exchange and **immediately delete the compromised key**
-2. Create a new API key with correct permissions
-3. In MetaStation, open **Account Management** in the sidebar
-4. Under **Trading Slots**, select the affected slot → **Edit** → enter the new API key credentials
-5. Save
+2. Create a new API key with the correct permissions
+3. In MetaStation, open **Account Management**
+   ([metastation.fi/social-trade/account-management](https://metastation.fi/social-trade/account-management))
+4. On the affected slot, press **Remove keys** and confirm
+5. Press **Add API Keys** on the same slot, enter the new credentials and **Save API Keys**
 
 ---
 
-## Deleting a slot
+## Removing keys vs deleting a slot
 
-Deleting an account slot from MetaStation removes the stored keys from the system. It does not affect your exchange account or any open positions on the exchange — you must manage those directly.
+| Action | What it does |
+|---|---|
+| **Remove keys** | Deletes the stored API key and secret from MetaStation. The slot stays, without keys, until you add new ones |
+| **Delete slot** | Hides the slot from your accounts. Remove the keys first if you want them gone from MetaStation |
 
-1. Open **Account Management** in the sidebar
-2. Under **Trading Slots**, click the slot → **Delete Slot**
-3. Confirm
-
-Any open positions on that exchange remain open and must be closed from the exchange directly.
+Neither affects your exchange account or any open positions on it — close those on the exchange or
+from MetaStation before you remove the keys.

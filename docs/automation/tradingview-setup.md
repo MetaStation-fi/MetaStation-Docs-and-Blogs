@@ -13,6 +13,8 @@ Connect TradingView alerts to MetaStation so your chart signals execute as live 
 ## Prerequisites
 
 - A MetaStation webhook URL (see [Webhook Trading](/docs/automation/webhook-trading))
+- The slot's verification mode set to **Source-address check** on the Automation page — TradingView
+  cannot sign requests, so this is the check that makes a leaked URL useless
 - A TradingView account (Free or paid — webhooks require at least the Essential plan)
 
 ---
@@ -51,7 +53,7 @@ import TabItem from '@theme/TabItem';
 ```json
 {
   "action": "open",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
   "side": "buy",
   "orderType": "market",
   "quantity": "2%",
@@ -66,9 +68,10 @@ import TabItem from '@theme/TabItem';
   <TabItem value="nl" label="Natural Language">
 
 ```
-Buy BTCUSDC at market
-Size: 2% of wallet
-Leverage: 10x Isolated
+Buy BTCUSDT at market
+Size: 2%
+Leverage: 10x
+Isolated Margin
 Take Profit: 50000
 Stop Loss: 40000
 ```
@@ -87,17 +90,24 @@ TradingView can inject live values into your message at alert time:
 | `{{ticker}}` | Symbol name (e.g., `BTCUSDC`) |
 | `{{close}}` | Current bar close price |
 | `{{strategy.order.action}}` | `buy` or `sell` |
-| `{{strategy.position_size}}` | Current strategy position size |
-| `{{time}}` | Alert timestamp |
+| `{{strategy.market_position}}` | `long`, `short` or `flat` |
+| `{{strategy.market_position_size}}` | The strategy's position size |
+| `{{timenow}}` | When the alert fired — send it as `timestamp` |
 
-**Example template:**
+**The one template a strategy needs** — it sends the position the strategy wants to hold, so
+entries, exits and reversals are all the same alert:
 
 ```
-{{strategy.order.action}} {{ticker}} at {{close}}
-Size: 2%
-Stop Loss: {{strategy.order.price * 0.97}}
-Take Profit: {{strategy.order.price * 1.06}}
+{
+  "symbol": "{{ticker}}",
+  "market_position": "{{strategy.market_position}}",
+  "position_size": {{strategy.market_position_size}},
+  "timestamp": "{{timenow}}"
+}
 ```
+
+TradingView substitutes values; it does not calculate, so `{{strategy.order.price * 1.06}}` does
+not work. → [TradingView Templates](/docs/developer/tradingview-templates)
 
 ---
 
@@ -107,7 +117,7 @@ Take Profit: {{strategy.order.price * 1.06}}
 ```json
 {
   "action": "open",
-  "symbol": "BTCUSDC",
+  "symbol": "BTCUSDT",
   "side": "buy",
   "orderType": "market",
   "quantity": "2%",
@@ -115,21 +125,11 @@ Take Profit: {{strategy.order.price * 1.06}}
 }
 ```
 
-**Close position on opposite signal:**
+**Close the position:**
 ```json
 {
   "action": "close",
-  "symbol": "BTCUSDC",
-  "side": "sell"
-}
-```
-
-**Update Stop Loss after TP1:**
-```json
-{
-  "action": "update",
-  "symbol": "BTCUSDC",
-  "stopLoss": 47000
+  "symbol": "BTCUSDT"
 }
 ```
 
@@ -137,9 +137,11 @@ Take Profit: {{strategy.order.price * 1.06}}
 
 ## Testing
 
-1. Once the alert is live, use TradingView's **Test** button to fire a sample signal
-2. Check MetaStation → **Webhook Management** to confirm it was received and parsed
-3. Verify the order executed in your account
+1. Before going live, send the message once with `?dryRun=1` on the URL — the response shows what
+   would be placed, and nothing is
+2. Once the alert is live, fire it once at a small size
+3. Check **History → Signal History** to confirm it was received and executed
+4. Verify the order in your account
 
 :::tip
 Always test with a small position size (`"quantity": "0.5%"`) before deploying a full strategy.

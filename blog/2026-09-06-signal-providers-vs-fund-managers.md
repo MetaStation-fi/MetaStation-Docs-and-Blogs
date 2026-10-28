@@ -1,14 +1,13 @@
 ---
 slug: signal-providers-vs-fund-managers
 title: "Signal Providers vs Fund Managers: which one are you actually copying?"
-description: MetaStation has two kinds of provider and they are copied through the same machinery. The differences that matter are who funds the account, how the provider gets paid, and which incentive that creates.
+description: MetaStation has two kinds of provider and they are copied through the same machinery. The difference that matters is how the provider gets paid, and which incentive that creates.
 authors: [metastation]
 tags: [copy-trading]
 keywords:
   - signal provider vs fund manager
   - crypto copy trading types
   - profit sharing copy trading
-  - managed crypto account
 ---
 
 The MetaStation marketplace lists two kinds of provider side by side, and most people subscribe
@@ -30,23 +29,16 @@ signal provider's is.
 
 So if you are comparing the two on *how faithfully they replicate*, there is nothing to compare.
 
-## The part that differs: whose account is it?
+## Whose account is it? Their own — in both cases
 
-A **signal provider** trades an account they already own and connect. Its history predates the
-platform, and the account is theirs in every sense.
+A **signal provider** trades an account they already own and connect.
 
-A **fund manager** does not connect an account. At registration, MetaStation **provisions a
-dedicated ByBit sub-account for them**, and issues API keys scoped to it — IP-restricted to the
-platform's own infrastructure, stored encrypted, and carrying no authority over anything else.
+A **fund manager** does too. At signup they pick the account they will trade from — an exchange
+account connected with their own API keys, or a MetaStation Account. MetaStation does not create,
+fund or run that account, and it does not manage anyone's money.
 
-That has a consequence worth understanding: a fund manager's published track record **starts on day
-one**, on an account created for the purpose. There is no pre-platform history to take on trust,
-because there is no pre-platform account.
-
-It also means the managed account is deliberately kept out of the manager's ordinary slot list, so
-it cannot be confused with their personal trading. If you have just registered as a fund manager and
-cannot find the account you were issued, that is why — it is filtered out of the normal picker, not
-missing.
+On both sides, the follower's copies execute in **the follower's own account**. Your balance never
+moves to the provider, and the provider has no access to your account.
 
 ## The part that differs most: how they get paid
 
@@ -54,9 +46,9 @@ This is the one to think about.
 
 | | Signal Provider | Fund Manager |
 |---|---|---|
-| Card shows | **Fee** | **Profit Share** |
-| Typical terms | A subscription fee they set — often zero while building a record | A declared share of profits, **10%–30%**, defaulting to 20% |
-| Button reads | Subscribe | Allocate |
+| Charges | A **monthly price**, prepaid — or nothing | A **performance fee** on profit only |
+| Typical terms | Free while building a record, then a price they set; your price is locked in when you subscribe | 0% or a whole 2–99%, capped by the manager's tier (10%–30%) |
+| Button reads | Subscribe | Copy |
 
 A **subscription fee is earned whether you make money or not**. That is not a criticism — it is a
 predictable cost, and a provider on a flat fee has no incentive to chase volatility to get paid.
@@ -66,39 +58,35 @@ got round to cancelling.
 A **profit share is only earned when there is a profit**. That sounds strictly better, and for
 direction it is: the manager makes money when you do. But look at the shape of it. The upside is
 shared; the downside is entirely yours. An arrangement that pays a percentage of gains and nothing
-of losses rewards taking more risk, not less — and a manager publishing a **10×–20× leverage band**
+of losses rewards taking more risk, not less — and a manager publishing a high **leverage range**
 is telling you exactly how that incentive is being expressed.
 
 Neither model is safer. They fail differently, and knowing which failure you are exposed to is most
 of the value of reading the label.
 
-:::tip[One thing the leverage band is not]
-A fund manager's leverage band describes the range **their** strategy runs at. It does not cap the
+:::tip[One thing the leverage range is not]
+A fund manager's leverage range describes the range **their** strategy runs at. It does not cap the
 leverage on **your** copied position — that is the number you set in your own copy settings, and it
-does not inherit from theirs. Read the band as a statement about volatility, not as a limit that
-protects you.
+does not inherit from theirs. Read the range as a statement about volatility, not as a limit that
+protects you. Your copies open at your own account's leverage, or one you set.
 :::
 
-## What neither type gives you
+## What protects you, whichever you follow
 
-Worth being blunt, because this is the part people assume is handled.
+Worth being blunt, because this is the part people assume is handled: the protection is yours to
+set, before you subscribe.
 
-Copy trading on MetaStation has **no automatic circuit breaker**. Nothing pauses copying after a
-drawdown. There is **no per-symbol filter** — every symbol the provider trades is copied. There is
-**no absolute per-trade cap** trimming a position after your copy mode has sized it.
+1. **A loss limit.** Stop copying after this many dollars lost on this subscription's copies — and
+   choose whether the open copies are closed, kept, or closed with the provider. Add a daily loss
+   limit on top.
+2. **The sizing.** A share of each trade is capped at 100% of the provider's size. Start from
+   `(your balance / provider balance) × 100`, then halve it while you learn how they behave.
+3. **The filters and caps.** Only the markets you want, at most so many open positions, a cap on the
+   margin in one market, and *copy only trades that come with a stop-loss*.
+4. **The leverage.** Yours, never theirs.
 
-Your risk controls are three decisions, all made *before* you subscribe:
-
-1. **The copy mode.** Fixed Ratio takes a percentage of the provider's size, capped at 100%. Start
-   from `(your balance / provider balance) × 100`, then halve it while you learn how they behave.
-   It cannot be changed later — changing modes means cancelling and subscribing again.
-2. **The leverage.** Yours, not theirs. No higher than the provider's own is a reasonable rule.
-3. **The allocation.** With no automatic stop, the amount you allocate *is* the maximum you have
-   decided to risk on this provider. Keeping any single provider under roughly 30% of total capital
-   is the guard that survives a bad month.
-
-After that, the only lever is pausing the subscription yourself — and pausing stops new copies
-without closing the positions you already hold.
+Keeping any single provider under roughly 30% of total capital is still the guard that survives a
+bad month.
 
 ## So which should you follow?
 
@@ -109,13 +97,13 @@ three hundred is a distribution. Check how long the record runs — three profit
 separate skill from a rising market. Then read the fee or the profit share and ask what incentive it
 creates for the person on the other side.
 
-The label tells you how they are funded and how they are paid. It does not tell you whether they are
+The label tells you how they are paid. It does not tell you whether they are
 any good.
 
 ---
 
 **Read next:**
 
-- [Fund Managers](/docs/social-trading/fund-managers) — the provisioned account, the terms, and what carries over
+- [Fund Managers](/docs/social-trading/fund-managers) — the account they trade, the terms, and what carries over
 - [How Copy Trading Executes](/docs/concepts/copy-trading-mechanics) — the full path a trade takes to your account
-- [Set Up Copy Trading Safely](/docs/guides/copy-trading-setup) — the three decisions, in order
+- [Set Up Copy Trading Safely](/docs/guides/copy-trading-setup) — the decisions, in order

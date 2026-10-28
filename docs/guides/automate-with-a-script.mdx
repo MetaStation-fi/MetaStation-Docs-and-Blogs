@@ -2,7 +2,7 @@
 id: automate-with-a-script
 title: Trade from Your Own Script or Bot
 sidebar_label: Automate from a Script
-description: Send trades from Python, Node or any language that can make an HTTP request — a single POST, with working code, error handling and the mistakes that cost money.
+description: Send trades from Python, Node or any language that can make an HTTP request — a single signed POST, with working code, error handling, safe retries and the mistakes that cost money.
 keywords: [python trading bot, crypto trading api, automate trading script, http trading api, node trading bot]
 ---
 
@@ -11,7 +11,7 @@ import FAQ from '@site/src/components/FAQ';
 
 <ArticleSchema
   headline="Trade from Your Own Script or Bot"
-  description="Send trades from Python, Node or any language that can make an HTTP request, with working code and error handling."
+  description="Send trades from Python, Node or any language that can make an HTTP request, with signing, error handling and safe retries."
   section="Guides"
 />
 
@@ -20,7 +20,7 @@ import FAQ from '@site/src/components/FAQ';
 **The job:** your own code decides when to trade, and MetaStation executes it. No exchange SDK,
 no key management per venue, no separate integration for each exchange you use.
 
-**You need:** a slot with automation (free on the MetaStation Account) and anything that can make
+**You need:** a slot with automation (free on every MetaStation Account) and anything that can make
 an HTTP request.
 
 ---
@@ -32,134 +32,152 @@ There is no SDK to install and no session to establish. One endpoint, one method
 ```
 POST https://metastation.fi/metastationapi/socialTrade/webhook/{your-webhook-secret}
 Content-Type: application/json
+X-MetaStation-Signature: t=<unix seconds>,v1=<hex>
 ```
 
-The token identifies the slot, so it is both the credential and the routing. Get it from
-**Webhook Management → Webhook URLs**.
+The secret in the URL identifies the slot. Copy the URL from **Automation → Your Webhook URLs**.
 
-→ [Try it interactively in the API Reference](/docs/api/metastation-webhook-api)
+---
+
+## Step 1 — Turn on signed requests
+
+A script can sign, so make it: on the Automation page, press **Generate signing key** on the slot.
+The key is shown **once** — put it in an environment variable or secret store. From then on the slot
+refuses unsigned requests, so a leaked URL is useless without the key.
+
+The signature is `v1` = HMAC-SHA256 of `"<t>.<raw body>"` with the signing key, where `t` is the
+current unix time in seconds. It must arrive within 300 seconds of `t`, and is accepted once.
+
+→ [Secure Your Webhook](/docs/guides/secure-your-webhook)
+
+---
 
 ## Python
 
 ```python
-import os
+import hashlib, hmac, json, os, time
 import requests
 
 WEBHOOK_URL = os.environ["METASTATION_WEBHOOK_URL"]
+SIGNING_KEY = os.environ["METASTATION_SIGNING_KEY"]
 
-def open_position(symbol, side, quantity, stop_loss, take_profits=None):
-    payload = {
-        "action": "open",
-        "symbol": symbol,
-        "side": side,
-        "orderType": "market",
-        "quantity": quantity,
-        "category": "linear",
-        "leverage": 5,
-        "marginMode": "isolated",
-        "futurestopLoss": {
-            "slType": "market",
-            "stopLossPrice": stop_loss,
-            "priceType": "mark",
+
+def send(signal, dry_run=False):
+    # Sign the exact bytes you send: never re-serialise the body after signing.
+    body = json.dumps(signal)
+    t = str(int(time.time()))
+    v1 = hmac.new(SIGNING_KEY.encode(), f"{t}.{body}".encode(), hashlib.sha256).hexdigest()
+    url = WEBHOOK_URL + ("?dryRun=1" if dry_run else "")
+    response = requests.post(
+        url,
+        data=body.encode(),
+        headers={
+            "Content-Type": "application/json",
+            "X-MetaStation-Signature": f"t={t},v1={v1}",
         },
-    }
-    if take_profits:
-        payload["takeProfits"] = take_profits
-
-    response = requests.post(WEBHOOK_URL, json=payload, timeout=10)
-    response.raise_for_status()
-    return response.json()
+        timeout=10,
+    )
+    return response.status_code, response.json()
 
 
-result = open_position(
-    symbol="BTCUSDT",
-    side="buy",
-    quantity=0.01,
-    stop_loss=41000,
-    take_profits=[
+status, result = send({
+    "action": "open",
+    "symbol": "BTCUSDT",
+    "side": "buy",
+    "orderType": "market",
+    "quantity": 0.01,
+    "category": "linear",
+    "leverage": 5,
+    "marginMode": "isolated",
+    "futurestopLoss": {"slType": "market", "stopLossPrice": 41000, "priceType": "mark"},
+    "takeProfits": [
         {"price": 48000, "amount": 0.005},
         {"price": 52000, "amount": 0.005},
     ],
-)
+})
 
 if not result.get("success"):
-    print("rejected:", result.get("code"), result.get("message"))
+    print("refused:", status, result.get("message"))
 ```
 
-:::danger[Never hardcode the webhook URL]
-It is a bearer credential — holding it is sufficient to trade the slot. Read it from an
-environment variable or a secret store. A URL committed to a repository is a URL that will
+:::danger[Never hardcode the URL or the key]
+Read both from environment variables or a secret store. A URL or key committed to a repository will
 eventually be found, and public code search finds them faster than you would expect.
 :::
 
 ## Node.js
 
 ```javascript
-const WEBHOOK_URL = process.env.METASTATION_WEBHOOK_URL;
+// Node 18 or later.
+const crypto = require('node:crypto');
 
-async function openPosition({symbol, side, quantity, stopLoss, takeProfits}) {
-  const response = await fetch(WEBHOOK_URL, {
+const url = process.env.METASTATION_WEBHOOK_URL;
+const key = process.env.METASTATION_SIGNING_KEY;
+
+async function send(signal) {
+  // Sign the exact string you send: never JSON.stringify the signal a second time.
+  const body = JSON.stringify(signal);
+  const t = Math.floor(Date.now() / 1000);
+  const v1 = crypto.createHmac('sha256', key).update(`${t}.${body}`).digest('hex');
+  const response = await fetch(url, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      action: 'open',
-      symbol,
-      side,
-      orderType: 'market',
-      quantity,
-      category: 'linear',
-      leverage: 5,
-      marginMode: 'isolated',
-      futurestopLoss: {slType: 'market', stopLossPrice: stopLoss, priceType: 'mark'},
-      ...(takeProfits && {takeProfits}),
-    }),
+    headers: {'Content-Type': 'application/json', 'X-MetaStation-Signature': `t=${t},v1=${v1}`},
+    body,
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-  return response.json();
+  return {status: response.status, result: await response.json()};
 }
 ```
 
 ## curl, for testing
 
 ```bash
-curl -X POST "$METASTATION_WEBHOOK_URL" \
-  -H "Content-Type: application/json" \
-  -d '{"action":"open","symbol":"BTCUSDT","side":"buy","orderType":"market","quantity":0.001,"category":"linear","leverage":3,"marginMode":"isolated"}'
+BODY='{"action":"open","symbol":"BTCUSDT","side":"buy","orderType":"market","quantity":0.001}'
+T=$(date +%s)
+SIG=$(printf '%s' "$T.$BODY" | openssl dgst -sha256 -hmac "$METASTATION_SIGNING_KEY" | sed 's/^.* //')
+curl -sS -X POST "$METASTATION_WEBHOOK_URL?dryRun=1" \
+  -H 'Content-Type: application/json' \
+  -H "X-MetaStation-Signature: t=$T,v1=$SIG" \
+  --data-binary "$BODY"
 ```
+
+`?dryRun=1` returns what would be placed and places nothing — drop it to trade.
 
 ---
 
 ## Handle the response, don't assume it
 
-A rejected signal returns `"success": false` with a `code`. **A script that fires and forgets will
-believe it is in a position it does not have** — which is how a strategy ends up doubling down on
-a trade that never opened.
-
-At minimum:
+A refused signal returns `"success": false` with a `message`, and an HTTP status that says what kind
+of refusal it is. **A script that fires and forgets will believe it is in a position it does not
+have** — which is how a strategy ends up doubling down on a trade that never opened.
 
 ```python
 if not result.get("success"):
-    log.error("signal rejected: %s %s", result.get("code"), result.get("message"))
+    log.error("signal refused: %s %s", status, result.get("message"))
     # do NOT update local position state here
 ```
 
+A `200` means **queued**, not filled. Confirm the position from the exchange, or from **History →
+Signal History**.
+
 → [Error Codes](/docs/developer/error-codes)
 
-## The three actions
+## Retries are safe
+
+The same request sent again within **60 seconds** runs **once**: the second answer carries the first
+signal's id and `"replay": true`. So on a timeout, resend the **same body** — do not build a new one.
+After 60 seconds, check the position before sending again.
+
+## The actions
 
 | Action | Use |
 |---|---|
-| `open` | New position |
+| `open` | Open, or add to, a position |
 | `close` | Close fully, or partially with `quantity` |
-| `update` | Change TP/SL on an open position |
+| `target` | Say what to hold — `long`, `short` or `flat`. One message flips a position |
+| `cancel` | Withdraw followers' resting copy entries |
 
-:::note[There is no `reverse` action]
-The API rejects it: `Invalid action: reverse. Must be one of: open, close, update, cancel`. A
-strategy that flips on signal sends a `close` followed by an `open`.
-:::
+There is no `reverse` action — use `target`. Do not use `update` to move a stop: it does not modify
+an open position's protection.
 
 → [Supported Actions](/docs/developer/supported-actions)
 
@@ -170,25 +188,22 @@ strategy that flips on signal sends a `close` followed by an `open`.
 | Mistake | Consequence |
 |---|---|
 | No stop loss in the payload | An unbounded worst case on a position nobody is watching |
-| TP `amount` as a percentage | Rejected — `amount` is a token quantity, and totals above `quantity` are rejected too |
-| Percentage sizing with a compounding bug | `"2%"` recalculates on each signal. A retry loop compounds into a much larger position than intended |
-| Retrying on timeout without checking | A timeout is not a rejection. The order may have executed — verify before resending |
+| TP `amount` as a percentage | Rejected — `amount` is a token quantity |
+| Re-serialising the body after signing | The signature no longer matches; every request is refused with `401` |
+| Sending a stale `timestamp` | An opening signal more than 90 seconds old is refused |
+| Building a new body for a retry | It is a new signal, not a retry — it can open a second position |
 | Ignoring `success: false` | Local state diverges from reality |
 | Cross margin by default | One bad signal can take the account, not just the position |
-| No rate limit on the slot | A loop bug becomes dozens of positions before you notice |
-
-The retry case deserves care. A network timeout tells you nothing about whether the request was
-processed. Check the actual position state before sending the order again.
+| No Trade Setting on the slot | Nothing caps the leverage or size a buggy signal asks for |
 
 ## Before it runs unattended
 
-1. Test each signal path against a small size and confirm it in **Webhook Management**.
-2. Set a **rate limit** on the slot so a loop bug is bounded.
-3. Set **max open positions** so a stuck condition opens one position, not forty.
-4. Add an **IP whitelist** for your server's address — this makes a leaked URL unusable to anyone
-   else.
-5. Verify your error path by sending a deliberately malformed payload and confirming your code
-   handles the rejection.
+1. Send each signal path with `?dryRun=1`, then once at a small size, and confirm it in **History →
+   Signal History**.
+2. Set the slot's **Trade Setting** — a leverage cap and a size cap — so a bug is bounded.
+3. Use **Signed requests**, so a leaked URL is useless.
+4. Verify your error path by sending a deliberately malformed payload and confirming your code
+   handles the refusal.
 
 → [Risk Controls](/docs/concepts/risk-controls) · [Secure Your Webhook](/docs/guides/secure-your-webhook)
 
@@ -197,27 +212,27 @@ processed. Check the actual position state before sending the order again.
     {
       question: 'How do I place trades from a Python script?',
       answer:
-        'Send an HTTP POST with a JSON body to your slot’s webhook URL — there is no SDK to install and no session to establish. The payload specifies action, symbol, side, quantity and any protection such as stop loss and take-profit levels. Read the webhook URL from an environment variable rather than hardcoding it, because it is a bearer credential.',
+        'Send an HTTP POST with a JSON body to your slot’s webhook URL, signed with the slot’s signing key in an X-MetaStation-Signature header. There is no SDK to install and no session to establish. Read the URL and the key from environment variables.',
     },
     {
       question: 'Does MetaStation have a trading API?',
       answer:
-        'Yes — a single webhook endpoint that accepts JSON or natural-language signals over HTTP POST. The token in the URL identifies both the credential and the trading slot, so any language that can make an HTTP request can trade. An interactive Try-It console is available in the API Reference.',
+        'Yes — a single webhook endpoint that accepts JSON or natural-language signals over HTTP POST. The secret in the URL identifies the slot; signed requests add an HMAC signature. An interactive Try-It console is available in the API Reference.',
     },
     {
       question: 'What should my bot do if a webhook request times out?',
       answer:
-        'Check the actual position state before resending. A timeout says nothing about whether the request was processed — the order may well have executed — so retrying blindly can open a second unintended position. Only treat an explicit "success": false response as a rejection.',
+        'Resend the exact same request within 60 seconds: a repeated request runs once, and the answer carries the first signal’s id with "replay": true. Do not build a new body for the retry. After 60 seconds, check the position before sending again.',
     },
     {
       question: 'How do I flip a position from long to short with the MetaStation API?',
       answer:
-        'Send a close for the current position followed by an open in the opposite direction. There is no single reverse action — the API rejects it with "Invalid action: reverse. Must be one of: open, close, update, cancel".',
+        'Send one target signal: {"action": "target", "symbol": "BTCUSDT", "position": "short", "position_size": 0.01}. MetaStation reads what the slot holds and moves it to the target.',
     },
     {
-      question: 'Is it safe to put my webhook URL in my code?',
+      question: 'Can I test a signal without trading?',
       answer:
-        'No. The token in the URL is the entire credential, so anyone holding it can trade that slot. Read it from an environment variable or a secret store, never commit it, and add an IP whitelist so the URL is unusable from any address other than your server. If it has been exposed, regenerate the secret immediately.',
+        'Yes. Add ?dryRun=1 to the URL, an X-Dry-Run: 1 header, or "dryRun": true in the body. The response shows the orders the signal would place, and nothing is placed.',
     },
   ]}
 />

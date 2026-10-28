@@ -33,58 +33,60 @@ have capped it. Step 4 is not optional here — do it before mapping any channel
 
 ## Step 1 — Connect your Telegram account
 
-Open **Webhook Management** and switch to the **Telegram Connection** tab
-([metastation.fi/social-trade/webhook-management](https://metastation.fi/social-trade/webhook-management)).
+Open **Automation** and switch to the **Telegram connection** tab
+([metastation.fi/social-trade/automation?tab=telegram](https://metastation.fi/social-trade/automation?tab=telegram)).
 
 1. Enter your **phone number with country code** — for example `+1 234 567 8900`.
 2. Click **Connect Telegram**.
-3. Telegram sends a code to your Telegram app. Enter it under **Enter Verification Code**.
+3. Telegram sends a code to your Telegram app. Enter it under **Verification Code**.
 4. If your *Telegram* account has two-step verification enabled, you are asked for that password
    next. That is Telegram's password, not your MetaStation one.
 
-{/* SCREENSHOT: guide-tg-connect | Telegram Connection tab, phone number entry state | 1440x900 | redact: phone number */}
+{/* SCREENSHOT: guide-tg-connect | Telegram connection tab, phone number entry state | 1440x900 | redact: phone number */}
 
 :::warning
 Your Telegram session is stored encrypted and MetaStation does not read your private messages.
 Never share a Telegram login code with anyone — MetaStation support will never ask for it.
 :::
 
-## Step 2 — Let MetaStation detect the channel
+## Step 2 — Find the channel
 
-Channels are detected **by forwarding**, not by pasting a link:
+Channels you have **joined with your connected Telegram account** are listed automatically — there is
+nothing to forward. Joined the channel just now? Press **Refresh Channels**.
 
-1. Open the signal channel in Telegram.
-2. Forward any message from it to **[@MetaStationBot](https://t.me/MetaStationBot)**.
-3. It appears in MetaStation as a detected channel.
-
-The connection card shows how many channels have been detected and how many are set to
-copy-trade or broadcast. Press **Refresh** if a newly forwarded channel has not appeared yet.
+The connection card shows how many channels were detected and how many are set to copy trade or
+broadcast.
 
 ## Step 3 — Map the channel to an account slot
 
 1. Open the account card for the slot you want to trade on.
-2. Pick the detected channel in its Telegram section.
-3. Choose whether it is a **copy-trade** source or a **broadcast** target.
-4. Save.
+2. Press **Add Channel** and **Select Signal Channel**.
+3. Save. The channel shows as **Listening**.
 
-:::note[Three channels per account]
-Up to **3 signal channels per account**. If you follow more sources than that, map different
+:::note[Three channels per slot]
+Up to **3 signal channels per account slot**. If you follow more sources than that, map different
 channels to different slots.
 :::
 
 ## Step 4 — Cap what the channel can do
 
-Set these on the channel before you let it trade. They override whatever the signal says.
+Two places, and both matter.
+
+**On the channel** — edit it on the account card and set **Who can trigger trades**: anyone who
+posts, **channel admins only**, bots only, or **pinned messages only**. Admins only keeps a stray
+reply from being read as a call.
+
+**On the slot** — open **Automation → Your Webhook URLs** and press **Trade Setting**. These caps
+apply to every signal the slot executes, Telegram's included, and override what the call says:
 
 | Control | Why it matters here |
 |---|---|
-| **Position size** | Fixed USD per signal. The caller decides direction; you decide exposure |
-| **Max leverage** | A `50x` call executes at your cap instead. This is the setting that separates a loss from a liquidation |
-| **Symbol whitelist** | Confines the channel to pairs you actually want, however far it drifts |
-| **Max open positions** | Contains a channel that posts ten calls in an hour |
+| **Leverage** | A `50x` call executes at your cap instead. This is the setting that separates a loss from a liquidation |
+| **Percentage of Balance** or **USD in Value** | The caller decides direction; you decide exposure. A call sized above it is cut down, and a call with no size uses it |
+| **Use this as maximum risk setting** | Turns the caps on |
 
-A defensible starting point for an unproven channel: fixed size at 1–2% of balance, leverage
-capped at 3x–5x, two or three whitelisted symbols, three open positions maximum.
+A defensible starting point for an unproven channel: leverage capped at 3x–5x and a size of 1–2% of
+balance, on a slot of its own.
 
 → [Risk Controls](/docs/concepts/risk-controls)
 
@@ -106,16 +108,19 @@ The parser extracts action, symbol, direction, entry, take-profit levels, stop l
 **If a signal is ambiguous or missing something required, it logs a parse error and executes
 nothing.** It never guesses — a wrong trade costs more than a missed one.
 
-Let a channel run for a few real signals with parsing visible before you size up. Channels that
-post prose commentary, images, or edits to earlier calls will produce parse errors, and it is
-better to learn that at 1% than at 10%.
+Let a channel run for a few real signals before you size up. Channels that post prose commentary or
+images will produce parse errors, and it is better to learn that at 1% than at 10%.
 
-{/* SCREENSHOT: guide-tg-parse | Telegram Connection showing a received signal with its parse result | 1440x900 | redact: channel name optional */}
+An **edit** to a call before it is placed amends it; a **deletion** withdraws it. The same call
+posted in two of your channels is placed once.
+
+{/* SCREENSHOT: guide-tg-parse | History -> Signal History showing a Telegram signal with its status | 1440x900 | redact: channel name optional */}
 
 ## Step 6 — Monitor and disconnect
 
-**Webhook Management → Telegram Connection** shows every received message per channel, its parse
-result, execution status and trade details.
+**History → Signal History** shows every signal, its **Processing Status** and, if it did not
+execute, the **Reason**. **Results by channel** on the account card shows each channel's results.
+To stop a channel for a while, set it from **Listening** to paused.
 
 **Disconnect** ends the session and signal parsing stops immediately. Reconnect any time by
 repeating the phone-number flow.
@@ -126,38 +131,39 @@ repeating the phone-number flow.
 
 | Symptom | Cause |
 |---|---|
-| Channel never appeared | The forward did not reach @MetaStationBot. Forward again, then press Refresh |
-| No slot available to map | The target slot has no automation entitlement — free exchange slots need a Store subscription |
+| Channel never appeared | Your connected Telegram account has not joined it. Join it in Telegram, then press **Refresh Channels** |
+| No slot available to map | The target slot has no automation — exchange slots need a Store plan |
+| A channel stopped trading | It was paused — by you, or because the exchange slot's plan expired |
 | Message logged with a parse error | The format was not understood. Commentary and image-only posts do not parse |
-| Parsed but not executed | A risk control blocked it — leverage cap, whitelist, or max open positions |
-| Traded smaller than the call | Your position-size setting overrode it, which is the intended behaviour |
+| Listed but not executed | Its **Reason** says why — a late call, no size, or the exchange refused it |
+| Traded smaller than the call | The slot's Trade Setting capped it, which is the intended behaviour |
 
 <FAQ
   items={[
     {
       question: 'How do I automatically execute trades from a Telegram signal channel?',
       answer:
-        'Connect your Telegram account in MetaStation’s Webhook Management under the Telegram Connection tab, forward any message from the signal channel to @MetaStationBot so the channel is detected, then map that channel to a trading slot and set your risk limits. Signals posted in the channel are parsed and executed automatically from then on.',
+        'Connect your Telegram account on MetaStation’s Automation page under the Telegram connection tab. Channels you have joined are listed — map the signal channel to a trading slot, limit who can trigger trades, and set the slot’s Trade Setting caps. Signals posted in the channel are parsed and executed automatically from then on.',
     },
     {
       question: 'How many Telegram signal channels can I connect?',
       answer:
-        'Up to three signal channels per account. If you follow more sources than that, map different channels to different trading slots.',
+        'Up to three signal channels per account slot. If you follow more sources than that, map different channels to different trading slots.',
     },
     {
       question: 'Can MetaStation read my private Telegram messages?',
       answer:
-        'No. The Telegram session is stored encrypted and MetaStation does not read private messages. Channels are only monitored once you explicitly detect them by forwarding a message to @MetaStationBot and map them to a trading slot.',
+        'No. The Telegram session is stored encrypted and MetaStation does not read private messages. Only the channels you map to a trading slot are monitored for signals.',
     },
     {
       question: 'What happens if a Telegram signal asks for more leverage than I want?',
       answer:
-        'Your maximum leverage cap on that channel overrides the signal, so a 50x call executes at your cap instead of being rejected. The same applies to position size — your configured size per signal takes precedence over whatever the caller specified.',
+        'The leverage cap in the slot’s Trade Setting overrides the signal, so a 50x call executes at your cap instead of being rejected. Size works the same way: a call sized above your cap is cut down to it.',
     },
     {
       question: 'Why did a Telegram signal log a parse error instead of trading?',
       answer:
-        'The message did not contain the fields needed to build a trade, or was ambiguous. Prose commentary, image-only posts and edits to earlier calls commonly produce parse errors. MetaStation executes nothing rather than guessing at missing values.',
+        'The message did not contain the fields needed to build a trade, or was ambiguous. Prose commentary and image-only posts commonly produce parse errors. MetaStation executes nothing rather than guessing at missing values.',
     },
   ]}
 />

@@ -7,58 +7,64 @@ sidebar_label: Withdrawal Security
 # Withdrawal Security
 
 Withdrawals are the one action on MetaStation that moves funds off the platform irreversibly, so
-they are gated harder than anything else. Every withdrawal needs **two independent codes** from
-two separate channels.
+they are gated harder than anything else.
 
 ---
 
-## The two gates
+## The confirmation code
 
-| Gate | What it is | Where it comes from |
+Every withdrawal needs a **6-digit code** that is tied to *that* withdrawal — its destination, its
+amount and your current sign-in — and works once. A code for one withdrawal cannot confirm another,
+and a code issued in one session is useless in another.
+
+MetaStation picks where the code comes from. The strongest option you have always wins:
+
+| Order | Factor | When it is used |
 |---|---|---|
-| **Google Authenticator code** | 6-digit TOTP | The authenticator app on your phone |
-| **Email verification code** | One-time code sent on request | Your registered email inbox |
+| 1 | **Authenticator app** | You have turned on two-factor authentication. You are never offered the e-mail option |
+| 2 | **E-mail code** | No authenticator. Press **Send code** in the dialog |
+| 3 | **Telegram message** from our bot | No authenticator and no e-mail address (an account created with Telegram) |
 
-Both are entered in the **Confirm withdrawal** dialog. A withdrawal cannot proceed with only one.
+The code is entered in the **Confirm withdrawal** dialog and expires after **5 minutes**.
 
-This matters because the two channels fail independently: someone with your password does not
-have your phone, and someone with your phone does not have your mailbox.
+This matters because the threat a code defends against is a stolen session: someone holding your
+signed-in browser can reach the Withdraw page, but not your phone's authenticator or your inbox.
 
 ---
 
-## 2FA is mandatory to withdraw
+## Limits that protect you
 
-If 2FA is disabled, the withdrawal screen refuses the request outright —
-*"2FA is disabled. Please enable 2FA to withdraw."* There is no bypass and no support override
-for convenience.
+| Rule | What happens |
+|---|---|
+| **5 wrong codes** | Withdrawals are locked for **15 minutes**, and you are told in the app and by e-mail |
+| **Sent codes cap** | A code sent by e-mail or Telegram covers withdrawals worth up to **$1,000 in 24 hours**. Above that you are asked to turn on an authenticator app |
+| **After an authenticator reset** | When support resets your authenticator, withdrawals pause for **24 hours**. Trading and moves between your own accounts continue |
+| **Sanctions screening** | Every destination is checked against international sanctions lists. A listed address is refused |
 
-Enable it first: **Security → Google Authenticator → Enable**. See
-[Two-Factor Authentication](/docs/security/two-factor-auth).
+The surest way to keep withdrawing smoothly is an authenticator app: it has no $1,000 cap.
+**Security → Google Authenticator → Enable.** See [Two-Factor Authentication](/docs/security/two-factor-auth).
 
 ---
 
 ## Withdrawing, step by step
 
 1. Open **Withdraw** in the sidebar ([metastation.fi/withdraw](https://metastation.fi/withdraw))
-2. Select the asset and the network
-3. Paste the destination address and enter the amount
-4. Press withdraw — the **Confirm withdrawal** dialog opens
-5. Press **send code** to have the email code delivered, then read it from your inbox
-6. Enter the **Google Authenticator** code and the **email** code
-7. Confirm — the withdrawal is queued and broadcast
+2. Pick the account and wallet, the coin and the network
+3. Paste the destination address and enter the amount, then read the quote
+4. Press **Withdraw** — the **Confirm withdrawal** dialog opens
+5. Enter your authenticator code — or press **Send code** and enter the code you receive
+6. Press **Withdraw**
 
-Track it under **History** in the sidebar.
+Track it under **Recent Withdrawals** or **History → Withdraw**.
 
 ---
 
 ## Address whitelisting
 
 :::note[Not available today]
-MetaStation does **not** currently support a withdrawal address whitelist. Any valid address on
-the selected network can be used as a destination, provided both verification codes are correct.
-
-If you have read about a 24-hour address-approval delay elsewhere, it does not apply here. This
-page describes the controls that actually exist.
+MetaStation does **not** support a withdrawal address book or whitelist. Any valid address on the
+selected network can be used as a destination, provided the confirmation code is correct and the
+address passes sanctions screening.
 :::
 
 Because there is no whitelist to catch a mistyped or substituted address, **you** are the last
@@ -67,7 +73,7 @@ check on the destination:
 - Paste addresses; never retype them by hand
 - Verify the first and last six characters after pasting — clipboard-hijacking malware swaps the middle
 - Send a small test amount the first time you withdraw to a new address
-- Confirm the network matches the address. An ERC-20 address on a TRC-20 withdrawal loses the funds permanently
+- Confirm the network matches the address
 
 ---
 
@@ -76,13 +82,13 @@ check on the destination:
 :::warning
 - Blockchain transactions are irreversible. There is no chargeback and no recall
 - MetaStation will **never** ask you to withdraw funds to an "official", "verification", or "recovery" address. Any such request is a scam, without exception
-- Support will never ask for your 2FA code, your email code, or your password
+- Support will never ask for your confirmation code, your authenticator code, or your password
 :::
 
 ---
 
 ## Related
 
-- [Two-Factor Authentication](/docs/security/two-factor-auth) — set up the first gate
+- [Two-Factor Authentication](/docs/security/two-factor-auth) — turn on an authenticator app
 - [Withdraw](/docs/wallet/withdraw) — the full withdrawal walkthrough, fees and statuses
 - [API Key Management](/docs/security/api-key-management) — never grant withdrawal permission on an exchange API key

@@ -4,16 +4,16 @@
     "desktop": {
       "src": "getting-started/register-form.webp",
       "width": 2880,
-      "height": 2116
+      "height": 1800
     },
     "mobile": {
       "src": "getting-started/register-form--mobile.webp",
       "width": 1170,
-      "height": 3177
+      "height": 2532
     }
   },
   "google-signin": {
-    "alt": "Login page showing the Continue with Google button",
+    "alt": "Login page with Continue with Google and Continue with Telegram",
     "desktop": {
       "src": "getting-started/google-signin.webp",
       "width": 2880,
@@ -22,7 +22,7 @@
     "mobile": {
       "src": "getting-started/google-signin--mobile.webp",
       "width": 1170,
-      "height": 3084
+      "height": 2907
     }
   },
   "verify-email": {
@@ -39,42 +39,42 @@
     }
   },
   "deposit-picker": {
-    "alt": "Deposit screen with the network and asset picker",
+    "alt": "Deposit page: Funding Wallet, and Send manually or Connect a wallet",
     "desktop": {
       "src": "getting-started/deposit-picker.webp",
-      "width": 2880,
-      "height": 2116
-    },
-    "mobile": {
-      "src": "getting-started/deposit-picker--mobile.webp",
-      "width": 1170,
-      "height": 3177
-    }
-  },
-  "funding-wallet-status": {
-    "alt": "Funding Wallet address and activation state",
-    "desktop": {
-      "src": "getting-started/funding-wallet-status.webp",
-      "width": 2880,
-      "height": 2116
-    },
-    "mobile": {
-      "src": "getting-started/funding-wallet-status--mobile.webp",
-      "width": 1170,
-      "height": 3120
-    }
-  },
-  "buy-crypto": {
-    "alt": "Buy Crypto entry screen",
-    "desktop": {
-      "src": "getting-started/buy-crypto.webp",
       "width": 2880,
       "height": 2050
     },
     "mobile": {
+      "src": "getting-started/deposit-picker--mobile.webp",
+      "width": 1170,
+      "height": 2532
+    }
+  },
+  "funding-wallet-status": {
+    "alt": "Funding Wallet address on the Deposit page",
+    "desktop": {
+      "src": "getting-started/funding-wallet-status.webp",
+      "width": 2880,
+      "height": 1800
+    },
+    "mobile": {
+      "src": "getting-started/funding-wallet-status--mobile.webp",
+      "width": 1170,
+      "height": 2532
+    }
+  },
+  "buy-crypto": {
+    "alt": "Buy Crypto: the Crypto Swap page",
+    "desktop": {
+      "src": "getting-started/buy-crypto.webp",
+      "width": 2880,
+      "height": 1984
+    },
+    "mobile": {
       "src": "getting-started/buy-crypto--mobile.webp",
       "width": 1170,
-      "height": 2964
+      "height": 2865
     }
   },
   "first-trade": {
@@ -117,19 +117,29 @@
     }
   },
   "account-management": {
-    "alt": "Account Management, Trading Slots table",
+    "alt": "Account Management",
     "desktop": {
       "src": "trading/account-management.webp",
       "width": 2880,
-      "height": 2050
+      "height": 1800
+    },
+    "mobile": {
+      "src": "trading/account-management--mobile.webp",
+      "width": 1170,
+      "height": 2532
     }
   },
   "slots-overview": {
-    "alt": "Trading Slots table with mixed slot types",
+    "alt": "Account Management with the MetaStation Account and trading slots",
     "desktop": {
       "src": "trading/slots-overview.webp",
       "width": 2880,
-      "height": 2116
+      "height": 1800
+    },
+    "mobile": {
+      "src": "trading/slots-overview--mobile.webp",
+      "width": 1170,
+      "height": 2532
     }
   },
   "add-slots": {
@@ -146,29 +156,29 @@
     }
   },
   "store-slots": {
-    "alt": "Store slot purchase screen",
+    "alt": "Store: plans for trading slots",
     "desktop": {
       "src": "trading/store-slots.webp",
       "width": 2880,
-      "height": 2050
+      "height": 1984
     },
     "mobile": {
       "src": "trading/store-slots--mobile.webp",
       "width": 1170,
-      "height": 3021
+      "height": 2865
     }
   },
   "webhook-urls": {
-    "alt": "Your Webhook URLs",
+    "alt": "Automation: Your Webhook URLs, with each slot's verification mode",
     "desktop": {
       "src": "automation/webhook-urls.webp",
       "width": 2880,
-      "height": 2116
+      "height": 1984
     },
     "mobile": {
       "src": "automation/webhook-urls--mobile.webp",
       "width": 1170,
-      "height": 3240
+      "height": 2865
     }
   },
   "regenerate-secret": {
@@ -198,16 +208,16 @@
     }
   },
   "marketplace-grid": {
-    "alt": "Provider grid",
+    "alt": "Social Trade providers: kind chips, sorts and scored cards",
     "desktop": {
       "src": "social-trading/marketplace-grid.webp",
       "width": 2880,
-      "height": 2050
+      "height": 1800
     },
     "mobile": {
       "src": "social-trading/marketplace-grid--mobile.webp",
       "width": 1170,
-      "height": 3021
+      "height": 2532
     }
   },
   "provider-detail": {
@@ -224,55 +234,55 @@
     }
   },
   "provider-onboarding": {
-    "alt": "Provider onboarding form",
+    "alt": "Become a Provider, step 1: provider type",
     "desktop": {
       "src": "social-trading/provider-onboarding.webp",
       "width": 2880,
-      "height": 2050
+      "height": 1800
     },
     "mobile": {
       "src": "social-trading/provider-onboarding--mobile.webp",
       "width": 1170,
-      "height": 3021
+      "height": 2532
     }
   },
   "provider-dashboard": {
-    "alt": "Provider dashboard",
+    "alt": "Provider hub dashboard",
     "desktop": {
       "src": "social-trading/provider-dashboard.webp",
       "width": 2880,
-      "height": 1984
+      "height": 1800
     },
     "mobile": {
       "src": "social-trading/provider-dashboard--mobile.webp",
       "width": 1170,
-      "height": 2865
+      "height": 2532
     }
   },
   "deposit-flow": {
-    "alt": "Deposit screen, MetaStation Account destination",
+    "alt": "Deposit page with the MetaStation Account as destination",
     "desktop": {
       "src": "wallet/deposit-flow.webp",
       "width": 2880,
-      "height": 2050
+      "height": 1800
     },
     "mobile": {
       "src": "wallet/deposit-flow--mobile.webp",
       "width": 1170,
-      "height": 3021
+      "height": 2532
     }
   },
   "withdraw-form": {
-    "alt": "Withdraw form",
+    "alt": "Withdraw page",
     "desktop": {
       "src": "wallet/withdraw-form.webp",
       "width": 2880,
-      "height": 2116
+      "height": 1800
     },
     "mobile": {
       "src": "wallet/withdraw-form--mobile.webp",
       "width": 1170,
-      "height": 3177
+      "height": 2532
     }
   },
   "history-withdrawals": {
@@ -302,16 +312,42 @@
     }
   },
   "security-page": {
-    "alt": "Security page, both cards",
+    "alt": "Security page: authenticator, password, Sign out everywhere and the dead man's switch",
     "desktop": {
       "src": "security/security-page.webp",
       "width": 2880,
-      "height": 2050
+      "height": 1984
     },
     "mobile": {
       "src": "security/security-page--mobile.webp",
       "width": 1170,
-      "height": 3021
+      "height": 2865
+    }
+  },
+  "indexes-catalog": {
+    "alt": "Social Trade indexes",
+    "desktop": {
+      "src": "social-trading/indexes-catalog.webp",
+      "width": 2880,
+      "height": 1800
+    },
+    "mobile": {
+      "src": "social-trading/indexes-catalog--mobile.webp",
+      "width": 1170,
+      "height": 2532
+    }
+  },
+  "scoring-methodology": {
+    "alt": "How the score works",
+    "desktop": {
+      "src": "social-trading/scoring-methodology.webp",
+      "width": 2880,
+      "height": 1800
+    },
+    "mobile": {
+      "src": "social-trading/scoring-methodology--mobile.webp",
+      "width": 1170,
+      "height": 2532
     }
   }
 }
