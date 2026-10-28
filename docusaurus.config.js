@@ -240,16 +240,16 @@ const config = {
         featureList: [
           'Webhook trading from TradingView or any HTTP signal source',
           'Telegram-to-Trade signal execution',
-          'Copy trading marketplace',
-          'Up to 10 take-profit levels, trailing stops and SLX',
-          'Cross-chain deposits from 56 blockchain networks',
+          'Copy trading of signal providers, fund managers, tracked strategies and indexes',
+          'Take-profit ladders, trailing stops and SLX',
+          'Cross-chain deposits from EVM networks, Solana and TON',
         ],
         offers: {
           '@type': 'Offer',
           price: '0',
           priceCurrency: 'USD',
           description:
-            'Free MetaStation Account including every automation tool. Paid slot subscriptions unlock automation on connected exchange accounts.',
+            'Free MetaStation Account including every automation tool; a one-time activation fee is taken from its first deposit. Store plans unlock automation on connected exchange accounts.',
         },
       }),
     },

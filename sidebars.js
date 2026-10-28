@@ -43,6 +43,7 @@ const sidebars = {
       items: [
         'getting-started/quick-start',
         'getting-started/create-account',
+        'getting-started/telegram',
         'getting-started/fund-account',
         'getting-started/security-setup',
         'getting-started/platform-overview',

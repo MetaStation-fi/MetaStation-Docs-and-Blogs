@@ -16,10 +16,10 @@ Futures trading involves substantial risk. High leverage can result in rapid and
 
 ## Open a futures position
 
-1. Open the **Trade** tab, select your account slot
-2. Set market type to **Futures**
-3. Select a pair (e.g., `BTCUSDC-PERP`)
-4. Set leverage (1x–50x on MetaStation Account, up to 125x on Binance/ByBit)
+1. Open **Future** in the navigation, select your account slot
+2. Select a market (e.g., `BTC` perpetual)
+3. On a MetaStation Account, press **Enable Trading** the first time
+4. Set leverage — up to the market's own maximum, which the ticket shows and enforces
 5. Choose margin mode: **Isolated** or **Cross**
 6. Set order type and quantity
 7. Click **Long** (buy) or **Short** (sell)
@@ -35,9 +35,10 @@ Leverage multiplies your buying power. A 10x leveraged position on $100 controls
 | 1x–5x | Low | Conservative, swing trades |
 | 5x–20x | Medium | Active trading |
 | 20x–50x | High | Short-term, experienced traders |
-| 50x+ | Very high | Expert only — on supported exchanges |
+| 50x+ | Very high | Expert only — where the market allows it |
 
-Adjust leverage per position in the order panel.
+Each market has its own maximum leverage, read from the venue; the order ticket will not let you go
+above it. Adjust leverage per position in the order panel.
 
 ---
 
@@ -49,11 +50,13 @@ Adjust leverage per position in the order panel.
 
 ---
 
-## Position modes (ByBit only)
+## Position modes (ByBit)
 
 **One-Way mode** — One position per symbol. Opening an opposite direction closes or reduces the existing one.
 
 **Hedge mode** — Separate long and short positions can be open simultaneously on the same symbol. Useful for hedging strategies.
+
+Other accounts, the MetaStation Account included, trade in one-way mode.
 
 ---
 
@@ -73,3 +76,6 @@ Reduce liquidation risk by:
 - Using lower leverage
 - Adding margin to isolated positions
 - Setting a Stop Loss before reaching liquidation price
+
+On a MetaStation Account you also get a **Margin warning** in the notification bell when a
+position's margin runs low.

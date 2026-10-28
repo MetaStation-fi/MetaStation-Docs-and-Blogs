@@ -6,58 +6,79 @@ sidebar_label: Fund Your Account
 
 # Fund Your Account
 
-MetaStation accepts deposits from **56 blockchain networks**. Whatever asset you send is automatically bridged and converted to USDC and credited to your MetaStation Account.
+Your **MetaStation Account is a Web3 account by default**, funded through its **Funding Wallet**.
+Send USDC on Arbitrum One to it by hand, or connect a wallet on another network and MetaStation
+bridges it for you. Either way it arrives as USDC.
 
 ## Your Funding Wallet
 
-{/* DIAGRAM: funding-flow | source chain -> bridge -> Funding Wallet (Arbitrum smart account) -> USDC margin in MetaStation Account. mermaid, both themes */}
-
-Your **MetaStation Account is a Web3 account by default.** It is funded through a **Funding
-Wallet** — a smart-contract wallet created for you on Arbitrum when you first deposit.
+{/* DIAGRAM: funding-flow | USDC on Arbitrum One by hand, or a connected wallet -> bridge -> Funding Wallet -> trading balance. mermaid, both themes */}
 
 | | |
 |---|---|
-| What it is | A smart account that holds the USDC backing your MetaStation Account |
-| Who creates it | MetaStation, automatically. No seed phrase for you to store |
-| What you do with it | Bridge into it. Everything downstream — trading, settlement — is gasless |
-| Where you see it | The **Deposit** screen shows the Funding Wallet address and its status |
+| What it is | The wallet on Arbitrum One that receives your deposits |
+| Who creates it | MetaStation, with your account. No seed phrase for you to store |
+| What it accepts by hand | **USDC on Arbitrum One only** |
+| Where you see it | The **Deposit** page shows its address under **Destination address (Funding Wallet)** |
 
 {/* SCREENSHOT: funding-wallet-status | Funding Wallet address + activation state on Deposit | 1440x900 | redact: address */}
 <Screenshot id="funding-wallet-status" />
 
-You do not need a wallet of your own to *use* the Funding Wallet, but you do need one to bridge
-from an external network into it.
+---
+
+## Your first deposit activates the account
+
+The first deposit into the Funding Wallet:
+
+- pays a **one-time activation fee** — the Deposit page shows it as *"Activation fee · one-time,
+  taken from your first deposit"*
+- must be at least the **minimum** shown on the page
+- activates the account, and the rest moves into your trading balance automatically
+
+Then press **Enable Trading** on the account once, before your first order.
 
 ---
 
-## Method 1 — Bridge from any network (recommended)
+## Method 1 — Send USDC on Arbitrum One
 
-This is the primary way to fund your MetaStation Account.
+From any wallet or exchange, no connection needed.
 
-**Supported networks include:**
+1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
+2. **Deposit to**: your MetaStation Account, **Funding Wallet**
+3. **Send from**: **Send manually**
+4. Copy the address and send **USDC on Arbitrum One** to it
+5. The page updates when it arrives
 
-Ethereum · Arbitrum · Optimism · Base · Polygon · BNB Smart Chain · Avalanche · Solana · TRON · TON · and 25+ more
+:::danger
+Anything other than USDC on Arbitrum One sent by hand to the Funding Wallet address is lost.
+:::
 
-**How it works:**
+---
+
+## Method 2 — Connect a wallet on another network
+
+For a coin on Ethereum, an Ethereum Layer 2, another EVM chain, Solana or TON.
 
 {/* SCREENSHOT: deposit-picker | Deposit screen, network + asset picker open | 1440x900 | redact: Funding Wallet address */}
 <Screenshot id="deposit-picker" />
 {/* SCREENSHOT: bridge-quote | quote screen with estimated received amount | 1440x900 | redact: address, balance */}
 
-1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
-2. Select your source network and token (e.g., USDT on BSC, ETH on Ethereum, SOL on Solana)
-3. MetaStation quotes the bridge route and shows the estimated amount you will receive
-4. Review the estimate and confirm
-5. Approve and send the transaction from your connected wallet
-6. Funds are bridged into your **Funding Wallet** → converted to USDC → credited to your MetaStation Account automatically
+1. **Deposit to**: your MetaStation Account, **Funding Wallet**
+2. **Send from**: **Connect a wallet**
+3. Pick the **Network you are sending from** and the coin
+4. Connect your wallet — EVM, Solana (such as Phantom) or TON
+5. Enter the amount; MetaStation quotes the route and shows what reaches your Funding Wallet
+6. **Review deposit**, confirm, and approve the transaction in your wallet
 
 :::tip
 Always send a small test amount first when depositing from a new network or wallet.
 :::
 
+→ [Cross-Chain Deposits](/docs/wallet/cross-chain-exchange)
+
 ---
 
-## Method 2 — Buy Crypto (swap, or pay in fiat)
+## Method 3 — Buy Crypto (swap, or pay in fiat)
 
 **Buy Crypto** in the top navigation opens the **Crypto Swap** page, powered by SimpleSwap. Use it
 to swap one crypto asset for another, or to pay with one of the supported fiat currencies.
@@ -73,15 +94,19 @@ to swap one crypto asset for another, or to pay with one of the supported fiat c
 
 ---
 
-## Wallet assets (for exchange slots)
+## After activation: other coins
 
-If you are using Binance, ByBit, or KuCoin slots, fund those directly through your exchange account. MetaStation does not custody exchange funds — your API keys connect to your own exchange balance.
+Once the account is activated, **BTC, ETH, SOL and other coins** can be deposited straight into its
+**Trading Account**, each on its own network. Pick **Trading Account** under **Deposit to**, then the
+coin, and send to the address shown. → [Deposit](/docs/wallet/deposit)
 
 ---
 
-## Minimum deposits
+## Exchange slots
 
-Minimum deposit amounts vary by network. Amounts below the minimum may not be credited. Always check the displayed minimum before sending.
+If you are using Binance, ByBit, or KuCoin slots, the Deposit page shows that exchange's own deposit
+address; the funds land on your exchange account. MetaStation does not custody exchange funds —
+your API keys connect to your own exchange balance.
 
 ---
 

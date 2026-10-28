@@ -18,13 +18,13 @@ Full reference for all order types available on MetaStation.
 | **Limit** | Executes at your specified price or better | Price control, entries/exits |
 | **Stop Market** | Market order triggered when price reaches stop level | Breakout entries, loss limits |
 | **Stop Limit** | Limit order triggered at stop level | Precise conditional entries |
+| **Trailing Stop** | Dynamic stop that follows price | Profit protection in trending markets |
 
 :::note[Webhook API accepts only market and limit]
 The table above describes order types available **in the trading terminal**. The webhook API
 accepts only `market` and `limit` as `orderType`; stop behaviour is configured through the stop
 loss fields instead. → [Supported Actions](/docs/developer/supported-actions#order-types)
 :::
-| **Trailing Stop** | Dynamic stop that follows price | Profit protection in trending markets |
 
 ---
 
@@ -33,7 +33,7 @@ loss fields instead. → [Supported Actions](/docs/developer/supported-actions#o
 | Format | Example | Notes |
 |---|---|---|
 | Token amount | `0.001 BTC` | Precise token control |
-| USD value | `$300` or `300 USD` | Consistent dollar risk per trade |
+| USD value | `300 USD` (JSON: `$300`) | Consistent dollar risk per trade. In a plain-text signal write `300 USD` — `$300` is read as a token amount |
 | Wallet percentage | `2%` | Portfolio-based sizing |
 
 ---
@@ -50,7 +50,8 @@ loss fields instead. → [Supported Actions](/docs/developer/supported-actions#o
 
 ## Take Profit
 
-Up to 10 TP levels per position. Each TP can be set as:
+Up to 10 TP levels per position in the terminal. Each level must be at least the market's minimum
+order size, so a small position supports fewer levels. Each TP can be set as:
 - Token amount
 - USD value
 - Percentage of position

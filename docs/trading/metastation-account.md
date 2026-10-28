@@ -8,11 +8,11 @@ sidebar_label: MetaStation Account
 
 **Your account is ready before you are.**
 
-Every user gets a native MetaStation Account the moment they register — no API keys, no external exchange to open, no setup. It is the default account that powers your trading on MetaStation, ready the second you sign in.
+Every user gets a native MetaStation Account the moment they register — no API keys, no external exchange to open, no setup. It is the default account that powers your trading on MetaStation.
 
-**The MetaStation Account is a Web3 account by default.** It settles on-chain in USDC and is
-funded through your **Funding Wallet** — a smart-contract wallet created for you, with no seed
-phrase to manage and no gas to pay on your trades.
+**The MetaStation Account is a Web3 account by default.** It trades on-chain in USDC and is
+funded through your **Funding Wallet** — created for you, with no seed phrase to manage and no gas
+to pay on your orders.
 
 ---
 
@@ -23,63 +23,63 @@ phrase to manage and no gas to pay on your trades.
 
 | | |
 |---|---|
-| **On-chain order book** | Trades execute against a live, on-chain order book with deep, transparent liquidity — the same book everyone trades against, fully visible. |
-| **Gasless trading** | Network gas on your orders is abstracted away. You never pay gas to place, modify, or close a trade. |
-| **Spot & perpetuals** | Trade spot markets and high-leverage perpetual futures from one account, with professional order types. |
-| **Settles in USDC** | Your USDC balance is your margin. Profit and loss settle in USDC — simple, predictable accounting. |
-| **No connection required** | It isn't a key you link or a wallet you import. The account is yours by default and works out of the box. |
+| **On-chain order book** | Trades execute against a live, on-chain order book with transparent liquidity — the same book everyone trades against, fully visible. |
+| **No gas on orders** | You never pay network gas to place, modify, or close a trade. |
+| **Spot & perpetuals** | Trade spot markets and perpetual futures from one account, with professional order types. |
+| **Settles in USDC** | Your USDC balance is your margin. Profit and loss on perpetuals settle in USDC. |
+| **No connection required** | It isn't a key you link or a wallet you import. The account is yours by default. |
 
 ---
 
-## Fund it from any chain
+## Get it ready: deposit, then Enable Trading
 
-This is what makes the MetaStation Account effortless to fund: **send almost any asset, from almost any network, and it arrives as USDC in your account.**
+Two one-time steps, then you trade:
 
-- **56 blockchain networks supported** — Ethereum, Arbitrum, Optimism, Base, Polygon, BNB Smart Chain, Avalanche, Solana, TRON, TON, and many more EVM and non-EVM chains.
-- **Any asset → USDC** — Deposit ETH, USDT, SOL, native tokens, stablecoins — whatever you hold. It's automatically bridged and converted to USDC and credited to your account.
-- **One simple flow** — Pick your source network and asset, confirm, and your funds land as trading margin. No manual bridging, no juggling wallets across chains.
+1. **First deposit** into the Funding Wallet — it pays a **one-time activation fee** and must meet
+   the **minimum** shown on the Deposit page. The rest becomes your trading balance
+2. **Enable Trading** — press it once on the order ticket or the account
 
 ### How to fund
 
 1. Open **Deposit** in the sidebar ([metastation.fi/deposit](https://metastation.fi/deposit))
-2. Select your source network and asset
-3. Confirm the deposit
-4. Funds bridge into your **Funding Wallet**, convert to USDC, and credit your account automatically
+2. Pick the account and **Funding Wallet**
+3. **Send manually** USDC on Arbitrum One, or **Connect a wallet** on an EVM network, Solana or TON
+   and MetaStation bridges it for you
+4. After activation you can also deposit BTC, ETH, SOL and other coins straight into the
+   **Trading Account**, each on its own network
+
+→ [Fund Your Account](/docs/getting-started/fund-account)
 
 ---
 
 ## All automation tools — free
 
-Your MetaStation Account includes **every automation tool at no cost**. There is no upsell to unlock the features that make automated trading work.
+Every MetaStation Account includes **every automation tool at no cost**.
 
 **Included free on your MetaStation Account:**
 
 - ✅ **Webhook automation** — connect TradingView or any signal source
 - ✅ **Telegram-to-Trade** — auto-execute signals from your Telegram channels
-- ✅ **Copy trading** — follow and mirror expert providers automatically
-- ✅ **Advanced orders** — up to 10 take-profit levels, trailing stops, and SLX logic
+- ✅ **Copy trading** — follow providers, strategies and indexes into your own account
+- ✅ **Advanced orders** — take-profit ladders, trailing stops, and SLX logic
 
-| Feature | MetaStation Account | Connected CEX slot (Binance / ByBit / KuCoin) |
+| Feature | MetaStation Account | Connected exchange slot (Binance / ByBit / KuCoin) |
 |---|---|---|
-| Manual trading | ✅ Free | ✅ Free (1 slot) |
-| Copy trading | ✅ Free | ✅ Free |
-| Webhook automation | ✅ Free | 🔒 Paid slot in Store |
-| Telegram-to-Trade | ✅ Free | 🔒 Paid slot in Store |
-| Advanced orders (10 TP / SLX) | ✅ Free | 🔒 Paid slot in Store |
+| Manual trading | ✅ Free | ✅ Free |
+| Copy trading as a follower | ✅ Free | ✅ Free (signal providers on the same exchange) |
+| Webhook automation | ✅ Free | 🔒 Store plan |
+| Telegram-to-Trade | ✅ Free | 🔒 Store plan |
 
-→ See [Account Slots](/docs/trading/account-slots) for how connected-exchange slots work.
+→ See [Account Slots](/docs/trading/account-slots) for how exchange slots work.
 
 ---
 
 ## Security & trust
 
-The MetaStation Account is built so your funds and execution stay transparent and in your control.
-
 - **On-chain transparency** — Orders rest and fill on a public on-chain order book. There is no opaque internal matching you can't see.
-- **Smart-wallet custody** — Your balance lives in your **Funding Wallet**, a smart-contract wallet tied to your account, not pooled into an exchange's omnibus account.
+- **Your own wallet** — Your balance lives in your account's own wallets, not pooled with other users'.
 - **No hidden counterparty** — You trade against an open market, not against the house.
-- **Gasless by design** — Gas abstraction means no last-minute fee surprises and no need to hold a separate gas token to trade.
-- **Protected withdrawals** — Withdrawals require 2FA and email confirmation, with optional address whitelisting and daily limits.
+- **Protected withdrawals** — Every withdrawal is confirmed with a 6-digit code; addresses are screened against sanctions lists.
 
 ---
 
@@ -89,22 +89,28 @@ The MetaStation Account is built so your funds and execution stay transparent an
 <Screenshot id="orderbook" />
 {/* SCREENSHOT: positions-panel | open positions — batch with the other live-position captures so a real position stays open for the shortest time | 1440x900 | redact: size, PnL optional */}
 
-- **Perpetual futures** — BTC, ETH, SOL, and 100+ other pairs with high leverage
-- **Spot** — Swap between supported assets
+- **Perpetual futures** — BTC, ETH, SOL and 100+ other markets, each with its own maximum leverage
+- **Spot** — trade between supported assets
+
+On perpetual futures, **History → Funding Payments** lists the funding you paid or received, and
+the futures header shows the **predicted funding (next hour)**.
 
 ---
 
 ## Withdraw any time
 
 1. Open **Withdraw** in the sidebar ([metastation.fi/withdraw](https://metastation.fi/withdraw))
-2. Enter the destination address and network
-3. Complete 2FA verification and email confirmation
-4. Funds are sent from your USDC balance
+2. Pick the wallet, coin and network, and paste the destination address
+3. Read the quote — what arrives and the fees
+4. Confirm with your 6-digit code: from your authenticator app, or sent by e-mail
+
+→ [Withdraw](/docs/wallet/withdraw)
 
 ---
 
-## Additional MetaStation Account slots
+## More than one MetaStation Account
 
-Your first MetaStation Account slot is included with registration and carries all of the above. Want to run separate strategies in parallel? Additional MetaStation Account slots can be purchased from the Store.
+Every MetaStation Account slot is free. Want to run separate strategies in parallel? Add another in
+**Account Management** — once the ones you already have are activated.
 
 → See [Account Slots](/docs/trading/account-slots) for details.
